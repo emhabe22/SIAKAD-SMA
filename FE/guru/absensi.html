@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Absensi Siswa - Guru SIAKAD</title>
+    <link rel="stylesheet" href="../assets/css/main.css">
+    <link rel="stylesheet" href="../assets/css/layout.css">
+    <link rel="stylesheet" href="../assets/css/components.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Sidebar Navigation -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <div class="user-profile">
+                <img src="../assets/images/user-avatar.png" alt="Avatar Guru">
+                <div class="user-info">
+                    <h4>Budi Santoso, S.Pd</h4>
+                    <span class="role-badge">Guru Matematika</span>
+                </div>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <ul>
+                <li>
+                    <a href="dashboard.html">
+                        <i class="fas fa-home"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="jadwal-mengajar.html">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>Jadwal Mengajar</span>
+                    </a>
+                </li>
+                <li class="active">
+                    <a href="absensi.html">
+                        <i class="fas fa-clipboard-check"></i>
+                        <span>Absensi Siswa</span>
+                        <span class="badge">3</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="logbook.html">
+                        <i class="fas fa-book"></i>
+                        <span>Logbook</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="nilai.html">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Nilai Siswa</span>
+                    </a>
+                </li>
+                <li class="divider"></li>
+                <li>
+                    <a href="../login.html">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Keluar</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Top Header -->
+        <header class="top-header">
+            <div class="header-left">
+                <h1>Absensi Siswa</h1>
+                <p class="breadcrumb">Guru / Absensi Siswa</p>
+            </div>
+            <div class="header-right">
+                <button class="btn btn-primary" onclick="showBulkAttendance()">
+                    <i class="fas fa-users"></i> Absen Massal
+                </button>
+                <button class="btn btn-success" onclick="saveAttendance()">
+                    <i class="fas fa-save"></i> Simpan Perubahan
+                </button>
+            </div>
+        </header>
+
+        <!-- Class Selection -->
+        <div class="filter-card">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="selectClass">Pilih Kelas</label>
+                    <select id="selectClass" onchange="loadClassAttendance()">
+                        <option value="">-- Pilih Kelas --</option>
+                        <option value="x-mipa-1" selected>X MIPA 1 - Matematika</option>
+                        <option value="xi-ipa-2">XI IPA 2 - Matematika</option>
+                        <option value="xii-ips-1">XII IPS 1 - Matematika</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="selectDate">Tanggal</label>
+                    <input type="date" id="selectDate" value="2024-01-16" onchange="loadClassAttendance()">
+                </div>
+                <div class="form-group">
+                    <label for="selectSession">Sesi Pelajaran</label>
+                    <select id="selectSession" onchange="loadClassAttendance()">
+                        <option value="1" selected>Sesi 1 (08:00-09:30)</option>
+                        <option value="2">Sesi 2 (10:00-11:30)</option>
+                        <option value="3">Sesi 3 (13:00-14:30)</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Attendance Stats -->
+        <div class="stats-grid compact">
+            <div class="stat-card">
+                <div class="stat-icon" style="background: #4CAF50;">
+                    <i class="fas fa-user-check"></i>
+                </div>
+                <div class="stat-info">
+                    <h3 id="presentCount">25</h3>
+                    <p>Hadir</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background: #FF9800;">
+                    <i class="fas fa-user-clock"></i>
+                </div>
+                <div class="stat-info">
+                    <h3 id="permitCount">2</h3>
+                    <p>Izin</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background: #F44336;">
+                    <i class="fas fa-user-times"></i>
+                </div>
+                <div class="stat-info">
+                    <h3 id="absentCount">1</h3>
+                    <p>Alpha</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background: #2196F3;">
+                    <i class="fas fa-user-md"></i>
+                </div>
+                <div class="stat-info">
+                    <h3 id="sickCount">1</h3>
+                    <p>Sakit</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background: #9C27B0;">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="stat-info">
+                    <h3 id="totalCount">29</h3>
+                    <p>Total Siswa</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Attendance Table -->
+        <div class="card">
+            <div class="card-header">
+                <h3><i class="fas fa-list"></i> Daftar Kehadiran Siswa - Kelas X MIPA 1</h3>
+                <div class="card-actions">
+                    <button class="btn-icon" onclick="exportAttendance()">
+                        <i class="fas fa-download"></i>
+                    </button>
+                    <button class="btn-icon" onclick="printAttendance()">
+                        <i class="fas fa-print"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="attendance-table" id="attendanceTable">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Nama Siswa</th>
+                                <th>NIS</th>
+                                <th>Status</th>
+                                <th>Keterangan</th>
+                                <th>Waktu</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td>
+                                    <div class="student-cell">
+                                        <img src="https://via.placeholder.com/35" alt="Student" class="student-thumb">
+                                        <div>
+                                            <strong>Ahmad Fauzi</strong>
+                                            <small>Laki-laki</small>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>20241001</td>
+                                <td>
+                                    <select class="status-select present" onchange="updateStats()">
+                                        <option value="present" selected>Hadir</option>
+                                        <option value="permit">Izin</option>
+                                        <option value="sick">Sakit</option>
+                                        <option value="absent">Alpha</option>
+                                        <option value="late">Terlambat</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <input type="text" class="note-input" placeholder="Keterangan (opsional)" value="Tepat waktu">
+                                </td>
+                                <td>08:05</td>
+                                <td>
+                                    <button class="btn-icon" onclick="showStudentDetail(1)">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td>
+                                    <div class="student-cell">
+                                        <img src="https://via.placeholder.com/35" alt="Student" class="student-thumb">
+                                        <div>
+                                            <strong>Dewi Anggraini</strong>
+                                            <small>Perempuan</small>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>20241002</td>
+                                <td>
+                                    <select class="status-select present" onchange="updateStats()">
+                                        <option value="present" selected>Hadir</option>
+                                        <option value="permit">Izin</option>
+                                        <option value="sick">Sakit</option>
+                                        <option value="absent">Alpha</option>
+                                        <option value="late">Terlambat</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <input type="text" class="note-input" placeholder="Keterangan (opsional)" value="">
+                                </td>
+                                <td>08:00</td>
+                                <td>
+                                    <button class="btn-icon" onclick="showStudentDetail(2)">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td>
+                                    <div class="student-cell">
+                                        <img src="https://via.placeholder.com/35" alt="Student" class="student-thumb">
+                                        <div>
+                                            <strong>Budi Pratama</strong>
+                                            <small>Laki-laki</small>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>20241003</td>
+                                <td>
+                                    <select class="status-select late" onchange="updateStats()">
+                                        <option value="present">Hadir</option>
+                                        <option value="permit">Izin</option>
+                                        <option value="sick">Sakit</option>
+                                        <option value="absent">Alpha</option>
+                                        <option value="late" selected>Terlambat</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <input type="text" class="note-input" placeholder="Keterangan (opsional)" value="Terlambat 15 menit">
+                                </td>
+                                <td>08:15</td>
+                                <td>
+                                    <button class="btn-icon" onclick="showStudentDetail(3)">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td>
+                                    <div class="student-cell">
+                                        <img src="https://via.placeholder.com/35" alt="Student" class="student-thumb">
+                                        <div>
+                                            <strong>Citra Lestari</strong>
+                                            <small>Perempuan</small>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>20241004</td>
+                                <td>
+                                    <select class="status-select sick" onchange="updateStats()">
+                                        <option value="present">Hadir</option>
+                                        <option value="permit">Izin</option>
+                                        <option value="sick" selected>Sakit</option>
+                                        <option value="absent">Alpha</option>
+                                        <option value="late">Terlambat</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <input type="text" class="note-input" placeholder="Keterangan (opsional)" value="Surat dokter terlampir">
+                                </td>
+                                <td>-</td>
+                                <td>
+                                    <button class="btn-icon" onclick="showStudentDetail(4)">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>5</td>
+                                <td>
+                                    <div class="student-cell">
+                                        <img src="https://via.placeholder.com/35" alt="Student" class="student-thumb">
+                                        <div>
+                                            <strong>Eko Wijaya</strong>
+                                            <small>Laki-laki</small>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>20241005</td>
+                                <td>
+                                    <select class="status-select absent" onchange="updateStats()">
+                                        <option value="present">Hadir</option>
+                                        <option value="permit">Izin</option>
+                                        <option value="sick">Sakit</option>
+                                        <option value="absent" selected>Alpha</option>
+                                        <option value="late">Terlambat</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <input type="text" class="note-input" placeholder="Keterangan (opsional)" value="">
+                                </td>
+                                <td>-</td>
+                                <td>
+                                    <button class="btn-icon" onclick="showStudentDetail(5)">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Attendance Summary -->
+                <div class="attendance-summary">
+                    <h4>Ringkasan Kehadiran</h4>
+                    <div class="summary-grid">
+                        <div class="summary-item">
+                            <span class="summary-label">Persentase Hadir:</span>
+                            <span class="summary-value" id="attendancePercentage">86.2%</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="summary-label">Siswa Terlambat:</span>
+                            <span class="summary-value" id="lateCount">1 siswa</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="summary-label">Perlu Tindak Lanjut:</span>
+                            <span class="summary-value warning" id="followUpCount">3 siswa</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Attendance Actions -->
+        <div class="card">
+            <div class="card-header">
+                <h3><i class="fas fa-cogs"></i> Pengaturan Cepat</h3>
+            </div>
+            <div class="card-body">
+                <div class="quick-attendance-actions">
+                    <button class="action-btn" onclick="markAllPresent()">
+                        <i class="fas fa-user-check"></i>
+                        <span>Tandai Semua Hadir</span>
+                    </button>
+                    <button class="action-btn" onclick="resetAttendance()">
+                        <i class="fas fa-redo"></i>
+                        <span>Reset Kehadiran</span>
+                    </button>
+                    <button class="action-btn" onclick="showAttendanceHistory()">
+                        <i class="fas fa-history"></i>
+                        <span>Riwayat Kehadiran</span>
+                    </button>
+                    <button class="action-btn" onclick="generateReport()">
+                        <i class="fas fa-chart-bar"></i>
+                        <span>Laporan Kehadiran</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Attendance Notes -->
+        <div class="card">
+            <div class="card-header">
+                <h3><i class="fas fa-sticky-note"></i> Catatan Kehadiran</h3>
+            </div>
+            <div class="card-body">
+                <div class="form-group">
+                    <label for="attendanceNotes">Catatan untuk sesi ini:</label>
+                    <textarea id="attendanceNotes" rows="3" placeholder="Masukkan catatan khusus mengenai kehadiran hari ini...">Kelas hadir dengan baik, hanya 1 siswa yang alpha tanpa keterangan.</textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Student Detail -->
+    <div id="studentDetailModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Detail Siswa</h3>
+                <span class="close" onclick="closeStudentModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="student-detail">
+                    <div class="student-photo">
+                        <img src="https://via.placeholder.com/100" alt="Student Photo">
+                    </div>
+                    <div class="student-info">
+                        <h4 id="studentName">Ahmad Fauzi</h4>
+                        <p><strong>NIS:</strong> <span id="studentNIS">20241001</span></p>
+                        <p><strong>Kelas:</strong> <span id="studentClass">X MIPA 1</span></p>
+                        <p><strong>Jenis Kelamin:</strong> <span id="studentGender">Laki-laki</span></p>
+                        <p><strong>Wali Kelas:</strong> <span id="studentHomeroom">Ibu Siti, S.Pd</span></p>
+                    </div>
+                </div>
+                
+                <div class="attendance-history">
+                    <h5>Riwayat Kehadiran 7 Hari Terakhir</h5>
+                    <div class="history-chart">
+                        <div class="history-day">
+                            <span>Sen</span>
+                            <div class="day-status present"></div>
+                        </div>
+                        <div class="history-day">
+                            <span>Sel</span>
+                            <div class="day-status present"></div>
+                        </div>
+                        <div class="history-day">
+                            <span>Rab</span>
+                            <div class="day-status sick"></div>
+                        </div>
+                        <div class="history-day">
+                            <span>Kam</span>
+                            <div class="day-status present"></div>
+                        </div>
+                        <div class="history-day">
+                            <span>Jum</span>
+                            <div class="day-status late"></div>
+                        </div>
+                        <div class="history-day">
+                            <span>Sab</span>
+                            <div class="day-status present"></div>
+                        </div>
+                        <div class="history-day">
+                            <span>Min</span>
+                            <div class="day-status"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="attendance-stats">
+                    <div class="stat-item">
+                        <span class="stat-label">Kehadiran Bulan Ini:</span>
+                        <span class="stat-value">85%</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Total Alpha:</span>
+                        <span class="stat-value">2 hari</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Total Terlambat:</span>
+                        <span class="stat-value">3 kali</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeStudentModal()">Tutup</button>
+                <button class="btn btn-primary" onclick="sendNotificationToParent()">
+                    <i class="fas fa-envelope"></i> Kirim Notifikasi ke Orang Tua
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Bulk Attendance -->
+    <div id="bulkModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Absen Massal</h3>
+                <span class="close" onclick="closeBulkModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Pilih Status untuk Semua Siswa:</label>
+                    <select id="bulkStatus">
+                        <option value="present">Hadir</option>
+                        <option value="permit">Izin</option>
+                        <option value="sick">Sakit</option>
+                        <option value="absent">Alpha</option>
+                        <option value="late">Terlambat</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Keterangan Umum (opsional):</label>
+                    <textarea id="bulkNote" rows="3" placeholder="Masukkan keterangan umum..."></textarea>
+                </div>
+                <div class="warning-box">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <p>Perhatian: Tindakan ini akan mengubah status kehadiran semua siswa dalam kelas terpilih.</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeBulkModal()">Batal</button>
+                <button class="btn btn-primary" onclick="applyBulkAttendance()">
+                    <i class="fas fa-check"></i> Terapkan
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../assets/js/main.js"></script>
+    <script src="../assets/js/attendance.js"></script>
+    <script>
+        let attendanceData = {};
+        let currentStudentId = null;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            loadClassAttendance();
+            updateStats();
+        });
+
+        function loadClassAttendance() {
+            const selectedClass = document.getElementById('selectClass').value;
+            const selectedDate = document.getElementById('selectDate').value;
+            const selectedSession = document.getElementById('selectSession').value;
+            
+            // Simulate loading data
+            console.log(`Loading attendance for: ${selectedClass} on ${selectedDate}, session ${selectedSession}`);
+            updateStats();
+        }
+
+        function updateStats() {
+            const statusSelects = document.querySelectorAll('.status-select');
+            let present = 0, permit = 0, sick = 0, absent = 0, late = 0;
+            
+            statusSelects.forEach(select => {
+                switch(select.value) {
+                    case 'present': present++; break;
+                    case 'permit': permit++; break;
+                    case 'sick': sick++; break;
+                    case 'absent': absent++; break;
+                    case 'late': late++; break;
+                }
+            });
+            
+            const total = present + permit + sick + absent + late;
+            const attendancePercentage = total > 0 ? ((present / total) * 100).toFixed(1) : 0;
+            
+            // Update counters
+            document.getElementById('presentCount').textContent = present;
+            document.getElementById('permitCount').textContent = permit;
+            document.getElementById('sickCount').textContent = sick;
+            document.getElementById('absentCount').textContent = absent;
+            document.getElementById('totalCount').textContent = total;
+            
+            // Update percentage
+            document.getElementById('attendancePercentage').textContent = `${attendancePercentage}%`;
+            document.getElementById('lateCount').textContent = `${late} siswa`;
+            document.getElementById('followUpCount').textContent = `${absent + late} siswa`;
+            
+            // Update select styling
+            statusSelects.forEach(select => {
+                select.className = 'status-select ' + select.value;
+            });
+        }
+
+        function showStudentDetail(studentId) {
+            currentStudentId = studentId;
+            const modal = document.getElementById('studentDetailModal');
+            modal.style.display = 'block';
+        }
+
+        function closeStudentModal() {
+            document.getElementById('studentDetailModal').style.display = 'none';
+        }
+
+        function showBulkAttendance() {
+            document.getElementById('bulkModal').style.display = 'block';
+        }
+
+        function closeBulkModal() {
+            document.getElementById('bulkModal').style.display = 'none';
+        }
+
+        function applyBulkAttendance() {
+            const bulkStatus = document.getElementById('bulkStatus').value;
+            const bulkNote = document.getElementById('bulkNote').value;
+            
+            const statusSelects = document.querySelectorAll('.status-select');
+            const noteInputs = document.querySelectorAll('.note-input');
+            
+            statusSelects.forEach(select => {
+                select.value = bulkStatus;
+                select.className = 'status-select ' + bulkStatus;
+            });
+            
+            if (bulkNote) {
+                noteInputs.forEach(input => {
+                    input.value = bulkNote;
+                });
+            }
+            
+            updateStats();
+            closeBulkModal();
+            alert('Absen massal berhasil diterapkan!');
+        }
+
+        function markAllPresent() {
+            if (confirm('Tandai semua siswa sebagai HADIR?')) {
+                const statusSelects = document.querySelectorAll('.status-select');
+                statusSelects.forEach(select => {
+                    select.value = 'present';
+                    select.className = 'status-select present';
+                });
+                updateStats();
+            }
+        }
+
+        function resetAttendance() {
+            if (confirm('Reset semua kehadiran ke status kosong?')) {
+                const statusSelects = document.querySelectorAll('.status-select');
+                const noteInputs = document.querySelectorAll('.note-input');
+                
+                statusSelects.forEach(select => {
+                    select.value = '';
+                    select.className = 'status-select';
+                });
+                
+                noteInputs.forEach(input => {
+                    input.value = '';
+                });
+                
+                updateStats();
+            }
+        }
+
+        function saveAttendance() {
+            // Collect attendance data
+            const attendanceRecords = [];
+            const rows = document.querySelectorAll('#attendanceTable tbody tr');
+            
+            rows.forEach((row, index) => {
+                const studentId = index + 1;
+                const statusSelect = row.querySelector('.status-select');
+                const noteInput = row.querySelector('.note-input');
+                
+                attendanceRecords.push({
+                    studentId: studentId,
+                    status: statusSelect.value,
+                    note: noteInput.value,
+                    timestamp: new Date().toISOString()
+                });
+            });
+            
+            // Simulate saving
+            console.log('Saving attendance:', attendanceRecords);
+            alert('Kehadiran berhasil disimpan!');
+        }
+
+        function exportAttendance() {
+            alert('Fitur export ke Excel akan segera tersedia!');
+        }
+
+        function printAttendance() {
+            window.print();
+        }
+
+        function showAttendanceHistory() {
+            alert('Membuka riwayat kehadiran...');
+            // Open attendance history page
+        }
+
+        function generateReport() {
+            alert('Membuat laporan kehadiran...');
+            // Generate and download report
+        }
+
+        function sendNotificationToParent() {
+            alert('Notifikasi berhasil dikirim ke orang tua!');
+            closeStudentModal();
+        }
+
+        // Close modals when clicking outside
+        window.onclick = function(event) {
+            const modals = document.querySelectorAll('.modal');
+            modals.forEach(modal => {
+                if (event.target === modal) {
+                    modal.style.display = 'none';
+                }
+            });
+        };
+    </script>
+    <script>
+    // Mobile menu toggle
+    document.addEventListener('DOMContentLoaded', function() {
+        const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+        const sidebar = document.getElementById('sidebar');
+        const mainContent = document.getElementById('mainContent');
+        
+        if (mobileMenuToggle && sidebar) {
+            mobileMenuToggle.addEventListener('click', function() {
+                sidebar.classList.toggle('active');
+                mobileMenuToggle.innerHTML = sidebar.classList.contains('active') 
+                    ? '<i class="fas fa-times"></i>' 
+                    : '<i class="fas fa-bars"></i>';
+            });
+            
+            // Close sidebar when clicking outside on mobile
+            document.addEventListener('click', function(event) {
+                if (window.innerWidth <= 1024) {
+                    if (!sidebar.contains(event.target) && 
+                        !mobileMenuToggle.contains(event.target) && 
+                        sidebar.classList.contains('active')) {
+                        sidebar.classList.remove('active');
+                        mobileMenuToggle.innerHTML = '<i class="fas fa-bars"></i>';
+                    }
+                }
+            });
+        }
+        
+        // Update active link in sidebar
+        const currentPage = window.location.pathname.split('/').pop();
+        const navLinks = document.querySelectorAll('.sidebar-nav a');
+        navLinks.forEach(link => {
+            const href = link.getAttribute('href');
+            if (href === currentPage || 
+                (href === 'dashboard.html' && currentPage === '') ||
+                (href.includes(currentPage) && currentPage !== '')) {
+                link.classList.add('active');
+            }
+        });
+    });
+</script>
+</body>
+</html>
