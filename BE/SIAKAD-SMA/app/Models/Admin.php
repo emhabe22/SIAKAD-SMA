@@ -6,5 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Admin extends Model
 {
-    //
+    protected $fillable = ['nama', 'user_id', 'no_telp'];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

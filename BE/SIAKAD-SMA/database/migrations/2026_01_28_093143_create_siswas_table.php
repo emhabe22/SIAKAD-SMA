@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('nama');
             $table->string('nisn')->unique();
             $table->text('alamat');
-            $table->integer('no_telp');
+            $table->string('no_telp');
             $table->foreignId('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreignId('kelas_id')->references('id')->on('kelas')->onDelete('cascade');
             $table->string('nama_wali');
