@@ -1,0 +1,986 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kelola Siswa - Admin SIAKAD</title>
+    <link rel="stylesheet" href="../assets/css/main.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+</head>
+<body>
+    <!-- Mobile Menu Toggle -->
+    <button class="mobile-menu-toggle" id="mobileMenuToggle">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- Sidebar Navigation -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="user-profile">
+                <img src="../assets/images/user-avatar.png" alt="Avatar Admin">
+                <div class="user-info">
+                    <h4>Administrator</h4>
+                    <span class="role-badge">Admin Sistem</span>
+                </div>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <ul>
+                <li>
+                    <a href="dashboard.html">
+                        <i class="fas fa-home"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="active">
+                    <a href="siswa.html">
+                        <i class="fas fa-users"></i>
+                        <span>Data Siswa</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="guru.html">
+                        <i class="fas fa-chalkboard-teacher"></i>
+                        <span>Data Guru</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="kelas.html">
+                        <i class="fas fa-school"></i>
+                        <span>Data Kelas</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="mata-pelajaran.html">
+                        <i class="fas fa-book"></i>
+                        <span>Mata Pelajaran</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="jadwal-bk.html">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>Jadwal BK</span>
+                    </a>
+                </li>
+                <li class="divider"></li>
+                <li>
+                    <a href="pengaturan.html">
+                        <i class="fas fa-cog"></i>
+                        <span>Pengaturan</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="../login.html">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Keluar</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content" id="mainContent">
+        <!-- Top Header -->
+        <header class="top-header">
+            <div class="header-left">
+                <h1>Kelola Data Siswa</h1>
+                <p class="breadcrumb">Admin / Data Siswa</p>
+            </div>
+            <div class="header-right">
+                <div class="search-box">
+                    <input type="text" id="searchStudent" placeholder="Cari siswa...">
+                    <i class="fas fa-search"></i>
+                </div>
+                <button class="btn btn-primary" onclick="showAddModal()">
+                    <i class="fas fa-plus"></i> Tambah Siswa
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Content Container -->
+        <div class="content-container">
+            <!-- Filter Section -->
+            <div class="filter-section">
+                <div class="filter-group">
+                    <label>Filter Kelas:</label>
+                    <select id="filterClass" onchange="filterTable()">
+                        <option value="all">Semua Kelas</option>
+                        <option value="X">Kelas X</option>
+                        <option value="XI">Kelas XI</option>
+                        <option value="XII">Kelas XII</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Filter Jurusan:</label>
+                    <select id="filterMajor" onchange="filterTable()">
+                        <option value="all">Semua Jurusan</option>
+                        <option value="MIPA">MIPA</option>
+                        <option value="IPS">IPS</option>
+                        <option value="BAHASA">Bahasa</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Filter Status:</label>
+                    <select id="filterStatus" onchange="filterTable()">
+                        <option value="all">Semua Status</option>
+                        <option value="active">Aktif</option>
+                        <option value="inactive">Tidak Aktif</option>
+                        <option value="alumni">Alumni</option>
+                    </select>
+                </div>
+                <button class="btn btn-secondary" onclick="resetFilters()">
+                    <i class="fas fa-redo"></i> Reset Filter
+                </button>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="stats-grid compact">
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: #4CAF50;">
+                        <i class="fas fa-user-check"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>452</h3>
+                        <p>Siswa Aktif</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: #2196F3;">
+                        <i class="fas fa-user-graduate"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>125</h3>
+                        <p>Kelas X</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: #FF9800;">
+                        <i class="fas fa-user-graduate"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>158</h3>
+                        <p>Kelas XI</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: #9C27B0;">
+                        <i class="fas fa-user-graduate"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>169</h3>
+                        <p>Kelas XII</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: #F44336;">
+                        <i class="fas fa-user-times"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>12</h3>
+                        <p>Tidak Aktif</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Students Table -->
+            <div class="card">
+                <div class="card-header">
+                    <h3><i class="fas fa-list"></i> Daftar Siswa</h3>
+                    <div class="card-actions">
+                        <button class="btn-icon" onclick="exportToExcel()" title="Export ke Excel">
+                            <i class="fas fa-file-excel"></i>
+                        </button>
+                        <button class="btn-icon" onclick="printTable()" title="Cetak">
+                            <i class="fas fa-print"></i>
+                        </button>
+                        <button class="btn-icon" onclick="refreshTable()" title="Refresh">
+                            <i class="fas fa-sync-alt"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="data-table" id="studentsTable">
+                            <thead>
+                                <tr>
+                                    <th>No</th>
+                                    <th>NIS</th>
+                                    <th>Nama Siswa</th>
+                                    <th>Kelas</th>
+                                    <th>Jurusan</th>
+                                    <th>Jenis Kelamin</th>
+                                    <th>Telepon</th>
+                                    <th>Status</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>1</td>
+                                    <td><strong>20241001</strong></td>
+                                    <td>
+                                        <div class="student-cell">
+                                            <img src="https://via.placeholder.com/35" alt="Student" class="student-thumb">
+                                            <div>
+                                                <strong>Ahmad Fauzi</strong>
+                                                <small>ahmad.fauzi@email.com</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>X MIPA 1</td>
+                                    <td><span class="badge badge-mipa">MIPA</span></td>
+                                    <td>Laki-laki</td>
+                                    <td>081234567890</td>
+                                    <td><span class="status-badge active">Aktif</span></td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <button class="btn-icon" onclick="viewStudent(1)" title="Lihat Detail">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                            <button class="btn-icon" onclick="editStudent(1)" title="Edit">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="btn-icon btn-danger" onclick="deleteStudent(1)" title="Hapus">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>2</td>
+                                    <td><strong>20241002</strong></td>
+                                    <td>
+                                        <div class="student-cell">
+                                            <img src="https://via.placeholder.com/35" alt="Student" class="student-thumb">
+                                            <div>
+                                                <strong>Dewi Anggraini</strong>
+                                                <small>dewi.anggraini@email.com</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>X IPS 1</td>
+                                    <td><span class="badge badge-ips">IPS</span></td>
+                                    <td>Perempuan</td>
+                                    <td>081298765432</td>
+                                    <td><span class="status-badge active">Aktif</span></td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <button class="btn-icon" onclick="viewStudent(2)" title="Lihat Detail">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                            <button class="btn-icon" onclick="editStudent(2)" title="Edit">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="btn-icon btn-danger" onclick="deleteStudent(2)" title="Hapus">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>3</td>
+                                    <td><strong>20231101</strong></td>
+                                    <td>
+                                        <div class="student-cell">
+                                            <img src="https://via.placeholder.com/35" alt="Student" class="student-thumb">
+                                            <div>
+                                                <strong>Budi Pratama</strong>
+                                                <small>budi.pratama@email.com</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>XI MIPA 2</td>
+                                    <td><span class="badge badge-mipa">MIPA</span></td>
+                                    <td>Laki-laki</td>
+                                    <td>081312345678</td>
+                                    <td><span class="status-badge active">Aktif</span></td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <button class="btn-icon" onclick="viewStudent(3)" title="Lihat Detail">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                            <button class="btn-icon" onclick="editStudent(3)" title="Edit">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="btn-icon btn-danger" onclick="deleteStudent(3)" title="Hapus">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>4</td>
+                                    <td><strong>20231201</strong></td>
+                                    <td>
+                                        <div class="student-cell">
+                                            <img src="https://via.placeholder.com/35" alt="Student" class="student-thumb">
+                                            <div>
+                                                <strong>Citra Lestari</strong>
+                                                <small>citra.lestari@email.com</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>XII IPS 3</td>
+                                    <td><span class="badge badge-ips">IPS</span></td>
+                                    <td>Perempuan</td>
+                                    <td>081376543210</td>
+                                    <td><span class="status-badge inactive">Alumni</span></td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <button class="btn-icon" onclick="viewStudent(4)" title="Lihat Detail">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                            <button class="btn-icon" onclick="editStudent(4)" title="Edit">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="btn-icon btn-danger" onclick="deleteStudent(4)" title="Hapus">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>5</td>
+                                    <td><strong>20241005</strong></td>
+                                    <td>
+                                        <div class="student-cell">
+                                            <img src="https://via.placeholder.com/35" alt="Student" class="student-thumb">
+                                            <div>
+                                                <strong>Eko Wijaya</strong>
+                                                <small>eko.wijaya@email.com</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>X BAHASA 1</td>
+                                    <td><span class="badge badge-bahasa">Bahasa</span></td>
+                                    <td>Laki-laki</td>
+                                    <td>081390123456</td>
+                                    <td><span class="status-badge active">Aktif</span></td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <button class="btn-icon" onclick="viewStudent(5)" title="Lihat Detail">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                            <button class="btn-icon" onclick="editStudent(5)" title="Edit">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="btn-icon btn-danger" onclick="deleteStudent(5)" title="Hapus">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Pagination -->
+                    <div class="pagination">
+                        <button class="page-btn" disabled>
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <button class="page-btn active">1</button>
+                        <button class="page-btn">2</button>
+                        <button class="page-btn">3</button>
+                        <button class="page-btn">4</button>
+                        <button class="page-btn">5</button>
+                        <button class="page-btn">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bulk Actions -->
+            <div class="card">
+                <div class="card-header">
+                    <h3><i class="fas fa-tasks"></i> Tindakan Massal</h3>
+                </div>
+                <div class="card-body">
+                    <div class="bulk-actions">
+                        <select id="bulkAction" class="bulk-select">
+                            <option value="">-- Pilih Tindakan --</option>
+                            <option value="export">Export Terpilih</option>
+                            <option value="activate">Aktifkan</option>
+                            <option value="deactivate">Nonaktifkan</option>
+                            <option value="move">Pindah Kelas</option>
+                            <option value="delete">Hapus</option>
+                        </select>
+                        <button class="btn btn-primary" onclick="applyBulkAction()">
+                            <i class="fas fa-play"></i> Terapkan
+                        </button>
+                        <button class="btn btn-secondary" onclick="selectAllStudents()">
+                            <i class="fas fa-check-square"></i> Pilih Semua
+                        </button>
+                        <button class="btn btn-secondary" onclick="deselectAllStudents()">
+                            <i class="fas fa-square"></i> Batalkan Pilihan
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Add/Edit Student -->
+    <div id="studentModal" class="modal">
+        <div class="modal-content wide-modal">
+            <div class="modal-header">
+                <h3 id="modalTitle">Tambah Siswa Baru</h3>
+                <span class="close" onclick="closeModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="studentForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="nis">NIS *</label>
+                            <input type="text" id="nis" required placeholder="Masukkan NIS">
+                        </div>
+                        <div class="form-group">
+                            <label for="nisn">NISN</label>
+                            <input type="text" id="nisn" placeholder="Masukkan NISN">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="fullName">Nama Lengkap *</label>
+                            <input type="text" id="fullName" required placeholder="Masukkan nama lengkap">
+                        </div>
+                        <div class="form-group">
+                            <label for="nickName">Nama Panggilan</label>
+                            <input type="text" id="nickName" placeholder="Masukkan nama panggilan">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="birthPlace">Tempat Lahir *</label>
+                            <input type="text" id="birthPlace" required placeholder="Masukkan tempat lahir">
+                        </div>
+                        <div class="form-group">
+                            <label for="birthDate">Tanggal Lahir *</label>
+                            <input type="date" id="birthDate" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="gender">Jenis Kelamin *</label>
+                            <select id="gender" required>
+                                <option value="">-- Pilih --</option>
+                                <option value="L">Laki-laki</option>
+                                <option value="P">Perempuan</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="religion">Agama *</label>
+                            <select id="religion" required>
+                                <option value="">-- Pilih --</option>
+                                <option value="Islam">Islam</option>
+                                <option value="Kristen">Kristen</option>
+                                <option value="Katolik">Katolik</option>
+                                <option value="Hindu">Hindu</option>
+                                <option value="Buddha">Buddha</option>
+                                <option value="Konghucu">Konghucu</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="class">Kelas *</label>
+                            <select id="class" required>
+                                <option value="">-- Pilih Kelas --</option>
+                                <option value="X MIPA 1">X MIPA 1</option>
+                                <option value="X MIPA 2">X MIPA 2</option>
+                                <option value="X IPS 1">X IPS 1</option>
+                                <option value="XI MIPA 1">XI MIPA 1</option>
+                                <option value="XI IPS 2">XI IPS 2</option>
+                                <option value="XII MIPA 3">XII MIPA 3</option>
+                                <option value="XII IPS 1">XII IPS 1</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="major">Jurusan *</label>
+                            <select id="major" required>
+                                <option value="">-- Pilih Jurusan --</option>
+                                <option value="MIPA">MIPA</option>
+                                <option value="IPS">IPS</option>
+                                <option value="BAHASA">Bahasa</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="address">Alamat Lengkap *</label>
+                        <textarea id="address" rows="3" required placeholder="Masukkan alamat lengkap"></textarea>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="phone">Telepon</label>
+                            <input type="tel" id="phone" placeholder="Masukkan nomor telepon">
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" id="email" placeholder="Masukkan email">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="fatherName">Nama Ayah</label>
+                            <input type="text" id="fatherName" placeholder="Masukkan nama ayah">
+                        </div>
+                        <div class="form-group">
+                            <label for="motherName">Nama Ibu</label>
+                            <input type="text" id="motherName" placeholder="Masukkan nama ibu">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="parentPhone">Telepon Orang Tua</label>
+                        <input type="tel" id="parentPhone" placeholder="Masukkan telepon orang tua">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="status">Status Siswa *</label>
+                        <select id="status" required>
+                            <option value="active">Aktif</option>
+                            <option value="inactive">Tidak Aktif</option>
+                            <option value="alumni">Alumni</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Upload Foto</label>
+                        <div class="file-upload-area">
+                            <div class="upload-placeholder">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <p>Seret & lepas file atau klik untuk memilih</p>
+                                <span>Format: JPG, PNG (Maks. 2MB)</span>
+                            </div>
+                            <input type="file" id="photoUpload" accept=".jpg,.jpeg,.png">
+                        </div>
+                        <div class="file-preview" id="filePreview"></div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal()">Batal</button>
+                <button class="btn btn-primary" onclick="saveStudent()">
+                    <i class="fas fa-save"></i> Simpan
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal View Student -->
+    <div id="viewModal" class="modal">
+        <div class="modal-content wide-modal">
+            <div class="modal-header">
+                <h3>Detail Siswa</h3>
+                <span class="close" onclick="closeViewModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="student-detail-view">
+                    <div class="student-header">
+                        <div class="student-photo-large">
+                            <img src="https://via.placeholder.com/120" alt="Student Photo" id="viewPhoto">
+                        </div>
+                        <div class="student-info-large">
+                            <h2 id="viewName">Ahmad Fauzi</h2>
+                            <p class="student-nis" id="viewNIS">NIS: 20241001</p>
+                            <div class="student-tags">
+                                <span class="badge badge-mipa" id="viewClass">X MIPA 1</span>
+                                <span class="status-badge active" id="viewStatus">Aktif</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="detail-tabs">
+                        <div class="tab-buttons">
+                            <button class="tab-btn active" onclick="showTab('personal')">Data Pribadi</button>
+                            <button class="tab-btn" onclick="showTab('academic')">Data Akademik</button>
+                            <button class="tab-btn" onclick="showTab('family')">Data Keluarga</button>
+                            <button class="tab-btn" onclick="showTab('history')">Riwayat</button>
+                        </div>
+
+                        <div class="tab-content active" id="personalTab">
+                            <div class="detail-grid">
+                                <div class="detail-item">
+                                    <label>NISN:</label>
+                                    <span id="viewNISN">0031234567</span>
+                                </div>
+                                <div class="detail-item">
+                                    <label>Tempat/Tgl Lahir:</label>
+                                    <span id="viewBirth">Malang, 15 Mei 2007</span>
+                                </div>
+                                <div class="detail-item">
+                                    <label>Jenis Kelamin:</label>
+                                    <span id="viewGender">Laki-laki</span>
+                                </div>
+                                <div class="detail-item">
+                                    <label>Agama:</label>
+                                    <span id="viewReligion">Islam</span>
+                                </div>
+                                <div class="detail-item full-width">
+                                    <label>Alamat:</label>
+                                    <span id="viewAddress">Jl. Merdeka No. 123, Kota Malang, Jawa Timur</span>
+                                </div>
+                                <div class="detail-item">
+                                    <label>Telepon:</label>
+                                    <span id="viewPhone">081234567890</span>
+                                </div>
+                                <div class="detail-item">
+                                    <label>Email:</label>
+                                    <span id="viewEmail">ahmad.fauzi@email.com</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tab-content" id="academicTab">
+                            <div class="detail-grid">
+                                <div class="detail-item">
+                                    <label>Kelas:</label>
+                                    <span id="viewAcademicClass">X MIPA 1</span>
+                                </div>
+                                <div class="detail-item">
+                                    <label>Jurusan:</label>
+                                    <span id="viewMajor">MIPA</span>
+                                </div>
+                                <div class="detail-item">
+                                    <label>Wali Kelas:</label>
+                                    <span id="viewHomeroom">Budi Santoso, S.Pd</span>
+                                </div>
+                                <div class="detail-item">
+                                    <label>Tahun Masuk:</label>
+                                    <span id="viewEntryYear">2024</span>
+                                </div>
+                                <div class="detail-item">
+                                    <label>Status:</label>
+                                    <span class="status-badge active" id="viewAcademicStatus">Aktif</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tab-content" id="familyTab">
+                            <div class="detail-grid">
+                                <div class="detail-item">
+                                    <label>Nama Ayah:</label>
+                                    <span id="viewFather">Supriyadi</span>
+                                </div>
+                                <div class="detail-item">
+                                    <label>Pekerjaan Ayah:</label>
+                                    <span id="viewFatherJob">PNS</span>
+                                </div>
+                                <div class="detail-item">
+                                    <label>Nama Ibu:</label>
+                                    <span id="viewMother">Siti Aminah</span>
+                                </div>
+                                <div class="detail-item">
+                                    <label>Pekerjaan Ibu:</label>
+                                    <span id="viewMotherJob">Ibu Rumah Tangga</span>
+                                </div>
+                                <div class="detail-item">
+                                    <label>Telepon Orang Tua:</label>
+                                    <span id="viewParentPhone">081298765432</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeViewModal()">Tutup</button>
+                <button class="btn btn-primary" onclick="editFromView()">
+                    <i class="fas fa-edit"></i> Edit Data
+                </button>
+                <button class="btn btn-success" onclick="printStudentCard()">
+                    <i class="fas fa-id-card"></i> Cetak Kartu Siswa
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+    <script src="../assets/js/main.js"></script>
+    <script src="../assets/js/admin-students.js"></script>
+    <script>
+        let currentStudentId = null;
+        let isEditMode = false;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize DataTable
+            $('#studentsTable').DataTable({
+                pageLength: 10,
+                language: {
+                    search: "Cari:",
+                    lengthMenu: "Tampilkan _MENU_ data per halaman",
+                    info: "Menampilkan _START_ sampai _END_ dari _TOTAL_ data",
+                    paginate: {
+                        first: "Pertama",
+                        last: "Terakhir",
+                        next: "Selanjutnya",
+                        previous: "Sebelumnya"
+                    }
+                }
+            });
+
+            // Mobile menu
+            const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+            const sidebar = document.getElementById('sidebar');
+            
+            if (mobileMenuToggle && sidebar) {
+                mobileMenuToggle.addEventListener('click', function() {
+                    sidebar.classList.toggle('active');
+                    mobileMenuToggle.innerHTML = sidebar.classList.contains('active') 
+                        ? '<i class="fas fa-times"></i>' 
+                        : '<i class="fas fa-bars"></i>';
+                });
+            }
+
+            // File upload preview
+            document.getElementById('photoUpload').addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                const preview = document.getElementById('filePreview');
+                
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        preview.innerHTML = `
+                            <div class="preview-image">
+                                <img src="${e.target.result}" alt="Preview">
+                                <button type="button" class="remove-image" onclick="removePreview()">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        `;
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        });
+
+        function showAddModal() {
+            isEditMode = false;
+            currentStudentId = null;
+            document.getElementById('modalTitle').textContent = 'Tambah Siswa Baru';
+            document.getElementById('studentForm').reset();
+            document.getElementById('filePreview').innerHTML = '';
+            document.getElementById('studentModal').style.display = 'block';
+        }
+
+        function editStudent(id) {
+            isEditMode = true;
+            currentStudentId = id;
+            document.getElementById('modalTitle').textContent = 'Edit Data Siswa';
+            // Load student data into form
+            loadStudentData(id);
+            document.getElementById('studentModal').style.display = 'block';
+        }
+
+        function viewStudent(id) {
+            currentStudentId = id;
+            // Load student data for view
+            loadViewData(id);
+            document.getElementById('viewModal').style.display = 'block';
+        }
+
+        function loadStudentData(id) {
+            // Simulate loading data
+            const studentData = {
+                nis: '20241001',
+                nisn: '0031234567',
+                fullName: 'Ahmad Fauzi',
+                nickName: 'Ahmad',
+                birthPlace: 'Malang',
+                birthDate: '2007-05-15',
+                gender: 'L',
+                religion: 'Islam',
+                class: 'X MIPA 1',
+                major: 'MIPA',
+                address: 'Jl. Merdeka No. 123, Kota Malang',
+                phone: '081234567890',
+                email: 'ahmad.fauzi@email.com',
+                fatherName: 'Supriyadi',
+                motherName: 'Siti Aminah',
+                parentPhone: '081298765432',
+                status: 'active'
+            };
+
+            // Populate form
+            Object.keys(studentData).forEach(key => {
+                const element = document.getElementById(key);
+                if (element) {
+                    element.value = studentData[key];
+                }
+            });
+        }
+
+        function loadViewData(id) {
+            // Simulate loading view data
+            const viewData = {
+                name: 'Ahmad Fauzi',
+                nis: '20241001',
+                nisn: '0031234567',
+                class: 'X MIPA 1',
+                status: 'active',
+                birth: 'Malang, 15 Mei 2007',
+                gender: 'Laki-laki',
+                religion: 'Islam',
+                address: 'Jl. Merdeka No. 123, Kota Malang, Jawa Timur',
+                phone: '081234567890',
+                email: 'ahmad.fauzi@email.com',
+                academicClass: 'X MIPA 1',
+                major: 'MIPA',
+                homeroom: 'Budi Santoso, S.Pd',
+                entryYear: '2024',
+                academicStatus: 'active',
+                father: 'Supriyadi',
+                fatherJob: 'PNS',
+                mother: 'Siti Aminah',
+                motherJob: 'Ibu Rumah Tangga',
+                parentPhone: '081298765432'
+            };
+
+            // Populate view
+            Object.keys(viewData).forEach(key => {
+                const element = document.getElementById('view' + key.charAt(0).toUpperCase() + key.slice(1));
+                if (element) {
+                    element.textContent = viewData[key];
+                    if (element.classList && element.classList.contains('status-badge')) {
+                        element.className = 'status-badge ' + viewData[key];
+                    }
+                }
+            });
+        }
+
+        function saveStudent() {
+            const form = document.getElementById('studentForm');
+            if (form.checkValidity()) {
+                if (isEditMode) {
+                    alert(`Data siswa #${currentStudentId} berhasil diperbarui!`);
+                } else {
+                    alert('Siswa baru berhasil ditambahkan!');
+                }
+                closeModal();
+            } else {
+                alert('Harap lengkapi semua field yang wajib diisi!');
+            }
+        }
+
+        function deleteStudent(id) {
+            if (confirm('Apakah Anda yakin ingin menghapus siswa ini?')) {
+                alert(`Siswa #${id} berhasil dihapus!`);
+                // Implement delete functionality
+            }
+        }
+
+        function filterTable() {
+            const classFilter = document.getElementById('filterClass').value;
+            const majorFilter = document.getElementById('filterMajor').value;
+            const statusFilter = document.getElementById('filterStatus').value;
+            const searchTerm = document.getElementById('searchStudent').value.toLowerCase();
+            
+            // Implement filtering logic
+            console.log(`Filtering: Class=${classFilter}, Major=${majorFilter}, Status=${statusFilter}, Search=${searchTerm}`);
+        }
+
+        function resetFilters() {
+            document.getElementById('filterClass').value = 'all';
+            document.getElementById('filterMajor').value = 'all';
+            document.getElementById('filterStatus').value = 'all';
+            document.getElementById('searchStudent').value = '';
+            filterTable();
+        }
+
+        function exportToExcel() {
+            alert('Data siswa berhasil diexport ke Excel!');
+        }
+
+        function printTable() {
+            window.print();
+        }
+
+        function refreshTable() {
+            alert('Tabel siswa diperbarui!');
+        }
+
+        function applyBulkAction() {
+            const action = document.getElementById('bulkAction').value;
+            if (!action) {
+                alert('Pilih tindakan terlebih dahulu!');
+                return;
+            }
+            
+            if (confirm(`Terapkan tindakan "${action}" pada siswa terpilih?`)) {
+                alert(`Tindakan "${action}" berhasil diterapkan!`);
+            }
+        }
+
+        function selectAllStudents() {
+            alert('Semua siswa dipilih!');
+        }
+
+        function deselectAllStudents() {
+            alert('Pilihan dibatalkan!');
+        }
+
+        function closeModal() {
+            document.getElementById('studentModal').style.display = 'none';
+        }
+
+        function closeViewModal() {
+            document.getElementById('viewModal').style.display = 'none';
+        }
+
+        function editFromView() {
+            closeViewModal();
+            editStudent(currentStudentId);
+        }
+
+        function printStudentCard() {
+            alert('Kartu siswa sedang dicetak...');
+        }
+
+        function showTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Remove active class from all buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Show selected tab
+            document.getElementById(tabName + 'Tab').classList.add('active');
+            
+            // Add active class to clicked button
+            event.currentTarget.classList.add('active');
+        }
+
+        function removePreview() {
+            document.getElementById('filePreview').innerHTML = '';
+            document.getElementById('photoUpload').value = '';
+        }
+
+        // Close modals when clicking outside
+        window.onclick = function(event) {
+            const modals = document.querySelectorAll('.modal');
+            modals.forEach(modal => {
+                if (event.target === modal) {
+                    modal.style.display = 'none';
+                }
+            });
+        };
+    </script>
+</body>
+</html>

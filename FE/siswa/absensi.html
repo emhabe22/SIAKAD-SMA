@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Siswa - SIAKAD SMA Mishbahul Ulum</title>
+    <link rel="stylesheet" href="/assets/css/main.css">
+    <link rel="stylesheet" href="/assets/css/layout.css">
+    <link rel="stylesheet" href="/assets/css/components.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fas fa-graduation-cap"></i>
+                    <h2>SIAKAD<br><span>SMA Mishbahul Ulum</span></h2>
+                </div>
+            </div>
+            
+            <div class="sidebar-menu">
+                <div class="user-info">
+                    <div class="user-avatar">
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+                    <div class="user-details">
+                        <h4 class="user-name">Nama Siswa</h4>
+                        <span class="user-role badge badge-primary">SISWA</span>
+                    </div>
+                </div>
+                
+                <nav>
+                    <ul>
+                        <li class="active">
+                            <a href="dashboard.html">
+                                <i class="fas fa-home"></i>
+                                <span>Dashboard</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="absensi.html">
+                                <i class="fas fa-calendar-check"></i>
+                                <span>Absensi</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="bk.html">
+                                <i class="fas fa-hands-helping"></i>
+                                <span>Bimbingan Konseling</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="surat-pemanggilan.html">
+                                <i class="fas fa-envelope"></i>
+                                <span>Surat Pemanggilan</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/index.html">
+                                <i class="fas fa-info-circle"></i>
+                                <span>Informasi Sekolah</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+            
+            <div class="sidebar-footer">
+                <a href="#" id="logoutBtn" class="logout-btn">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Keluar</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="content">
+            <!-- Top Navigation -->
+            <header class="top-nav">
+                <div class="nav-left">
+                    <button class="menu-toggle">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h1>Dashboard Siswa</h1>
+                </div>
+                <div class="nav-right">
+                    <div class="notifications">
+                        <button class="notification-btn">
+                            <i class="fas fa-bell"></i>
+                            <span class="notification-count">3</span>
+                        </button>
+                    </div>
+                    <div class="date-display">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span id="currentDate">Senin, 1 Januari 2024</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Dashboard Content -->
+            <div class="main-content">
+                <!-- Welcome Banner -->
+                <div class="welcome-banner" style="background: linear-gradient(135deg, #009B48, #00C853);">
+                    <div class="welcome-text">
+                        <h2>Selamat Datang, <span class="student-name">Nama Siswa</span></h2>
+                        <p>Kelas: XII IPA 1 | NIS: 2024001</p>
+                    </div>
+                    <div class="welcome-icon">
+                        <i class="fas fa-user-graduate"></i>
+                    </div>
+                </div>
+
+                <!-- Quick Stats -->
+                <div class="dashboard-grid">
+                    <div class="dashboard-card">
+                        <div class="card-icon primary">
+                            <i class="fas fa-calendar-check"></i>
+                        </div>
+                        <h3>Kehadiran</h3>
+                        <div class="card-stats">
+                            <span class="stat-value">92%</span>
+                            <span class="stat-label">Rate Kehadiran</span>
+                        </div>
+                        <div class="card-progress">
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 92%"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-card">
+                        <div class="card-icon success">
+                            <i class="fas fa-hands-helping"></i>
+                        </div>
+                        <h3>Sesi BK</h3>
+                        <div class="card-stats">
+                            <span class="stat-value">2</span>
+                            <span class="stat-label">Sesi Aktif</span>
+                        </div>
+                        <a href="bk.html" class="card-link">Lihat Jadwal <i class="fas fa-arrow-right"></i></a>
+                    </div>
+
+                    <div class="dashboard-card">
+                        <div class="card-icon warning">
+                            <i class="fas fa-exclamation-circle"></i>
+                        </div>
+                        <h3>Pemanggilan</h3>
+                        <div class="card-stats">
+                            <span class="stat-value">1</span>
+                            <span class="stat-label">Belum Dihadiri</span>
+                        </div>
+                        <a href="surat-pemanggilan.html" class="card-link">Lihat Detail <i class="fas fa-arrow-right"></i></a>
+                    </div>
+
+                    <div class="dashboard-card">
+                        <div class="card-icon info">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <h3>Jadwal Hari Ini</h3>
+                        <div class="card-stats">
+                            <span class="stat-value">3</span>
+                            <span class="stat-label">Mata Pelajaran</span>
+                        </div>
+                        <a href="#" class="card-link">Lihat Jadwal <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+
+                <!-- Main Sections -->
+                <div class="content-grid">
+                    <!-- Recent Attendance -->
+                    <div class="content-section">
+                        <div class="section-header">
+                            <h3><i class="fas fa-history"></i> Rekap Absensi Terakhir</h3>
+                            <a href="absensi.html" class="view-all">Lihat Semua</a>
+                        </div>
+                        <div class="section-content">
+                            <div class="table-responsive">
+                                <table class="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Tanggal</th>
+                                            <th>Mata Pelajaran</th>
+                                            <th>Status</th>
+                                            <th>Jam</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="attendanceTable">
+                                        <!-- Data akan diisi oleh JavaScript -->
+                                        <tr>
+                                            <td colspan="4" class="text-center">
+                                                <div class="spinner"></div>
+                                                Memuat data...
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- BK Schedule -->
+                    <div class="content-section">
+                        <div class="section-header">
+                            <h3><i class="fas fa-calendar-alt"></i> Jadwal BK Terdekat</h3>
+                            <a href="bk.html" class="view-all">Ajukan Sesi</a>
+                        </div>
+                        <div class="section-content">
+                            <div class="bk-schedule-list" id="bkSchedule">
+                                <!-- Data akan diisi oleh JavaScript -->
+                                <div class="empty-state">
+                                    <div class="empty-state-icon">
+                                        <i class="fas fa-calendar-plus"></i>
+                                    </div>
+                                    <p>Belum ada jadwal BK</p>
+                                    <a href="bk.html" class="btn btn-primary">Ajukan Sesi BK</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Important Notices -->
+                    <div class="content-section">
+                        <div class="section-header">
+                            <h3><i class="fas fa-bullhorn"></i> Pengumuman Penting</h3>
+                        </div>
+                        <div class="section-content">
+                            <div class="notices-list">
+                                <div class="notice-item">
+                                    <div class="notice-icon">
+                                        <i class="fas fa-exclamation-triangle"></i>
+                                    </div>
+                                    <div class="notice-content">
+                                        <h4>Ujian Tengah Semester</h4>
+                                        <p>UTS akan dilaksanakan mulai 15-22 Maret 2024</p>
+                                        <span class="notice-date">2 hari lalu</span>
+                                    </div>
+                                </div>
+                                <div class="notice-item">
+                                    <div class="notice-icon">
+                                        <i class="fas fa-users"></i>
+                                    </div>
+                                    <div class="notice-content">
+                                        <h4>Pertemuan Orang Tua</h4>
+                                        <p>Pertemuan orang tua siswa tanggal 25 Maret 2024</p>
+                                        <span class="notice-date">1 minggu lalu</span>
+                                    </div>
+                                </div>
+                                <div class="notice-item">
+                                    <div class="notice-icon">
+                                        <i class="fas fa-calendar"></i>
+                                    </div>
+                                    <div class="notice-content">
+                                        <h4>Libur Semester</h4>
+                                        <p>Libur semester ganjil mulai 24 Desember 2024</p>
+                                        <span class="notice-date">2 minggu lalu</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <div class="content-section">
+                        <div class="section-header">
+                            <h3><i class="fas fa-bolt"></i> Akses Cepat</h3>
+                        </div>
+                        <div class="section-content">
+                            <div class="quick-actions">
+                                <button class="quick-action-btn" onclick="window.location.href='absensi.html'">
+                                    <div class="quick-action-icon">
+                                        <i class="fas fa-calendar-check"></i>
+                                    </div>
+                                    <span>Absensi</span>
+                                </button>
+                                <button class="quick-action-btn" onclick="window.location.href='bk.html'">
+                                    <div class="quick-action-icon">
+                                        <i class="fas fa-hands-helping"></i>
+                                    </div>
+                                    <span>Ajukan BK</span>
+                                </button>
+                                <button class="quick-action-btn" onclick="window.location.href='surat-pemanggilan.html'">
+                                    <div class="quick-action-icon">
+                                        <i class="fas fa-envelope"></i>
+                                    </div>
+                                    <span>Surat</span>
+                                </button>
+                                <button class="quick-action-btn" onclick="printSchedule()">
+                                    <div class="quick-action-icon">
+                                        <i class="fas fa-print"></i>
+                                    </div>
+                                    <span>Cetak Jadwal</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Calendar Mini -->
+                <div class="content-section full-width">
+                    <div class="section-header">
+                        <h3><i class="fas fa-calendar"></i> Kalender Akademik</h3>
+                    </div>
+                    <div class="section-content">
+                        <div class="calendar-mini" id="calendarMini">
+                            <!-- Calendar akan diisi oleh JavaScript -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <footer class="main-footer">
+                <p>&copy; 2024 SIAKAD SMA Mishbahul Ulum. Sistem Informasi Akademik.</p>
+                <p>Versi 1.0.0 | <span id="lastSync">Terakhir sinkron: -</span></p>
+            </footer>
+        </main>
+    </div>
+
+    <!-- Modals -->
+    <div id="notificationModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Notifikasi</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="notifications-list" id="notificationsList">
+                    <!-- Notifikasi akan diisi oleh JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/assets/js/auth.js"></script>
+    <script src="/assets/js/api.js"></script>
+    <script src="/assets/js/dashboard.js"></script>
+    <script>
+        // Siswa-specific dashboard functionality
+        class SiswaDashboard {
+            constructor() {
+                this.studentId = null;
+                this.init();
+            }
+
+            init() {
+                // Check authentication
+                if (!auth.requireAuth('siswa')) return;
+
+                // Get student data
+                this.loadStudentData();
+                
+                // Load dashboard data
+                this.loadDashboardData();
+                
+                // Setup event listeners
+                this.setupEventListeners();
+                
+                // Update date display
+                this.updateDateDisplay();
+                
+                // Initialize calendar
+                this.initCalendar();
+            }
+
+            loadStudentData() {
+                const user = auth.getUser();
+                if (user) {
+                    document.querySelectorAll('.student-name').forEach(el => {
+                        el.textContent = user.name;
+                    });
+                    document.querySelector('.user-name').textContent = user.name;
+                    this.studentId = user.id;
+                }
+            }
+
+            async loadDashboardData() {
+                try {
+                    // Load attendance data
+                    await this.loadAttendanceData();
+                    
+                    // Load BK schedule
+                    await this.loadBKSchedule();
+                    
+                    // Load notifications
+                    await this.loadNotifications();
+                    
+                    // Update sync time
+                    this.updateSyncTime();
+                } catch (error) {
+                    console.error('Error loading dashboard data:', error);
+                }
+            }
+
+            async loadAttendanceData() {
+                const tableBody = document.getElementById('attendanceTable');
+                
+                try {
+                    // Simulasi API call
+                    const attendanceData = await this.getMockAttendanceData();
+                    
+                    tableBody.innerHTML = '';
+                    attendanceData.forEach(item => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${item.date}</td>
+                            <td>${item.subject}</td>
+                            <td><span class="badge ${this.getStatusBadgeClass(item.status)}">${item.status}</span></td>
+                            <td>${item.time}</td>
+                        `;
+                        tableBody.appendChild(row);
+                    });
+                } catch (error) {
+                    tableBody.innerHTML = `
+                        <tr>
+                            <td colspan="4" class="text-center text-danger">
+                                <i class="fas fa-exclamation-circle"></i> Gagal memuat data absensi
+                            </td>
+                        </tr>
+                    `;
+                }
+            }
+
+            async loadBKSchedule() {
+                const scheduleContainer = document.getElementById('bkSchedule');
+                
+                try {
+                    // Simulasi API call
+                    const scheduleData = await this.getMockBKSchedule();
+                    
+                    if (scheduleData.length === 0) {
+                        return; // Keep empty state
+                    }
+                    
+                    scheduleContainer.innerHTML = '';
+                    scheduleData.forEach(session => {
+                        const sessionElement = document.createElement('div');
+                        sessionElement.className = `bk-session-item ${session.status}`;
+                        sessionElement.innerHTML = `
+                            <div class="session-header">
+                                <h4>${session.title}</h4>
+                                <span class="badge ${this.getBKSessionBadgeClass(session.status)}">${session.status}</span>
+                            </div>
+                            <div class="session-details">
+                                <p><i class="fas fa-calendar"></i> ${session.date} | ${session.time}</p>
+                                <p><i class="fas fa-user"></i> ${session.counselor}</p>
+                                ${session.notes ? `<p><i class="fas fa-sticky-note"></i> ${session.notes}</p>` : ''}
+                            </div>
+                        `;
+                        scheduleContainer.appendChild(sessionElement);
+                    });
+                } catch (error) {
+                    scheduleContainer.innerHTML = `
+                        <div class="alert alert-danger">
+                            <i class="fas fa-exclamation-circle"></i> Gagal memuat jadwal BK
+                        </div>
+                    `;
+                }
+            }
+
+            async loadNotifications() {
+                const notificationsList = document.getElementById('notificationsList');
+                
+                try {
+                    // Simulasi API call
+                    const notifications = await this.getMockNotifications();
+                    
+                    notificationsList.innerHTML = '';
+                    notifications.forEach(notification => {
+                        const notificationElement = document.createElement('div');
+                        notificationElement.className = `notification-item ${notification.type}`;
+                        notificationElement.innerHTML = `
+                            <div class="notification-icon">
+                                <i class="fas fa-${notification.icon}"></i>
+                            </div>
+                            <div class="notification-content">
+                                <h5>${notification.title}</h5>
+                                <p>${notification.message}</p>
+                                <span class="notification-time">${notification.time}</span>
+                            </div>
+                        `;
+                        notificationsList.appendChild(notificationElement);
+                    });
+                } catch (error) {
+                    notificationsList.innerHTML = `
+                        <div class="empty-state">
+                            <p>Tidak ada notifikasi</p>
+                        </div>
+                    `;
+                }
+            }
+
+            getStatusBadgeClass(status) {
+                const classes = {
+                    'Hadir': 'badge-success',
+                    'Izin': 'badge-warning',
+                    'Sakit': 'badge-info',
+                    'Alpa': 'badge-danger'
+                };
+                return classes[status] || 'badge-secondary';
+            }
+
+            getBKSessionBadgeClass(status) {
+                const classes = {
+                    'Menunggu': 'badge-warning',
+                    'Disetujui': 'badge-success',
+                    'Ditolak': 'badge-danger',
+                    'Selesai': 'badge-info'
+                };
+                return classes[status] || 'badge-secondary';
+            }
+
+            initCalendar() {
+                const calendarContainer = document.getElementById('calendarMini');
+                const today = new Date();
+                const month = today.getMonth();
+                const year = today.getFullYear();
+                
+                // Generate simple calendar
+                const daysInMonth = new Date(year, month + 1, 0).getDate();
+                const firstDay = new Date(year, month, 1).getDay();
+                
+                let calendarHTML = `
+                    <div class="calendar-header">
+                        <button id="prevMonth"><i class="fas fa-chevron-left"></i></button>
+                        <h4>${this.getMonthName(month)} ${year}</h4>
+                        <button id="nextMonth"><i class="fas fa-chevron-right"></i></button>
+                    </div>
+                    <div class="calendar-grid">
+                        ${['M', 'S', 'S', 'R', 'K', 'J', 'S'].map(day => 
+                            `<div class="calendar-day header">${day}</div>`
+                        ).join('')}
+                `;
+                
+                // Add empty cells for days before first day
+                for (let i = 0; i < firstDay; i++) {
+                    calendarHTML += '<div class="calendar-day empty"></div>';
+                }
+                
+                // Add days
+                for (let day = 1; day <= daysInMonth; day++) {
+                    const isToday = day === today.getDate() && month === today.getMonth();
+                    const hasEvent = this.hasEventOnDate(day, month, year);
+                    
+                    calendarHTML += `
+                        <div class="calendar-day ${isToday ? 'today' : ''} ${hasEvent ? 'event' : ''}">
+                            ${day}
+                        </div>
+                    `;
+                }
+                
+                calendarHTML += '</div>';
+                calendarContainer.innerHTML = calendarHTML;
+                
+                // Add event listeners for calendar navigation
+                document.getElementById('prevMonth').addEventListener('click', () => {
+                    // Navigate to previous month
+                });
+                
+                document.getElementById('nextMonth').addEventListener('click', () => {
+                    // Navigate to next month
+                });
+            }
+
+            getMonthName(month) {
+                const months = [
+                    'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+                    'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+                ];
+                return months[month];
+            }
+
+            hasEventOnDate(day, month, year) {
+                // Check if there are events on this date
+                // This would typically come from API
+                return day % 7 === 0; // Mock: events on Sundays
+            }
+
+            updateDateDisplay() {
+                const dateElement = document.getElementById('currentDate');
+                const now = new Date();
+                const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+                const months = [
+                    'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+                    'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+                ];
+                
+                const dayName = days[now.getDay()];
+                const date = now.getDate();
+                const monthName = months[now.getMonth()];
+                const year = now.getFullYear();
+                
+                dateElement.textContent = `${dayName}, ${date} ${monthName} ${year}`;
+            }
+
+            updateSyncTime() {
+                const syncElement = document.getElementById('lastSync');
+                const now = new Date();
+                const timeString = now.toLocaleTimeString('id-ID', {
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+                syncElement.textContent = `Terakhir sinkron: ${timeString}`;
+            }
+
+            setupEventListeners() {
+                // Menu toggle
+                document.querySelector('.menu-toggle').addEventListener('click', () => {
+                    document.querySelector('.sidebar').classList.toggle('active');
+                });
+
+                // Notification button
+                document.querySelector('.notification-btn').addEventListener('click', () => {
+                    document.getElementById('notificationModal').classList.add('active');
+                });
+
+                // Close modal buttons
+                document.querySelectorAll('.close-modal').forEach(button => {
+                    button.addEventListener('click', () => {
+                        document.getElementById('notificationModal').classList.remove('active');
+                    });
+                });
+
+                // Close modal when clicking outside
+                document.getElementById('notificationModal').addEventListener('click', (e) => {
+                    if (e.target === document.getElementById('notificationModal')) {
+                        document.getElementById('notificationModal').classList.remove('active');
+                    }
+                });
+
+                // Logout button
+                document.getElementById('logoutBtn').addEventListener('click', (e) => {
+                    e.preventDefault();
+                    auth.logout();
+                });
+            }
+
+            // Mock data methods (will be replaced with API calls)
+            getMockAttendanceData() {
+                return new Promise((resolve) => {
+                    setTimeout(() => {
+                        resolve([
+                            { date: '2024-03-15', subject: 'Matematika', status: 'Hadir', time: '07:30' },
+                            { date: '2024-03-15', subject: 'Fisika', status: 'Hadir', time: '09:00' },
+                            { date: '2024-03-14', subject: 'Kimia', status: 'Izin', time: '10:30' },
+                            { date: '2024-03-14', subject: 'Biologi', status: 'Hadir', time: '13:00' },
+                            { date: '2024-03-13', subject: 'Bahasa Indonesia', status: 'Sakit', time: '07:30' }
+                        ]);
+                    }, 500);
+                });
+            }
+
+            getMockBKSchedule() {
+                return new Promise((resolve) => {
+                    setTimeout(() => {
+                        resolve([
+                            { 
+                                title: 'Konseling Akademik',
+                                date: '2024-03-20',
+                                time: '09:00 - 10:00',
+                                counselor: 'Bu Ani, S.Pd',
+                                status: 'Menunggu',
+                                notes: 'Membahas nilai matematika'
+                            },
+                            { 
+                                title: 'Konseling Pribadi',
+                                date: '2024-03-18',
+                                time: '12:00 - 13:00',
+                                counselor: 'Pak Budi, M.Pd',
+                                status: 'Disetujui',
+                                notes: ''
+                            }
+                        ]);
+                    }, 500);
+                });
+            }
+
+            getMockNotifications() {
+                return new Promise((resolve) => {
+                    setTimeout(() => {
+                        resolve([
+                            {
+                                type: 'info',
+                                icon: 'info-circle',
+                                title: 'Jadwal BK Disetujui',
+                                message: 'Permintaan BK Anda untuk tanggal 18 Maret telah disetujui',
+                                time: '2 jam lalu'
+                            },
+                            {
+                                type: 'warning',
+                                icon: 'exclamation-triangle',
+                                title: 'Surat Pemanggilan',
+                                message: 'Anda memiliki surat pemanggilan dari Guru BK',
+                                time: '1 hari lalu'
+                            },
+                            {
+                                type: 'success',
+                                icon: 'check-circle',
+                                title: 'Absensi Lengkap',
+                                message: 'Absensi minggu ini telah tercatat lengkap',
+                                time: '3 hari lalu'
+                            }
+                        ]);
+                    }, 500);
+                });
+            }
+        }
+
+        // Initialize dashboard when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            new SiswaDashboard();
+        });
+
+        // Print schedule function
+        function printSchedule() {
+            window.print();
+        }
+    </script>
+</body>
+</html>

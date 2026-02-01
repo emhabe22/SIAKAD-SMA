@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard BK - SIAKAD SMA Mishbahul Ulum</title>
+    <link rel="stylesheet" href="../assets/css/main.css">
+    <link rel="stylesheet" href="../assets/css/layout.css">
+    <link rel="stylesheet" href="../assets/css/components.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Sidebar Navigation -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <div class="user-profile">
+                <img src="../assets/images/user-avatar.png" alt="Avatar BK">
+                <div class="user-info">
+                    <h4>Nama Konselor BK</h4>
+                    <span class="role-badge">Bimbingan Konseling</span>
+                </div>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <ul>
+                <li class="active">
+                    <a href="dashboard.html">
+                        <i class="fas fa-home"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="validasi.html">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Validasi Siswa</span>
+                        <span class="badge">3</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="feedback.html">
+                        <i class="fas fa-comments"></i>
+                        <span>Feedback</span>
+                        <span class="badge">5</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="surat-pemanggilan.html">
+                        <i class="fas fa-envelope"></i>
+                        <span>Surat Pemanggilan</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="laporan.html">
+                        <i class="fas fa-chart-bar"></i>
+                        <span>Laporan</span>
+                    </a>
+                </li>
+                <li class="divider"></li>
+                <li>
+                    <a href="../login.html">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Keluar</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Top Header -->
+        <header class="top-header">
+            <div class="header-left">
+                <h1>Dashboard Bimbingan Konseling</h1>
+                <p class="breadcrumb">Home / Dashboard BK</p>
+            </div>
+            <div class="header-right">
+                <div class="notifications">
+                    <i class="fas fa-bell"></i>
+                    <span class="notification-count">4</span>
+                </div>
+                <div class="date-display">
+                    <span id="current-date">Senin, 15 Januari 2024</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Stats Cards -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon" style="background: #4CAF50;">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>125</h3>
+                    <p>Siswa Aktif</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background: #2196F3;">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>8</h3>
+                    <p>Konseling Hari Ini</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background: #FF9800;">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>15</h3>
+                    <p>Perlu Validasi</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background: #9C27B0;">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>87%</h3>
+                    <p>Resolved Cases</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content Grid -->
+        <div class="content-grid">
+            <!-- Left Column -->
+            <div class="left-column">
+                <!-- Jadwal Konseling Hari Ini -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-calendar-alt"></i> Jadwal Konseling Hari Ini</h3>
+                        <a href="#" class="btn-link">Lihat Semua</a>
+                    </div>
+                    <div class="card-body">
+                        <div class="schedule-list">
+                            <div class="schedule-item">
+                                <div class="schedule-time">
+                                    <span class="time">08:00 - 09:00</span>
+                                    <span class="status active">Sedang Berjalan</span>
+                                </div>
+                                <div class="schedule-details">
+                                    <h4>Andi Pratama</h4>
+                                    <p>Kelas XII IPA 1 - Masalah Belajar</p>
+                                    <span class="tag urgent">Urgent</span>
+                                </div>
+                            </div>
+                            <div class="schedule-item">
+                                <div class="schedule-time">
+                                    <span class="time">10:00 - 11:00</span>
+                                    <span class="status upcoming">Akan Datang</span>
+                                </div>
+                                <div class="schedule-details">
+                                    <h4>Siti Nurhaliza</h4>
+                                    <p>Kelas XI IPS 2 - Konseling Karir</p>
+                                    <span class="tag regular">Regular</span>
+                                </div>
+                            </div>
+                            <div class="schedule-item">
+                                <div class="schedule-time">
+                                    <span class="time">13:00 - 14:00</span>
+                                    <span class="status upcoming">Akan Datang</span>
+                                </div>
+                                <div class="schedule-details">
+                                    <h4>Rizki Ramadhan</h4>
+                                    <p>Kelas X MIPA - Masalah Sosial</p>
+                                    <span class="tag warning">Perhatian</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-bolt"></i> Tindakan Cepat</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="quick-actions">
+                            <button class="action-btn" onclick="location.href='surat-pemanggilan.html'">
+                                <i class="fas fa-envelope"></i>
+                                <span>Buat Surat Pemanggilan</span>
+                            </button>
+                            <button class="action-btn" onclick="location.href='validasi.html'">
+                                <i class="fas fa-check-circle"></i>
+                                <span>Validasi Siswa</span>
+                            </button>
+                            <button class="action-btn" onclick="location.href='feedback.html'">
+                                <i class="fas fa-comment-medical"></i>
+                                <span>Beri Feedback</span>
+                            </button>
+                            <button class="action-btn" onclick="newReport()">
+                                <i class="fas fa-file-alt"></i>
+                                <span>Buat Laporan</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column -->
+            <div class="right-column">
+                <!-- Siswa Butuh Perhatian -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-exclamation-circle"></i> Siswa Perlu Perhatian</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="attention-list">
+                            <div class="attention-item">
+                                <div class="student-avatar">
+                                    <img src="https://via.placeholder.com/40" alt="Student">
+                                </div>
+                                <div class="student-info">
+                                    <h4>M. Rizki Fadillah</h4>
+                                    <p>Kelas XII IPA 1</p>
+                                    <small>3 kali tidak hadir berturut-turut</small>
+                                </div>
+                                <button class="btn-sm btn-warning">Follow Up</button>
+                            </div>
+                            <div class="attention-item">
+                                <div class="student-avatar">
+                                    <img src="https://via.placeholder.com/40" alt="Student">
+                                </div>
+                                <div class="student-info">
+                                    <h4>Dewi Sartika</h4>
+                                    <p>Kelas XI IPS 3</p>
+                                    <small>Penurunan nilai drastis</small>
+                                </div>
+                                <button class="btn-sm btn-warning">Follow Up</button>
+                            </div>
+                            <div class="attention-item">
+                                <div class="student-avatar">
+                                    <img src="https://via.placeholder.com/40" alt="Student">
+                                </div>
+                                <div class="student-info">
+                                    <h4>Ahmad Hidayat</h4>
+                                    <p>Kelas X MIPA 2</p>
+                                    <small>Masalah disiplin</small>
+                                </div>
+                                <button class="btn-sm btn-warning">Follow Up</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Statistik Kasus -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-chart-pie"></i> Statistik Kasus Bulan Ini</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="stats-chart">
+                            <div class="chart-item">
+                                <div class="chart-label">
+                                    <span class="dot academic"></span>
+                                    <span>Akademik</span>
+                                </div>
+                                <div class="chart-bar">
+                                    <div class="bar-fill" style="width: 45%; background: #4CAF50;"></div>
+                                    <span>45%</span>
+                                </div>
+                            </div>
+                            <div class="chart-item">
+                                <div class="chart-label">
+                                    <span class="dot social"></span>
+                                    <span>Sosial</span>
+                                </div>
+                                <div class="chart-bar">
+                                    <div class="bar-fill" style="width: 30%; background: #2196F3;"></div>
+                                    <span>30%</span>
+                                </div>
+                            </div>
+                            <div class="chart-item">
+                                <div class="chart-label">
+                                    <span class="dot career"></span>
+                                    <span>Karir</span>
+                                </div>
+                                <div class="chart-bar">
+                                    <div class="bar-fill" style="width: 15%; background: #FF9800;"></div>
+                                    <span>15%</span>
+                                </div>
+                            </div>
+                            <div class="chart-item">
+                                <div class="chart-label">
+                                    <span class="dot personal"></span>
+                                    <span>Pribadi</span>
+                                </div>
+                                <div class="chart-bar">
+                                    <div class="bar-fill" style="width: 10%; background: #9C27B0;"></div>
+                                    <span>10%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Activities -->
+        <div class="card full-width">
+            <div class="card-header">
+                <h3><i class="fas fa-history"></i> Aktivitas Terbaru</h3>
+            </div>
+            <div class="card-body">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Waktu</th>
+                            <th>Aktivitas</th>
+                            <th>Siswa</th>
+                            <th>Status</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>15 Jan 2024, 08:30</td>
+                            <td>Konseling Akademik</td>
+                            <td>Andi Pratama (XII IPA 1)</td>
+                            <td><span class="status-badge completed">Selesai</span></td>
+                            <td>
+                                <button class="btn-icon"><i class="fas fa-eye"></i></button>
+                                <button class="btn-icon"><i class="fas fa-edit"></i></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>14 Jan 2024, 14:15</td>
+                            <td>Validasi Kehadiran</td>
+                            <td>Siti Nurhaliza (XI IPS 2)</td>
+                            <td><span class="status-badge pending">Pending</span></td>
+                            <td>
+                                <button class="btn-icon"><i class="fas fa-eye"></i></button>
+                                <button class="btn-icon"><i class="fas fa-check"></i></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>13 Jan 2024, 10:45</td>
+                            <td>Surat Pemanggilan</td>
+                            <td>Rizki Ramadhan (X MIPA)</td>
+                            <td><span class="status-badge in-progress">Diproses</span></td>
+                            <td>
+                                <button class="btn-icon"><i class="fas fa-eye"></i></button>
+                                <button class="btn-icon"><i class="fas fa-print"></i></button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../assets/js/main.js"></script>
+    <script src="../assets/js/dashboard.js"></script>
+    <script>
+        // Update current date
+        function updateDate() {
+            const now = new Date();
+            const options = { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            };
+            document.getElementById('current-date').textContent = 
+                now.toLocaleDateString('id-ID', options);
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            updateDate();
+            
+            // Notification bell click
+            document.querySelector('.notifications').addEventListener('click', function() {
+                alert('Notifikasi: 4 pesan belum dibaca');
+            });
+        });
+
+        function newReport() {
+            alert('Fitur Buat Laporan akan segera tersedia!');
+        }
+    </script>
+    <script>
+    // Mobile menu toggle
+    document.addEventListener('DOMContentLoaded', function() {
+        const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+        const sidebar = document.getElementById('sidebar');
+        const mainContent = document.getElementById('mainContent');
+        
+        if (mobileMenuToggle && sidebar) {
+            mobileMenuToggle.addEventListener('click', function() {
+                sidebar.classList.toggle('active');
+                mobileMenuToggle.innerHTML = sidebar.classList.contains('active') 
+                    ? '<i class="fas fa-times"></i>' 
+                    : '<i class="fas fa-bars"></i>';
+            });
+            
+            // Close sidebar when clicking outside on mobile
+            document.addEventListener('click', function(event) {
+                if (window.innerWidth <= 1024) {
+                    if (!sidebar.contains(event.target) && 
+                        !mobileMenuToggle.contains(event.target) && 
+                        sidebar.classList.contains('active')) {
+                        sidebar.classList.remove('active');
+                        mobileMenuToggle.innerHTML = '<i class="fas fa-bars"></i>';
+                    }
+                }
+            });
+        }
+        
+        // Update active link in sidebar
+        const currentPage = window.location.pathname.split('/').pop();
+        const navLinks = document.querySelectorAll('.sidebar-nav a');
+        navLinks.forEach(link => {
+            const href = link.getAttribute('href');
+            if (href === currentPage || 
+                (href === 'dashboard.html' && currentPage === '') ||
+                (href.includes(currentPage) && currentPage !== '')) {
+                link.classList.add('active');
+            }
+        });
+    });
+</script>
+</body>
+</html>
