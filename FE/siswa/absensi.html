@@ -3,12 +3,344 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Siswa - SIAKAD SMA Mishbahul Ulum</title>
+    <title>Absensi - SIAKAD SMA Mishbahul Ulum</title>
     <link rel="stylesheet" href="/assets/css/main.css">
     <link rel="stylesheet" href="/assets/css/layout.css">
     <link rel="stylesheet" href="/assets/css/components.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Styles khusus untuk halaman absensi */
+        .attendance-container {
+            display: flex;
+            gap: 24px;
+            margin-top: 24px;
+        }
+
+        .attendance-summary {
+            flex: 1;
+            max-width: 320px;
+        }
+
+        .attendance-content {
+            flex: 2;
+        }
+
+        .summary-card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .summary-card h3 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 18px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 16px;
+            border-radius: 8px;
+            background: #f8f9fa;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: bold;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .attendance-types {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .type-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px;
+            border-radius: 6px;
+            background: #f8f9fa;
+        }
+
+        .type-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .type-name {
+            font-size: 14px;
+        }
+
+        .type-count {
+            margin-left: auto;
+            font-weight: bold;
+        }
+
+        /* Progress bars */
+        .progress-container {
+            margin-top: 16px;
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 6px;
+            font-size: 14px;
+        }
+
+        .progress-bar-container {
+            height: 8px;
+            background: #e9ecef;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            transition: width 0.3s ease;
+        }
+
+        /* Filter section */
+        .attendance-filter {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .filter-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            align-items: end;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .filter-group label {
+            font-size: 14px;
+            color: #555;
+            font-weight: 500;
+        }
+
+        .filter-select, .filter-input {
+            padding: 10px 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            background: white;
+        }
+
+        .filter-buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+
+        /* Attendance table */
+        .attendance-table-container {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .table-header {
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .table-header h3 {
+            margin: 0;
+            color: #333;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        .attendance-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .attendance-table th {
+            background: #f8f9fa;
+            padding: 16px;
+            text-align: left;
+            font-weight: 600;
+            color: #555;
+            border-bottom: 1px solid #eee;
+        }
+
+        .attendance-table td {
+            padding: 16px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .attendance-table tbody tr:hover {
+            background: #f8f9fa;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-present {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-sick {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-permit {
+            background: #cce5ff;
+            color: #004085;
+        }
+
+        .status-absent {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .status-late {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .day-header {
+            background: #007bff;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 6px;
+            margin: 20px 0 12px 0;
+            font-weight: 600;
+        }
+
+        .month-summary {
+            margin-top: 24px;
+            padding: 20px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .month-summary h4 {
+            margin: 0 0 16px 0;
+            color: #333;
+        }
+
+        .summary-chart {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .chart-container {
+            padding: 16px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .chart-container h5 {
+            margin: 0 0 12px 0;
+            font-size: 14px;
+            color: #555;
+        }
+
+        /* Export buttons */
+        .export-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+            justify-content: flex-end;
+        }
+
+        .btn-export {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: background 0.3s;
+        }
+
+        .btn-export:hover {
+            background: #218838;
+        }
+
+        .btn-export.print {
+            background: #007bff;
+        }
+
+        .btn-export.print:hover {
+            background: #0056b3;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .attendance-container {
+                flex-direction: column;
+            }
+
+            .attendance-summary {
+                max-width: 100%;
+            }
+
+            .filter-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .export-actions {
+                justify-content: stretch;
+            }
+
+            .btn-export {
+                flex: 1;
+                justify-content: center;
+            }
+        }
+    </style>
 </head>
 <body>
     <div class="container">
@@ -34,13 +366,13 @@
                 
                 <nav>
                     <ul>
-                        <li class="active">
+                        <li>
                             <a href="dashboard.html">
                                 <i class="fas fa-home"></i>
                                 <span>Dashboard</span>
                             </a>
                         </li>
-                        <li>
+                        <li class="active">
                             <a href="absensi.html">
                                 <i class="fas fa-calendar-check"></i>
                                 <span>Absensi</span>
@@ -84,13 +416,13 @@
                     <button class="menu-toggle">
                         <i class="fas fa-bars"></i>
                     </button>
-                    <h1>Dashboard Siswa</h1>
+                    <h1>Absensi</h1>
                 </div>
                 <div class="nav-right">
                     <div class="notifications">
                         <button class="notification-btn">
                             <i class="fas fa-bell"></i>
-                            <span class="notification-count">3</span>
+                            <span class="notification-count">2</span>
                         </button>
                     </div>
                     <div class="date-display">
@@ -100,212 +432,195 @@
                 </div>
             </header>
 
-            <!-- Dashboard Content -->
+            <!-- Main Content -->
             <div class="main-content">
                 <!-- Welcome Banner -->
-                <div class="welcome-banner" style="background: linear-gradient(135deg, #009B48, #00C853);">
+                <div class="welcome-banner" style="background: linear-gradient(135deg, #0066CC, #009B48);">
                     <div class="welcome-text">
-                        <h2>Selamat Datang, <span class="student-name">Nama Siswa</span></h2>
-                        <p>Kelas: XII IPA 1 | NIS: 2024001</p>
+                        <h2>Rekap Kehadiran <span class="student-name">Nama Siswa</span></h2>
+                        <p>Kelas: XII IPA 1 | Semester: Genap 2023/2024</p>
                     </div>
                     <div class="welcome-icon">
-                        <i class="fas fa-user-graduate"></i>
+                        <i class="fas fa-chart-line"></i>
                     </div>
                 </div>
 
-                <!-- Quick Stats -->
-                <div class="dashboard-grid">
-                    <div class="dashboard-card">
-                        <div class="card-icon primary">
-                            <i class="fas fa-calendar-check"></i>
+                <div class="attendance-container">
+                    <!-- Summary Sidebar -->
+                    <div class="attendance-summary">
+                        <div class="summary-card">
+                            <h3>Statistik Kehadiran</h3>
+                            <div class="stats-grid">
+                                <div class="stat-item" style="background: #d4edda;">
+                                    <span class="stat-value">92%</span>
+                                    <span class="stat-label">Kehadiran</span>
+                                </div>
+                                <div class="stat-item" style="background: #f8f9fa;">
+                                    <span class="stat-value">88</span>
+                                    <span class="stat-label">Hadir</span>
+                                </div>
+                                <div class="stat-item" style="background: #f8f9fa;">
+                                    <span class="stat-value">4</span>
+                                    <span class="stat-label">Izin</span>
+                                </div>
+                                <div class="stat-item" style="background: #f8f9fa;">
+                                    <span class="stat-value">2</span>
+                                    <span class="stat-label">Sakit</span>
+                                </div>
+                            </div>
+
+                            <div class="progress-container">
+                                <div class="progress-label">
+                                    <span>Target: 95%</span>
+                                    <span>92%</span>
+                                </div>
+                                <div class="progress-bar-container">
+                                    <div class="progress-bar-fill" style="width: 92%; background: #28a745;"></div>
+                                </div>
+                            </div>
                         </div>
-                        <h3>Kehadiran</h3>
-                        <div class="card-stats">
-                            <span class="stat-value">92%</span>
-                            <span class="stat-label">Rate Kehadiran</span>
-                        </div>
-                        <div class="card-progress">
-                            <div class="progress-bar">
-                                <div class="progress-fill" style="width: 92%"></div>
+
+                        <div class="summary-card">
+                            <h3>Keterangan Absensi</h3>
+                            <div class="attendance-types">
+                                <div class="type-item">
+                                    <div class="type-color" style="background: #28a745;"></div>
+                                    <span class="type-name">Hadir</span>
+                                    <span class="type-count">88</span>
+                                </div>
+                                <div class="type-item">
+                                    <div class="type-color" style="background: #ffc107;"></div>
+                                    <span class="type-name">Sakit</span>
+                                    <span class="type-count">2</span>
+                                </div>
+                                <div class="type-item">
+                                    <div class="type-color" style="background: #17a2b8;"></div>
+                                    <span class="type-name">Izin</span>
+                                    <span class="type-count">4</span>
+                                </div>
+                                <div class="type-item">
+                                    <div class="type-color" style="background: #dc3545;"></div>
+                                    <span class="type-name">Alpa</span>
+                                    <span class="type-count">0</span>
+                                </div>
+                                <div class="type-item">
+                                    <div class="type-color" style="background: #fd7e14;"></div>
+                                    <span class="type-name">Terlambat</span>
+                                    <span class="type-count">1</span>
+                                </div>
+                                <div class="type-item">
+                                    <div class="type-color" style="background: #6f42c1;"></div>
+                                    <span class="type-name">Izin Pulang</span>
+                                    <span class="type-count">3</span>
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="dashboard-card">
-                        <div class="card-icon success">
-                            <i class="fas fa-hands-helping"></i>
+                    <!-- Main Content -->
+                    <div class="attendance-content">
+                        <!-- Filter Section -->
+                        <div class="attendance-filter">
+                            <div class="filter-grid">
+                                <div class="filter-group">
+                                    <label>Periode</label>
+                                    <select class="filter-select" id="periodSelect">
+                                        <option value="month">Bulan Ini</option>
+                                        <option value="week">Minggu Ini</option>
+                                        <option value="all">Semua Data</option>
+                                        <option value="custom">Custom</option>
+                                    </select>
+                                </div>
+                                <div class="filter-group" id="monthGroup">
+                                    <label>Bulan</label>
+                                    <select class="filter-select" id="monthSelect">
+                                        <option value="1">Januari</option>
+                                        <option value="2">Februari</option>
+                                        <option value="3" selected>Maret</option>
+                                        <option value="4">April</option>
+                                        <option value="5">Mei</option>
+                                        <option value="6">Juni</option>
+                                    </select>
+                                </div>
+                                <div class="filter-group" id="yearGroup">
+                                    <label>Tahun</label>
+                                    <select class="filter-select" id="yearSelect">
+                                        <option value="2023">2023</option>
+                                        <option value="2024" selected>2024</option>
+                                    </select>
+                                </div>
+                                <div class="filter-group">
+                                    <label>Status</label>
+                                    <select class="filter-select" id="statusSelect">
+                                        <option value="all">Semua Status</option>
+                                        <option value="present">Hadir</option>
+                                        <option value="sick">Sakit</option>
+                                        <option value="permit">Izin</option>
+                                        <option value="absent">Alpa</option>
+                                        <option value="late">Terlambat</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="filter-buttons">
+                                <button class="btn btn-secondary" id="resetFilter">
+                                    <i class="fas fa-redo"></i> Reset
+                                </button>
+                                <button class="btn btn-primary" id="applyFilter">
+                                    <i class="fas fa-filter"></i> Filter
+                                </button>
+                            </div>
                         </div>
-                        <h3>Sesi BK</h3>
-                        <div class="card-stats">
-                            <span class="stat-value">2</span>
-                            <span class="stat-label">Sesi Aktif</span>
-                        </div>
-                        <a href="bk.html" class="card-link">Lihat Jadwal <i class="fas fa-arrow-right"></i></a>
-                    </div>
 
-                    <div class="dashboard-card">
-                        <div class="card-icon warning">
-                            <i class="fas fa-exclamation-circle"></i>
-                        </div>
-                        <h3>Pemanggilan</h3>
-                        <div class="card-stats">
-                            <span class="stat-value">1</span>
-                            <span class="stat-label">Belum Dihadiri</span>
-                        </div>
-                        <a href="surat-pemanggilan.html" class="card-link">Lihat Detail <i class="fas fa-arrow-right"></i></a>
-                    </div>
-
-                    <div class="dashboard-card">
-                        <div class="card-icon info">
-                            <i class="fas fa-clock"></i>
-                        </div>
-                        <h3>Jadwal Hari Ini</h3>
-                        <div class="card-stats">
-                            <span class="stat-value">3</span>
-                            <span class="stat-label">Mata Pelajaran</span>
-                        </div>
-                        <a href="#" class="card-link">Lihat Jadwal <i class="fas fa-arrow-right"></i></a>
-                    </div>
-                </div>
-
-                <!-- Main Sections -->
-                <div class="content-grid">
-                    <!-- Recent Attendance -->
-                    <div class="content-section">
-                        <div class="section-header">
-                            <h3><i class="fas fa-history"></i> Rekap Absensi Terakhir</h3>
-                            <a href="absensi.html" class="view-all">Lihat Semua</a>
-                        </div>
-                        <div class="section-content">
+                        <!-- Attendance Table -->
+                        <div class="attendance-table-container">
+                            <div class="table-header">
+                                <h3><i class="fas fa-calendar-alt"></i> Rekap Absensi Harian</h3>
+                            </div>
                             <div class="table-responsive">
-                                <table class="data-table">
+                                <table class="attendance-table" id="attendanceTable">
                                     <thead>
                                         <tr>
                                             <th>Tanggal</th>
+                                            <th>Hari</th>
                                             <th>Mata Pelajaran</th>
-                                            <th>Status</th>
                                             <th>Jam</th>
+                                            <th>Status</th>
+                                            <th>Keterangan</th>
                                         </tr>
                                     </thead>
-                                    <tbody id="attendanceTable">
+                                    <tbody id="attendanceData">
                                         <!-- Data akan diisi oleh JavaScript -->
-                                        <tr>
-                                            <td colspan="4" class="text-center">
-                                                <div class="spinner"></div>
-                                                Memuat data...
-                                            </td>
-                                        </tr>
                                     </tbody>
                                 </table>
                             </div>
                         </div>
-                    </div>
 
-                    <!-- BK Schedule -->
-                    <div class="content-section">
-                        <div class="section-header">
-                            <h3><i class="fas fa-calendar-alt"></i> Jadwal BK Terdekat</h3>
-                            <a href="bk.html" class="view-all">Ajukan Sesi</a>
-                        </div>
-                        <div class="section-content">
-                            <div class="bk-schedule-list" id="bkSchedule">
-                                <!-- Data akan diisi oleh JavaScript -->
-                                <div class="empty-state">
-                                    <div class="empty-state-icon">
-                                        <i class="fas fa-calendar-plus"></i>
-                                    </div>
-                                    <p>Belum ada jadwal BK</p>
-                                    <a href="bk.html" class="btn btn-primary">Ajukan Sesi BK</a>
+                        <!-- Monthly Summary -->
+                        <div class="month-summary">
+                            <h4><i class="fas fa-chart-pie"></i> Ringkasan Bulan Maret 2024</h4>
+                            <div class="summary-chart">
+                                <div class="chart-container">
+                                    <h5>Distribusi Kehadiran</h5>
+                                    <canvas id="attendanceChart" width="200" height="150"></canvas>
+                                </div>
+                                <div class="chart-container">
+                                    <h5>Perbandingan Per Mata Pelajaran</h5>
+                                    <canvas id="subjectChart" width="200" height="150"></canvas>
                                 </div>
                             </div>
                         </div>
-                    </div>
 
-                    <!-- Important Notices -->
-                    <div class="content-section">
-                        <div class="section-header">
-                            <h3><i class="fas fa-bullhorn"></i> Pengumuman Penting</h3>
-                        </div>
-                        <div class="section-content">
-                            <div class="notices-list">
-                                <div class="notice-item">
-                                    <div class="notice-icon">
-                                        <i class="fas fa-exclamation-triangle"></i>
-                                    </div>
-                                    <div class="notice-content">
-                                        <h4>Ujian Tengah Semester</h4>
-                                        <p>UTS akan dilaksanakan mulai 15-22 Maret 2024</p>
-                                        <span class="notice-date">2 hari lalu</span>
-                                    </div>
-                                </div>
-                                <div class="notice-item">
-                                    <div class="notice-icon">
-                                        <i class="fas fa-users"></i>
-                                    </div>
-                                    <div class="notice-content">
-                                        <h4>Pertemuan Orang Tua</h4>
-                                        <p>Pertemuan orang tua siswa tanggal 25 Maret 2024</p>
-                                        <span class="notice-date">1 minggu lalu</span>
-                                    </div>
-                                </div>
-                                <div class="notice-item">
-                                    <div class="notice-icon">
-                                        <i class="fas fa-calendar"></i>
-                                    </div>
-                                    <div class="notice-content">
-                                        <h4>Libur Semester</h4>
-                                        <p>Libur semester ganjil mulai 24 Desember 2024</p>
-                                        <span class="notice-date">2 minggu lalu</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Quick Actions -->
-                    <div class="content-section">
-                        <div class="section-header">
-                            <h3><i class="fas fa-bolt"></i> Akses Cepat</h3>
-                        </div>
-                        <div class="section-content">
-                            <div class="quick-actions">
-                                <button class="quick-action-btn" onclick="window.location.href='absensi.html'">
-                                    <div class="quick-action-icon">
-                                        <i class="fas fa-calendar-check"></i>
-                                    </div>
-                                    <span>Absensi</span>
-                                </button>
-                                <button class="quick-action-btn" onclick="window.location.href='bk.html'">
-                                    <div class="quick-action-icon">
-                                        <i class="fas fa-hands-helping"></i>
-                                    </div>
-                                    <span>Ajukan BK</span>
-                                </button>
-                                <button class="quick-action-btn" onclick="window.location.href='surat-pemanggilan.html'">
-                                    <div class="quick-action-icon">
-                                        <i class="fas fa-envelope"></i>
-                                    </div>
-                                    <span>Surat</span>
-                                </button>
-                                <button class="quick-action-btn" onclick="printSchedule()">
-                                    <div class="quick-action-icon">
-                                        <i class="fas fa-print"></i>
-                                    </div>
-                                    <span>Cetak Jadwal</span>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Calendar Mini -->
-                <div class="content-section full-width">
-                    <div class="section-header">
-                        <h3><i class="fas fa-calendar"></i> Kalender Akademik</h3>
-                    </div>
-                    <div class="section-content">
-                        <div class="calendar-mini" id="calendarMini">
-                            <!-- Calendar akan diisi oleh JavaScript -->
+                        <!-- Export Options -->
+                        <div class="export-actions">
+                            <button class="btn-export print" onclick="printAttendance()">
+                                <i class="fas fa-print"></i> Cetak Rekap
+                            </button>
+                            <button class="btn-export" onclick="exportToPDF()">
+                                <i class="fas fa-file-pdf"></i> Export PDF
+                            </button>
+                            <button class="btn-export" onclick="exportToExcel()">
+                                <i class="fas fa-file-excel"></i> Export Excel
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -334,248 +649,21 @@
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="/assets/js/auth.js"></script>
     <script src="/assets/js/api.js"></script>
-    <script src="/assets/js/dashboard.js"></script>
     <script>
-        // Siswa-specific dashboard functionality
-        class SiswaDashboard {
+        class AttendancePage {
             constructor() {
-                this.studentId = null;
+                this.currentData = [];
                 this.init();
             }
 
             init() {
-                // Check authentication
-                if (!auth.requireAuth('siswa')) return;
-
-                // Get student data
-                this.loadStudentData();
-                
-                // Load dashboard data
-                this.loadDashboardData();
-                
-                // Setup event listeners
-                this.setupEventListeners();
-                
-                // Update date display
                 this.updateDateDisplay();
-                
-                // Initialize calendar
-                this.initCalendar();
-            }
-
-            loadStudentData() {
-                const user = auth.getUser();
-                if (user) {
-                    document.querySelectorAll('.student-name').forEach(el => {
-                        el.textContent = user.name;
-                    });
-                    document.querySelector('.user-name').textContent = user.name;
-                    this.studentId = user.id;
-                }
-            }
-
-            async loadDashboardData() {
-                try {
-                    // Load attendance data
-                    await this.loadAttendanceData();
-                    
-                    // Load BK schedule
-                    await this.loadBKSchedule();
-                    
-                    // Load notifications
-                    await this.loadNotifications();
-                    
-                    // Update sync time
-                    this.updateSyncTime();
-                } catch (error) {
-                    console.error('Error loading dashboard data:', error);
-                }
-            }
-
-            async loadAttendanceData() {
-                const tableBody = document.getElementById('attendanceTable');
-                
-                try {
-                    // Simulasi API call
-                    const attendanceData = await this.getMockAttendanceData();
-                    
-                    tableBody.innerHTML = '';
-                    attendanceData.forEach(item => {
-                        const row = document.createElement('tr');
-                        row.innerHTML = `
-                            <td>${item.date}</td>
-                            <td>${item.subject}</td>
-                            <td><span class="badge ${this.getStatusBadgeClass(item.status)}">${item.status}</span></td>
-                            <td>${item.time}</td>
-                        `;
-                        tableBody.appendChild(row);
-                    });
-                } catch (error) {
-                    tableBody.innerHTML = `
-                        <tr>
-                            <td colspan="4" class="text-center text-danger">
-                                <i class="fas fa-exclamation-circle"></i> Gagal memuat data absensi
-                            </td>
-                        </tr>
-                    `;
-                }
-            }
-
-            async loadBKSchedule() {
-                const scheduleContainer = document.getElementById('bkSchedule');
-                
-                try {
-                    // Simulasi API call
-                    const scheduleData = await this.getMockBKSchedule();
-                    
-                    if (scheduleData.length === 0) {
-                        return; // Keep empty state
-                    }
-                    
-                    scheduleContainer.innerHTML = '';
-                    scheduleData.forEach(session => {
-                        const sessionElement = document.createElement('div');
-                        sessionElement.className = `bk-session-item ${session.status}`;
-                        sessionElement.innerHTML = `
-                            <div class="session-header">
-                                <h4>${session.title}</h4>
-                                <span class="badge ${this.getBKSessionBadgeClass(session.status)}">${session.status}</span>
-                            </div>
-                            <div class="session-details">
-                                <p><i class="fas fa-calendar"></i> ${session.date} | ${session.time}</p>
-                                <p><i class="fas fa-user"></i> ${session.counselor}</p>
-                                ${session.notes ? `<p><i class="fas fa-sticky-note"></i> ${session.notes}</p>` : ''}
-                            </div>
-                        `;
-                        scheduleContainer.appendChild(sessionElement);
-                    });
-                } catch (error) {
-                    scheduleContainer.innerHTML = `
-                        <div class="alert alert-danger">
-                            <i class="fas fa-exclamation-circle"></i> Gagal memuat jadwal BK
-                        </div>
-                    `;
-                }
-            }
-
-            async loadNotifications() {
-                const notificationsList = document.getElementById('notificationsList');
-                
-                try {
-                    // Simulasi API call
-                    const notifications = await this.getMockNotifications();
-                    
-                    notificationsList.innerHTML = '';
-                    notifications.forEach(notification => {
-                        const notificationElement = document.createElement('div');
-                        notificationElement.className = `notification-item ${notification.type}`;
-                        notificationElement.innerHTML = `
-                            <div class="notification-icon">
-                                <i class="fas fa-${notification.icon}"></i>
-                            </div>
-                            <div class="notification-content">
-                                <h5>${notification.title}</h5>
-                                <p>${notification.message}</p>
-                                <span class="notification-time">${notification.time}</span>
-                            </div>
-                        `;
-                        notificationsList.appendChild(notificationElement);
-                    });
-                } catch (error) {
-                    notificationsList.innerHTML = `
-                        <div class="empty-state">
-                            <p>Tidak ada notifikasi</p>
-                        </div>
-                    `;
-                }
-            }
-
-            getStatusBadgeClass(status) {
-                const classes = {
-                    'Hadir': 'badge-success',
-                    'Izin': 'badge-warning',
-                    'Sakit': 'badge-info',
-                    'Alpa': 'badge-danger'
-                };
-                return classes[status] || 'badge-secondary';
-            }
-
-            getBKSessionBadgeClass(status) {
-                const classes = {
-                    'Menunggu': 'badge-warning',
-                    'Disetujui': 'badge-success',
-                    'Ditolak': 'badge-danger',
-                    'Selesai': 'badge-info'
-                };
-                return classes[status] || 'badge-secondary';
-            }
-
-            initCalendar() {
-                const calendarContainer = document.getElementById('calendarMini');
-                const today = new Date();
-                const month = today.getMonth();
-                const year = today.getFullYear();
-                
-                // Generate simple calendar
-                const daysInMonth = new Date(year, month + 1, 0).getDate();
-                const firstDay = new Date(year, month, 1).getDay();
-                
-                let calendarHTML = `
-                    <div class="calendar-header">
-                        <button id="prevMonth"><i class="fas fa-chevron-left"></i></button>
-                        <h4>${this.getMonthName(month)} ${year}</h4>
-                        <button id="nextMonth"><i class="fas fa-chevron-right"></i></button>
-                    </div>
-                    <div class="calendar-grid">
-                        ${['M', 'S', 'S', 'R', 'K', 'J', 'S'].map(day => 
-                            `<div class="calendar-day header">${day}</div>`
-                        ).join('')}
-                `;
-                
-                // Add empty cells for days before first day
-                for (let i = 0; i < firstDay; i++) {
-                    calendarHTML += '<div class="calendar-day empty"></div>';
-                }
-                
-                // Add days
-                for (let day = 1; day <= daysInMonth; day++) {
-                    const isToday = day === today.getDate() && month === today.getMonth();
-                    const hasEvent = this.hasEventOnDate(day, month, year);
-                    
-                    calendarHTML += `
-                        <div class="calendar-day ${isToday ? 'today' : ''} ${hasEvent ? 'event' : ''}">
-                            ${day}
-                        </div>
-                    `;
-                }
-                
-                calendarHTML += '</div>';
-                calendarContainer.innerHTML = calendarHTML;
-                
-                // Add event listeners for calendar navigation
-                document.getElementById('prevMonth').addEventListener('click', () => {
-                    // Navigate to previous month
-                });
-                
-                document.getElementById('nextMonth').addEventListener('click', () => {
-                    // Navigate to next month
-                });
-            }
-
-            getMonthName(month) {
-                const months = [
-                    'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
-                    'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
-                ];
-                return months[month];
-            }
-
-            hasEventOnDate(day, month, year) {
-                // Check if there are events on this date
-                // This would typically come from API
-                return day % 7 === 0; // Mock: events on Sundays
+                this.loadAttendanceData();
+                this.setupEventListeners();
+                this.setupCharts();
             }
 
             updateDateDisplay() {
@@ -595,14 +683,167 @@
                 dateElement.textContent = `${dayName}, ${date} ${monthName} ${year}`;
             }
 
-            updateSyncTime() {
-                const syncElement = document.getElementById('lastSync');
-                const now = new Date();
-                const timeString = now.toLocaleTimeString('id-ID', {
-                    hour: '2-digit',
-                    minute: '2-digit'
+            async loadAttendanceData() {
+                try {
+                    // Simulasi data dari API
+                    const data = await this.getMockAttendanceData();
+                    this.currentData = data;
+                    this.renderAttendanceTable(data);
+                } catch (error) {
+                    console.error('Error loading attendance data:', error);
+                    this.showError('Gagal memuat data absensi');
+                }
+            }
+
+            renderAttendanceTable(data) {
+                const tbody = document.getElementById('attendanceData');
+                tbody.innerHTML = '';
+
+                if (data.length === 0) {
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="6" class="text-center">
+                                <div class="empty-state">
+                                    <i class="fas fa-calendar-times fa-2x"></i>
+                                    <p>Tidak ada data absensi untuk periode ini</p>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                    return;
+                }
+
+                // Kelompokkan data berdasarkan tanggal
+                const groupedData = this.groupByDate(data);
+                
+                for (const [date, entries] of Object.entries(groupedData)) {
+                    // Tambahkan header hari
+                    const dateObj = new Date(date);
+                    const dayName = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'][dateObj.getDay()];
+                    
+                    // Header row
+                    const headerRow = document.createElement('tr');
+                    headerRow.className = 'day-header-row';
+                    headerRow.innerHTML = `
+                        <td colspan="6" style="padding: 0;">
+                            <div class="day-header">
+                                ${dayName}, ${this.formatDate(dateObj)}
+                            </div>
+                        </td>
+                    `;
+                    tbody.appendChild(headerRow);
+                    
+                    // Data rows
+                    entries.forEach(entry => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${this.formatDate(new Date(entry.date))}</td>
+                            <td>${dayName}</td>
+                            <td>${entry.subject}</td>
+                            <td>${entry.time}</td>
+                            <td>
+                                <span class="status-badge ${this.getStatusClass(entry.status)}">
+                                    <i class="fas fa-${this.getStatusIcon(entry.status)}"></i>
+                                    ${entry.status}
+                                </span>
+                            </td>
+                            <td>${entry.notes || '-'}</td>
+                        `;
+                        tbody.appendChild(row);
+                    });
+                }
+            }
+
+            groupByDate(data) {
+                return data.reduce((groups, item) => {
+                    const date = item.date.split('T')[0];
+                    if (!groups[date]) {
+                        groups[date] = [];
+                    }
+                    groups[date].push(item);
+                    return groups;
+                }, {});
+            }
+
+            formatDate(date) {
+                return date.toLocaleDateString('id-ID', {
+                    day: 'numeric',
+                    month: 'long',
+                    year: 'numeric'
                 });
-                syncElement.textContent = `Terakhir sinkron: ${timeString}`;
+            }
+
+            getStatusClass(status) {
+                const classes = {
+                    'Hadir': 'status-present',
+                    'Sakit': 'status-sick',
+                    'Izin': 'status-permit',
+                    'Alpa': 'status-absent',
+                    'Terlambat': 'status-late'
+                };
+                return classes[status] || 'status-absent';
+            }
+
+            getStatusIcon(status) {
+                const icons = {
+                    'Hadir': 'check-circle',
+                    'Sakit': 'thermometer',
+                    'Izin': 'file-alt',
+                    'Alpa': 'times-circle',
+                    'Terlambat': 'clock'
+                };
+                return icons[status] || 'question-circle';
+            }
+
+            setupCharts() {
+                // Chart distribusi kehadiran
+                const attendanceCtx = document.getElementById('attendanceChart').getContext('2d');
+                this.attendanceChart = new Chart(attendanceCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Hadir', 'Izin', 'Sakit', 'Alpa'],
+                        datasets: [{
+                            data: [88, 4, 2, 0],
+                            backgroundColor: [
+                                '#28a745',
+                                '#17a2b8',
+                                '#ffc107',
+                                '#dc3545'
+                            ]
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                position: 'bottom'
+                            }
+                        }
+                    }
+                });
+
+                // Chart perbandingan mata pelajaran
+                const subjectCtx = document.getElementById('subjectChart').getContext('2d');
+                this.subjectChart = new Chart(subjectCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Matematika', 'Fisika', 'Kimia', 'Biologi', 'Bahasa'],
+                        datasets: [{
+                            label: 'Kehadiran (%)',
+                            data: [95, 92, 90, 88, 96],
+                            backgroundColor: '#007bff'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                max: 100
+                            }
+                        }
+                    }
+                });
             }
 
             setupEventListeners() {
@@ -623,11 +864,23 @@
                     });
                 });
 
-                // Close modal when clicking outside
-                document.getElementById('notificationModal').addEventListener('click', (e) => {
-                    if (e.target === document.getElementById('notificationModal')) {
-                        document.getElementById('notificationModal').classList.remove('active');
-                    }
+                // Filter period change
+                document.getElementById('periodSelect').addEventListener('change', (e) => {
+                    const isCustom = e.target.value === 'custom';
+                    document.getElementById('monthGroup').style.display = 
+                        (e.target.value === 'month' || isCustom) ? 'block' : 'none';
+                    document.getElementById('yearGroup').style.display = 
+                        isCustom ? 'block' : 'none';
+                });
+
+                // Apply filter
+                document.getElementById('applyFilter').addEventListener('click', () => {
+                    this.applyFilters();
+                });
+
+                // Reset filter
+                document.getElementById('resetFilter').addEventListener('click', () => {
+                    this.resetFilters();
                 });
 
                 // Logout button
@@ -637,86 +890,78 @@
                 });
             }
 
-            // Mock data methods (will be replaced with API calls)
+            applyFilters() {
+                const period = document.getElementById('periodSelect').value;
+                const month = document.getElementById('monthSelect').value;
+                const year = document.getElementById('yearSelect').value;
+                const status = document.getElementById('statusSelect').value;
+
+                console.log('Applying filters:', { period, month, year, status });
+                // Implementasi filter sebenarnya
+                this.loadAttendanceData(); // Reload dengan filter
+            }
+
+            resetFilters() {
+                document.getElementById('periodSelect').value = 'month';
+                document.getElementById('monthSelect').value = '3';
+                document.getElementById('yearSelect').value = '2024';
+                document.getElementById('statusSelect').value = 'all';
+                document.getElementById('monthGroup').style.display = 'block';
+                document.getElementById('yearGroup').style.display = 'none';
+                
+                this.loadAttendanceData();
+            }
+
+            showError(message) {
+                const tbody = document.getElementById('attendanceData');
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="6" class="text-center text-danger">
+                            <i class="fas fa-exclamation-triangle"></i> ${message}
+                        </td>
+                    </tr>
+                `;
+            }
+
             getMockAttendanceData() {
                 return new Promise((resolve) => {
                     setTimeout(() => {
                         resolve([
-                            { date: '2024-03-15', subject: 'Matematika', status: 'Hadir', time: '07:30' },
-                            { date: '2024-03-15', subject: 'Fisika', status: 'Hadir', time: '09:00' },
-                            { date: '2024-03-14', subject: 'Kimia', status: 'Izin', time: '10:30' },
-                            { date: '2024-03-14', subject: 'Biologi', status: 'Hadir', time: '13:00' },
-                            { date: '2024-03-13', subject: 'Bahasa Indonesia', status: 'Sakit', time: '07:30' }
+                            { date: '2024-03-15T07:30:00', subject: 'Matematika', status: 'Hadir', time: '07:30 - 09:00', notes: '' },
+                            { date: '2024-03-15T09:00:00', subject: 'Fisika', status: 'Hadir', time: '09:00 - 10:30', notes: '' },
+                            { date: '2024-03-15T10:30:00', subject: 'Kimia', status: 'Hadir', time: '10:30 - 12:00', notes: '' },
+                            { date: '2024-03-14T07:30:00', subject: 'Biologi', status: 'Terlambat', time: '07:30 - 09:00', notes: 'Terlambat 15 menit' },
+                            { date: '2024-03-14T09:00:00', subject: 'Bahasa Indonesia', status: 'Sakit', time: '09:00 - 10:30', notes: 'Surat dokter terlampir' },
+                            { date: '2024-03-13T07:30:00', subject: 'Matematika', status: 'Hadir', time: '07:30 - 09:00', notes: '' },
+                            { date: '2024-03-13T09:00:00', subject: 'Fisika', status: 'Izin', time: '09:00 - 10:30', notes: 'Izin keluarga' },
+                            { date: '2024-03-12T07:30:00', subject: 'Kimia', status: 'Hadir', time: '07:30 - 09:00', notes: '' },
+                            { date: '2024-03-12T09:00:00', subject: 'Biologi', status: 'Hadir', time: '09:00 - 10:30', notes: '' },
+                            { date: '2024-03-11T07:30:00', subject: 'Bahasa Inggris', status: 'Hadir', time: '07:30 - 09:00', notes: '' }
                         ]);
-                    }, 500);
-                });
-            }
-
-            getMockBKSchedule() {
-                return new Promise((resolve) => {
-                    setTimeout(() => {
-                        resolve([
-                            { 
-                                title: 'Konseling Akademik',
-                                date: '2024-03-20',
-                                time: '09:00 - 10:00',
-                                counselor: 'Bu Ani, S.Pd',
-                                status: 'Menunggu',
-                                notes: 'Membahas nilai matematika'
-                            },
-                            { 
-                                title: 'Konseling Pribadi',
-                                date: '2024-03-18',
-                                time: '12:00 - 13:00',
-                                counselor: 'Pak Budi, M.Pd',
-                                status: 'Disetujui',
-                                notes: ''
-                            }
-                        ]);
-                    }, 500);
-                });
-            }
-
-            getMockNotifications() {
-                return new Promise((resolve) => {
-                    setTimeout(() => {
-                        resolve([
-                            {
-                                type: 'info',
-                                icon: 'info-circle',
-                                title: 'Jadwal BK Disetujui',
-                                message: 'Permintaan BK Anda untuk tanggal 18 Maret telah disetujui',
-                                time: '2 jam lalu'
-                            },
-                            {
-                                type: 'warning',
-                                icon: 'exclamation-triangle',
-                                title: 'Surat Pemanggilan',
-                                message: 'Anda memiliki surat pemanggilan dari Guru BK',
-                                time: '1 hari lalu'
-                            },
-                            {
-                                type: 'success',
-                                icon: 'check-circle',
-                                title: 'Absensi Lengkap',
-                                message: 'Absensi minggu ini telah tercatat lengkap',
-                                time: '3 hari lalu'
-                            }
-                        ]);
-                    }, 500);
+                    }, 1000);
                 });
             }
         }
 
-        // Initialize dashboard when page loads
-        document.addEventListener('DOMContentLoaded', () => {
-            new SiswaDashboard();
-        });
-
-        // Print schedule function
-        function printSchedule() {
+        // Export functions
+        function printAttendance() {
             window.print();
         }
+
+        function exportToPDF() {
+            alert('Fitur export PDF akan segera tersedia!');
+            // Implementasi export PDF menggunakan jsPDF
+        }
+
+        function exportToExcel() {
+            alert('Fitur export Excel akan segera tersedia!');
+            // Implementasi export Excel menggunakan SheetJS
+        }
+
+        // Initialize page when loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            new AttendancePage();
+        });
     </script>
 </body>
 </html>

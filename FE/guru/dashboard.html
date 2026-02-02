@@ -50,18 +50,6 @@
                         <span>Logbook</span>
                     </a>
                 </li>
-                <li>
-                    <a href="nilai.html">
-                        <i class="fas fa-chart-line"></i>
-                        <span>Nilai Siswa</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="materi.html">
-                        <i class="fas fa-file-alt"></i>
-                        <span>Materi Ajar</span>
-                    </a>
-                </li>
                 <li class="divider"></li>
                 <li>
                     <a href="../login.html">
@@ -135,7 +123,7 @@
                 </div>
                 <div class="stat-info">
                     <h3>7</h3>
-                    <p>Tugas Perlu Dinilai</p>
+                    <p>Tugas Perlu Ditinjau</p>
                 </div>
             </div>
             <div class="stat-card">
@@ -226,18 +214,6 @@
                                 </div>
                                 <span>Isi Logbook</span>
                             </button>
-                            <button class="quick-action-btn" onclick="location.href='nilai.html'">
-                                <div class="action-icon">
-                                    <i class="fas fa-edit"></i>
-                                </div>
-                                <span>Input Nilai</span>
-                            </button>
-                            <button class="quick-action-btn" onclick="location.href='materi.html'">
-                                <div class="action-icon">
-                                    <i class="fas fa-upload"></i>
-                                </div>
-                                <span>Upload Materi</span>
-                            </button>
                             <button class="quick-action-btn" onclick="createAnnouncement()">
                                 <div class="action-icon">
                                     <i class="fas fa-bullhorn"></i>
@@ -249,6 +225,18 @@
                                     <i class="fas fa-tasks"></i>
                                 </div>
                                 <span>Buat Tugas</span>
+                            </button>
+                            <button class="quick-action-btn" onclick="viewStudentProgress()">
+                                <div class="action-icon">
+                                    <i class="fas fa-chart-line"></i>
+                                </div>
+                                <span>Progress Siswa</span>
+                            </button>
+                            <button class="quick-action-btn" onclick="scheduleMeeting()">
+                                <div class="action-icon">
+                                    <i class="fas fa-users"></i>
+                                </div>
+                                <span>Jadwal Pertemuan</span>
                             </button>
                         </div>
                     </div>
@@ -298,7 +286,7 @@
                                         <span class="month">Jan</span>
                                     </div>
                                     <div class="event-details">
-                                        <h5>Deadline Nilai</h5>
+                                        <h5>Deadline Logbook</h5>
                                         <p>Hari Terakhir</p>
                                     </div>
                                 </div>
@@ -319,8 +307,8 @@
                                     <i class="fas fa-exclamation-circle"></i>
                                 </div>
                                 <div class="notification-content">
-                                    <h5>Pengingat: Deadline Input Nilai</h5>
-                                    <p>Deadline input nilai UTS: 25 Januari 2024</p>
+                                    <h5>Pengingat: Deadline Input Absen</h5>
+                                    <p>Deadline input absen hari ini: 16:00 WIB</p>
                                     <span class="notification-time">2 jam yang lalu</span>
                                 </div>
                             </div>
@@ -339,8 +327,8 @@
                                     <i class="fas fa-book"></i>
                                 </div>
                                 <div class="notification-content">
-                                    <h5>Materi Baru Tersedia</h5>
-                                    <p>Modul pembelajaran matematika kelas X telah diupdate</p>
+                                    <h5>Logbook Terbaru</h5>
+                                    <p>3 siswa mengumpulkan logbook hari ini</p>
                                     <span class="notification-time">3 hari yang lalu</span>
                                 </div>
                             </div>
@@ -372,21 +360,21 @@
                         </div>
                         <div class="activity-item">
                             <div class="activity-icon">
-                                <i class="fas fa-edit"></i>
+                                <i class="fas fa-book"></i>
                             </div>
                             <div class="activity-content">
-                                <h5>Update Nilai Tugas</h5>
-                                <p>Memperbarui nilai tugas bab trigonometri kelas XI</p>
+                                <h5>Update Logbook Kelas XI</h5>
+                                <p>Memeriksa dan memberikan feedback logbook bab integral</p>
                                 <span class="activity-time">2 hari yang lalu</span>
                             </div>
                         </div>
                         <div class="activity-item">
                             <div class="activity-icon">
-                                <i class="fas fa-upload"></i>
+                                <i class="fas fa-bullhorn"></i>
                             </div>
                             <div class="activity-content">
-                                <h5>Upload Materi Pembelajaran</h5>
-                                <p>Mengupload modul statistika untuk kelas XII</p>
+                                <h5>Buat Pengumuman</h5>
+                                <p>Membuat pengumuman jadwal ulangan untuk kelas XII</p>
                                 <span class="activity-time">3 hari yang lalu</span>
                             </div>
                         </div>
@@ -403,7 +391,7 @@
                     <div class="tasks-list">
                         <div class="task-item urgent">
                             <div class="task-info">
-                                <h5>Koreksi Ujian Kelas XII</h5>
+                                <h5>Periksa Logbook Kelas X</h5>
                                 <p>Deadline: 20 Jan 2024</p>
                             </div>
                             <div class="task-progress">
@@ -427,7 +415,7 @@
                         </div>
                         <div class="task-item">
                             <div class="task-info">
-                                <h5>Input Nilai Harian</h5>
+                                <h5>Input Absensi Mingguan</h5>
                                 <p>Deadline: 22 Jan 2024</p>
                             </div>
                             <div class="task-progress">
@@ -465,6 +453,9 @@
             document.getElementById('nextMonth').addEventListener('click', function() {
                 alert('Next month');
             });
+            
+            // Set active menu
+            setActiveMenu();
         });
 
         function updateDateTime() {
@@ -484,10 +475,10 @@
             const timeOptions = { 
                 hour: '2-digit', 
                 minute: '2-digit',
-                hour12: true 
+                hour12: false 
             };
-            document.getElementById('current-time').textContent = 
-                now.toLocaleTimeString('id-ID', timeOptions);
+            const timeString = now.toLocaleTimeString('id-ID', timeOptions);
+            document.getElementById('current-time').textContent = timeString;
         }
 
         function initMiniCalendar() {
@@ -503,9 +494,14 @@
                         color: '#FF9800'
                     },
                     {
-                        title: 'Rapat',
+                        title: 'Rapat Guru',
                         start: '2024-01-22',
                         color: '#2196F3'
+                    },
+                    {
+                        title: 'Deadline Logbook',
+                        start: '2024-01-25',
+                        color: '#9C27B0'
                     }
                 ]
             });
@@ -527,47 +523,62 @@
             alert('Membuat tugas baru...');
             // Open assignment modal
         }
-    </script>
-    <script>
-    // Mobile menu toggle
-    document.addEventListener('DOMContentLoaded', function() {
-        const mobileMenuToggle = document.getElementById('mobileMenuToggle');
-        const sidebar = document.getElementById('sidebar');
-        const mainContent = document.getElementById('mainContent');
-        
-        if (mobileMenuToggle && sidebar) {
-            mobileMenuToggle.addEventListener('click', function() {
-                sidebar.classList.toggle('active');
-                mobileMenuToggle.innerHTML = sidebar.classList.contains('active') 
-                    ? '<i class="fas fa-times"></i>' 
-                    : '<i class="fas fa-bars"></i>';
-            });
+
+        function viewStudentProgress() {
+            alert('Melihat progress siswa...');
+            // Open student progress page
+        }
+
+        function scheduleMeeting() {
+            alert('Menjadwalkan pertemuan...');
+            // Open meeting scheduler
+        }
+
+        function setActiveMenu() {
+            const currentPage = window.location.pathname.split('/').pop();
+            const navLinks = document.querySelectorAll('.sidebar-nav a');
             
-            // Close sidebar when clicking outside on mobile
-            document.addEventListener('click', function(event) {
-                if (window.innerWidth <= 1024) {
-                    if (!sidebar.contains(event.target) && 
-                        !mobileMenuToggle.contains(event.target) && 
-                        sidebar.classList.contains('active')) {
-                        sidebar.classList.remove('active');
-                        mobileMenuToggle.innerHTML = '<i class="fas fa-bars"></i>';
-                    }
+            navLinks.forEach(link => {
+                const href = link.getAttribute('href');
+                if (href === currentPage || (href === 'dashboard.html' && currentPage === '')) {
+                    link.parentElement.classList.add('active');
+                } else {
+                    link.parentElement.classList.remove('active');
                 }
             });
         }
-        
-        // Update active link in sidebar
-        const currentPage = window.location.pathname.split('/').pop();
-        const navLinks = document.querySelectorAll('.sidebar-nav a');
-        navLinks.forEach(link => {
-            const href = link.getAttribute('href');
-            if (href === currentPage || 
-                (href === 'dashboard.html' && currentPage === '') ||
-                (href.includes(currentPage) && currentPage !== '')) {
-                link.classList.add('active');
+
+        // Mobile menu toggle functionality
+        function initMobileMenu() {
+            const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
+            const sidebar = document.querySelector('.sidebar');
+            
+            if (mobileMenuToggle && sidebar) {
+                mobileMenuToggle.addEventListener('click', function() {
+                    sidebar.classList.toggle('active');
+                    mobileMenuToggle.innerHTML = sidebar.classList.contains('active') 
+                        ? '<i class="fas fa-times"></i>' 
+                        : '<i class="fas fa-bars"></i>';
+                });
+                
+                // Close sidebar when clicking outside on mobile
+                document.addEventListener('click', function(event) {
+                    if (window.innerWidth <= 1024) {
+                        if (!sidebar.contains(event.target) && 
+                            !mobileMenuToggle.contains(event.target) && 
+                            sidebar.classList.contains('active')) {
+                            sidebar.classList.remove('active');
+                            mobileMenuToggle.innerHTML = '<i class="fas fa-bars"></i>';
+                        }
+                    }
+                });
             }
+        }
+
+        // Initialize mobile menu
+        document.addEventListener('DOMContentLoaded', function() {
+            initMobileMenu();
         });
-    });
-</script>
+    </script>
 </body>
 </html>
