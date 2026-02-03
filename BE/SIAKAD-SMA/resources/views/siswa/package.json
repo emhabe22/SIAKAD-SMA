@@ -1,0 +1,35 @@
+{
+  "name": "siakad-sma-mishbahul-ulum",
+  "version": "1.0.0",
+  "description": "Sistem Informasi Akademik SMA Mishbahul Ulum",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js 3000",
+    "test": "echo \"No tests specified\" && exit 0",
+    "build": "echo \"Frontend build complete\"",
+    "deploy": "echo \"Deployment script would run here\""
+  },
+  "keywords": [
+    "siakad",
+    "school",
+    "academic",
+    "management",
+    "education"
+  ],
+  "author": "SMA Mishbahul Ulum",
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {},
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sma-mishbahul-ulum/siakad"
+  },
+  "bugs": {
+    "url": "https://github.com/sma-mishbahul-ulum/siakad/issues"
+  },
+  "homepage": "https://siakad.sma-mishbahululum.sch.id"
+}

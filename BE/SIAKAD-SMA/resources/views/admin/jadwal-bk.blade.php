@@ -1,0 +1,1128 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jadwal BK - Admin SIAKAD</title>
+    <link rel="stylesheet" href="../assets/css/main.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css">
+</head>
+<body>
+    <!-- Mobile Menu Toggle -->
+    <button class="mobile-menu-toggle" id="mobileMenuToggle">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- Sidebar Navigation -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="user-profile">
+                <img src="../assets/images/user-avatar.png" alt="Avatar Admin">
+                <div class="user-info">
+                    <h4>Administrator</h4>
+                    <span class="role-badge">Admin Sistem</span>
+                </div>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <ul>
+                <li>
+                    <a href="dashboard.html">
+                        <i class="fas fa-home"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="siswa.html">
+                        <i class="fas fa-users"></i>
+                        <span>Data Siswa</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="guru.html">
+                        <i class="fas fa-chalkboard-teacher"></i>
+                        <span>Data Guru</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="kelas.html">
+                        <i class="fas fa-school"></i>
+                        <span>Data Kelas</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="mata-pelajaran.html">
+                        <i class="fas fa-book"></i>
+                        <span>Mata Pelajaran</span>
+                    </a>
+                </li>
+                <li class="active">
+                    <a href="jadwal-bk.html">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>Jadwal BK</span>
+                    </a>
+                </li>
+                <li class="divider"></li>
+                <li>
+                    <a href="pengaturan.html">
+                        <i class="fas fa-cog"></i>
+                        <span>Pengaturan</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="../login.html">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Keluar</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content" id="mainContent">
+        <!-- Top Header -->
+        <header class="top-header">
+            <div class="header-left">
+                <h1>Jadwal Bimbingan Konseling</h1>
+                <p class="breadcrumb">Admin / Jadwal BK</p>
+            </div>
+            <div class="header-right">
+                <div class="search-box">
+                    <input type="text" id="searchSchedule" placeholder="Cari jadwal...">
+                    <i class="fas fa-search"></i>
+                </div>
+                <button class="btn btn-primary" onclick="showAddModal()">
+                    <i class="fas fa-plus"></i> Tambah Jadwal
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Content Container -->
+        <div class="content-container">
+            <!-- Filter Section -->
+            <div class="filter-section">
+                <div class="filter-group">
+                    <label>Filter Konselor:</label>
+                    <select id="filterCounselor" onchange="filterSchedule()">
+                        <option value="all">Semua Konselor</option>
+                        <option value="1">Budi Santoso, S.Pd</option>
+                        <option value="2">Siti Nurhaliza, M.Pd</option>
+                        <option value="3">Ahmad Hidayat, M.Si</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Filter Status:</label>
+                    <select id="filterStatus" onchange="filterSchedule()">
+                        <option value="all">Semua Status</option>
+                        <option value="scheduled">Terjadwal</option>
+                        <option value="ongoing">Berlangsung</option>
+                        <option value="completed">Selesai</option>
+                        <option value="cancelled">Dibatalkan</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Filter Tanggal:</label>
+                    <input type="date" id="filterDate" onchange="filterSchedule()">
+                </div>
+                <button class="btn btn-secondary" onclick="resetFilters()">
+                    <i class="fas fa-redo"></i> Reset Filter
+                </button>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="stats-grid compact">
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: #4CAF50;">
+                        <i class="fas fa-calendar-check"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>24</h3>
+                        <p>Jadwal Hari Ini</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: #2196F3;">
+                        <i class="fas fa-user-clock"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>8</h3>
+                        <p>Sedang Berlangsung</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: #FF9800;">
+                        <i class="fas fa-exclamation-circle"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>3</h3>
+                        <p>Perlu Konfirmasi</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: #9C27B0;">
+                        <i class="fas fa-user-md"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>5</h3>
+                        <p>Konselor Aktif</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: #F44336;">
+                        <i class="fas fa-times-circle"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>2</h3>
+                        <p>Dibatalkan</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Calendar View -->
+            <div class="card">
+                <div class="card-header">
+                    <h3><i class="fas fa-calendar"></i> Kalender Jadwal BK</h3>
+                    <div class="calendar-controls">
+                        <button class="btn-icon" id="prevWeek">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <span id="currentWeek">Minggu ke-3, Januari 2024</span>
+                        <button class="btn-icon" id="nextWeek">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                        <select id="viewMode" onchange="changeViewMode()">
+                            <option value="week">Mingguan</option>
+                            <option value="month" selected>Bulanan</option>
+                            <option value="day">Harian</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div id="calendar"></div>
+                </div>
+            </div>
+
+            <!-- Upcoming Schedules -->
+            <div class="card">
+                <div class="card-header">
+                    <h3><i class="fas fa-clock"></i> Jadwal Mendatang</h3>
+                    <a href="#" class="btn-link">Lihat Semua</a>
+                </div>
+                <div class="card-body">
+                    <div class="upcoming-schedules">
+                        <div class="schedule-card today">
+                            <div class="schedule-time">
+                                <span class="time">08:00 - 09:00</span>
+                                <span class="status-badge ongoing">Sedang Berlangsung</span>
+                            </div>
+                            <div class="schedule-details">
+                                <h4>Konseling Akademik - Andi Pratama</h4>
+                                <p><i class="fas fa-user-md"></i> Konselor: Budi Santoso, S.Pd</p>
+                                <p><i class="fas fa-user-graduate"></i> Siswa: Andi Pratama (XII IPA 1)</p>
+                                <p><i class="fas fa-map-marker-alt"></i> Ruang BK 1</p>
+                            </div>
+                            <div class="schedule-actions">
+                                <button class="btn-icon" onclick="viewSchedule(1)" title="Lihat Detail">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button class="btn-icon" onclick="editSchedule(1)" title="Edit">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="btn-icon btn-danger" onclick="cancelSchedule(1)" title="Batalkan">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="schedule-card">
+                            <div class="schedule-time">
+                                <span class="time">10:00 - 11:00</span>
+                                <span class="status-badge scheduled">Terjadwal</span>
+                            </div>
+                            <div class="schedule-details">
+                                <h4>Konseling Karir - Siti Nurhaliza</h4>
+                                <p><i class="fas fa-user-md"></i> Konselor: Siti Nurhaliza, M.Pd</p>
+                                <p><i class="fas fa-user-graduate"></i> Siswa: Siti Nurhaliza (XI IPS 2)</p>
+                                <p><i class="fas fa-map-marker-alt"></i> Ruang BK 2</p>
+                            </div>
+                            <div class="schedule-actions">
+                                <button class="btn-icon" onclick="viewSchedule(2)" title="Lihat Detail">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button class="btn-icon" onclick="editSchedule(2)" title="Edit">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="btn-icon btn-danger" onclick="cancelSchedule(2)" title="Batalkan">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="schedule-card">
+                            <div class="schedule-time">
+                                <span class="time">13:00 - 14:00</span>
+                                <span class="status-badge scheduled">Terjadwal</span>
+                            </div>
+                            <div class="schedule-details">
+                                <h4>Konseling Sosial - Rizki Ramadhan</h4>
+                                <p><i class="fas fa-user-md"></i> Konselor: Ahmad Hidayat, M.Si</p>
+                                <p><i class="fas fa-user-graduate"></i> Siswa: Rizki Ramadhan (X MIPA)</p>
+                                <p><i class="fas fa-map-marker-alt"></i> Ruang BK 1</p>
+                            </div>
+                            <div class="schedule-actions">
+                                <button class="btn-icon" onclick="viewSchedule(3)" title="Lihat Detail">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button class="btn-icon" onclick="editSchedule(3)" title="Edit">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="btn-icon btn-danger" onclick="cancelSchedule(3)" title="Batalkan">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Counselors Availability -->
+            <div class="card">
+                <div class="card-header">
+                    <h3><i class="fas fa-user-clock"></i> Ketersediaan Konselor</h3>
+                </div>
+                <div class="card-body">
+                    <div class="counselors-availability">
+                        <div class="counselor-card">
+                            <div class="counselor-info">
+                                <img src="https://via.placeholder.com/50" alt="Counselor">
+                                <div>
+                                    <h5>Budi Santoso, S.Pd</h5>
+                                    <p>Konselor Utama</p>
+                                </div>
+                            </div>
+                            <div class="availability-status">
+                                <span class="status-dot available"></span>
+                                <span>Tersedia</span>
+                            </div>
+                            <div class="schedule-count">
+                                <span class="count">8</span>
+                                <span>jadwal/hari</span>
+                            </div>
+                            <button class="btn btn-sm btn-outline" onclick="viewCounselorSchedule(1)">
+                                <i class="fas fa-calendar"></i> Lihat Jadwal
+                            </button>
+                        </div>
+                        <div class="counselor-card">
+                            <div class="counselor-info">
+                                <img src="https://via.placeholder.com/50" alt="Counselor">
+                                <div>
+                                    <h5>Siti Nurhaliza, M.Pd</h5>
+                                    <p>Konselor Karir</p>
+                                </div>
+                            </div>
+                            <div class="availability-status">
+                                <span class="status-dot busy"></span>
+                                <span>Sibuk</span>
+                            </div>
+                            <div class="schedule-count">
+                                <span class="count">6</span>
+                                <span>jadwal/hari</span>
+                            </div>
+                            <button class="btn btn-sm btn-outline" onclick="viewCounselorSchedule(2)">
+                                <i class="fas fa-calendar"></i> Lihat Jadwal
+                            </button>
+                        </div>
+                        <div class="counselor-card">
+                            <div class="counselor-info">
+                                <img src="https://via.placeholder.com/50" alt="Counselor">
+                                <div>
+                                    <h5>Ahmad Hidayat, M.Si</h5>
+                                    <p>Konselor Akademik</p>
+                                </div>
+                            </div>
+                            <div class="availability-status">
+                                <span class="status-dot available"></span>
+                                <span>Tersedia</span>
+                            </div>
+                            <div class="schedule-count">
+                                <span class="count">5</span>
+                                <span>jadwal/hari</span>
+                            </div>
+                            <button class="btn btn-sm btn-outline" onclick="viewCounselorSchedule(3)">
+                                <i class="fas fa-calendar"></i> Lihat Jadwal
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Modal Add/Edit Schedule -->
+    <div id="scheduleModal" class="modal">
+        <div class="modal-content wide-modal">
+            <div class="modal-header">
+                <h3 id="modalTitle">Tambah Jadwal BK Baru</h3>
+                <span class="close" onclick="closeModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="scheduleForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="counselor">Konselor *</label>
+                            <select id="counselor" required>
+                                <option value="">-- Pilih Konselor --</option>
+                                <option value="1">Budi Santoso, S.Pd</option>
+                                <option value="2">Siti Nurhaliza, M.Pd</option>
+                                <option value="3">Ahmad Hidayat, M.Si</option>
+                                <option value="4">Dewi Sartika, S.Pd</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="student">Siswa *</label>
+                            <select id="student" required>
+                                <option value="">-- Pilih Siswa --</option>
+                                <option value="1">Andi Pratama (XII IPA 1)</option>
+                                <option value="2">Siti Nurhaliza (XI IPS 2)</option>
+                                <option value="3">Rizki Ramadhan (X MIPA)</option>
+                                <option value="4">Ahmad Fauzi (X MIPA 1)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="counselingType">Jenis Konseling *</label>
+                            <select id="counselingType" required>
+                                <option value="">-- Pilih Jenis --</option>
+                                <option value="academic">Akademik</option>
+                                <option value="career">Karir</option>
+                                <option value="social">Sosial</option>
+                                <option value="personal">Pribadi</option>
+                                <option value="other">Lainnya</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="priority">Prioritas</label>
+                            <select id="priority">
+                                <option value="normal">Normal</option>
+                                <option value="medium">Sedang</option>
+                                <option value="high">Tinggi</option>
+                                <option value="urgent">Mendesak</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="scheduleDate">Tanggal *</label>
+                            <input type="date" id="scheduleDate" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="startTime">Waktu Mulai *</label>
+                            <input type="time" id="startTime" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="endTime">Waktu Selesai *</label>
+                            <input type="time" id="endTime" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="location">Lokasi</label>
+                        <input type="text" id="location" placeholder="Contoh: Ruang BK 1" value="Ruang BK 1">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="topic">Topik Konseling *</label>
+                        <input type="text" id="topic" required placeholder="Masukkan topik konseling...">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="description">Deskripsi / Masalah</label>
+                        <textarea id="description" rows="3" placeholder="Deskripsi masalah atau latar belakang konseling..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="notes">Catatan Tambahan</label>
+                        <textarea id="notes" rows="2" placeholder="Catatan tambahan untuk konselor..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="status">Status *</label>
+                        <select id="status" required>
+                            <option value="scheduled">Terjadwal</option>
+                            <option value="confirmed">Dikonfirmasi</option>
+                            <option value="ongoing">Berlangsung</option>
+                            <option value="completed">Selesai</option>
+                            <option value="cancelled">Dibatalkan</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Notifikasi</label>
+                        <div class="checkbox-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="notifyStudent" checked>
+                                <span>Kirim notifikasi ke siswa</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="notifyCounselor" checked>
+                                <span>Kirim notifikasi ke konselor</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="notifyParent">
+                                <span>Kirim notifikasi ke orang tua</span>
+                            </label>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal()">Batal</button>
+                <button class="btn btn-primary" onclick="saveSchedule()">
+                    <i class="fas fa-save"></i> Simpan Jadwal
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal View Schedule -->
+    <div id="viewModal" class="modal">
+        <div class="modal-content wide-modal">
+            <div class="modal-header">
+                <h3>Detail Jadwal BK</h3>
+                <span class="close" onclick="closeViewModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="schedule-detail-view">
+                    <div class="schedule-header">
+                        <div class="schedule-type-icon">
+                            <i class="fas fa-comments"></i>
+                        </div>
+                        <div class="schedule-info-large">
+                            <h2 id="viewTopic">Konseling Akademik</h2>
+                            <p class="schedule-code" id="viewCode">Kode: BK-2024-001</p>
+                            <div class="schedule-tags">
+                                <span class="badge badge-academic" id="viewType">Akademik</span>
+                                <span class="status-badge scheduled" id="viewStatus">Terjadwal</span>
+                                <span class="priority-badge high" id="viewPriority">Tinggi</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="detail-tabs">
+                        <div class="tab-buttons">
+                            <button class="tab-btn active" onclick="showTab('info')">Informasi</button>
+                            <button class="tab-btn" onclick="showTab('participants')">Peserta</button>
+                            <button class="tab-btn" onclick="showTab('history')">Riwayat</button>
+                            <button class="tab-btn" onclick="showTab('documents')">Dokumen</button>
+                        </div>
+
+                        <div class="tab-content active" id="infoTab">
+                            <div class="detail-grid">
+                                <div class="detail-item">
+                                    <label>Tanggal:</label>
+                                    <span id="viewDate">15 Januari 2024</span>
+                                </div>
+                                <div class="detail-item">
+                                    <label>Waktu:</label>
+                                    <span id="viewTime">08:00 - 09:00 (60 menit)</span>
+                                </div>
+                                <div class="detail-item">
+                                    <label>Lokasi:</label>
+                                    <span id="viewLocation">Ruang BK 1</span>
+                                </div>
+                                <div class="detail-item">
+                                    <label>Durasi:</label>
+                                    <span id="viewDuration">60 menit</span>
+                                </div>
+                                <div class="detail-item full-width">
+                                    <label>Deskripsi Masalah:</label>
+                                    <p id="viewDescription">Siswa mengalami penurunan nilai akademik yang signifikan dalam 3 bulan terakhir. Perlu konseling untuk mengidentifikasi penyebab dan solusi.</p>
+                                </div>
+                                <div class="detail-item full-width">
+                                    <label>Catatan Tambahan:</label>
+                                    <p id="viewNotes">Orang tua telah dihubungi dan menyetujui konseling ini.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tab-content" id="participantsTab">
+                            <div class="participants-list">
+                                <div class="participant-card">
+                                    <div class="participant-header">
+                                        <h5>Konselor</h5>
+                                    </div>
+                                    <div class="participant-info">
+                                        <img src="https://via.placeholder.com/60" alt="Counselor">
+                                        <div>
+                                            <h6 id="viewCounselor">Budi Santoso, S.Pd</h6>
+                                            <p>Konselor Utama • 5 tahun pengalaman</p>
+                                            <span class="participant-status available">Tersedia</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="participant-card">
+                                    <div class="participant-header">
+                                        <h5>Siswa</h5>
+                                    </div>
+                                    <div class="participant-info">
+                                        <img src="https://via.placeholder.com/60" alt="Student">
+                                        <div>
+                                            <h6 id="viewStudent">Andi Pratama</h6>
+                                            <p>Kelas XII IPA 1 • NIS: 20231201</p>
+                                            <span class="participant-status scheduled">Terjadwal</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="participant-card">
+                                    <div class="participant-header">
+                                        <h5>Wali Kelas</h5>
+                                    </div>
+                                    <div class="participant-info">
+                                        <img src="https://via.placeholder.com/60" alt="Teacher">
+                                        <div>
+                                            <h6>Dewi Sartika, S.Pd</h6>
+                                            <p>Wali Kelas XII IPA 1</p>
+                                            <span class="participant-status informed">Telah Diberitahu</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tab-content" id="historyTab">
+                            <div class="history-timeline">
+                                <div class="history-item">
+                                    <div class="history-icon">
+                                        <i class="fas fa-calendar-plus"></i>
+                                    </div>
+                                    <div class="history-content">
+                                        <h5>Jadwal Dibuat</h5>
+                                        <p>Jadwal konseling dibuat oleh Administrator</p>
+                                        <span class="history-time">14 Jan 2024, 10:30</span>
+                                    </div>
+                                </div>
+                                <div class="history-item">
+                                    <div class="history-icon">
+                                        <i class="fas fa-check-circle"></i>
+                                    </div>
+                                    <div class="history-content">
+                                        <h5>Dikonfirmasi</h5>
+                                        <p>Konselor telah mengkonfirmasi ketersediaan</p>
+                                        <span class="history-time">14 Jan 2024, 14:15</span>
+                                    </div>
+                                </div>
+                                <div class="history-item">
+                                    <div class="history-icon">
+                                        <i class="fas fa-bell"></i>
+                                    </div>
+                                    <div class="history-content">
+                                        <h5>Notifikasi Dikirim</h5>
+                                        <p>Notifikasi telah dikirim ke siswa dan orang tua</p>
+                                        <span class="history-time">14 Jan 2024, 15:00</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tab-content" id="documentsTab">
+                            <div class="documents-list">
+                                <div class="document-item">
+                                    <i class="fas fa-file-alt"></i>
+                                    <div class="document-info">
+                                        <h5>Form Persetujuan Orang Tua</h5>
+                                        <span>Dokumen persetujuan konseling</span>
+                                    </div>
+                                    <button class="btn-icon">
+                                        <i class="fas fa-download"></i>
+                                    </button>
+                                </div>
+                                <div class="document-item">
+                                    <i class="fas fa-file-medical"></i>
+                                    <div class="document-info">
+                                        <h5>Catatan Konseling Sebelumnya</h5>
+                                        <span>Riwayat konseling siswa</span>
+                                    </div>
+                                    <button class="btn-icon">
+                                        <i class="fas fa-download"></i>
+                                    </button>
+                                </div>
+                                <div class="document-item">
+                                    <i class="fas fa-chart-line"></i>
+                                    <div class="document-info">
+                                        <h5>Laporan Akademik Siswa</h5>
+                                        <span>Perkembangan nilai 6 bulan terakhir</span>
+                                    </div>
+                                    <button class="btn-icon">
+                                        <i class="fas fa-download"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeViewModal()">Tutup</button>
+                <button class="btn btn-primary" onclick="editFromView()">
+                    <i class="fas fa-edit"></i> Edit Jadwal
+                </button>
+                <button class="btn btn-success" onclick="startCounseling()">
+                    <i class="fas fa-play"></i> Mulai Konseling
+                </button>
+                <button class="btn btn-danger" onclick="cancelScheduleFromView()">
+                    <i class="fas fa-times"></i> Batalkan
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="../assets/js/main.js"></script>
+    <script src="../assets/js/admin-bk-schedule.js"></script>
+    <script>
+        let currentScheduleId = null;
+        let isEditMode = false;
+        let calendar;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize calendar
+            initCalendar();
+            
+            // Initialize charts
+            initCharts();
+            
+            // Mobile menu
+            const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+            const sidebar = document.getElementById('sidebar');
+            
+            if (mobileMenuToggle && sidebar) {
+                mobileMenuToggle.addEventListener('click', function() {
+                    sidebar.classList.toggle('active');
+                    mobileMenuToggle.innerHTML = sidebar.classList.contains('active') 
+                        ? '<i class="fas fa-times"></i>' 
+                        : '<i class="fas fa-bars"></i>';
+                });
+            }
+
+            // Set default date to today
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('scheduleDate').value = today;
+            document.getElementById('filterDate').value = today;
+        });
+
+        function initCalendar() {
+            const calendarEl = document.getElementById('calendar');
+            calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                },
+                events: [
+                    {
+                        title: 'Konseling Akademik - Andi',
+                        start: '2024-01-15T08:00:00',
+                        end: '2024-01-15T09:00:00',
+                        color: '#4CAF50',
+                        extendedProps: {
+                            counselor: 'Budi Santoso',
+                            type: 'academic'
+                        }
+                    },
+                    {
+                        title: 'Konseling Karir - Siti',
+                        start: '2024-01-15T10:00:00',
+                        end: '2024-01-15T11:00:00',
+                        color: '#2196F3',
+                        extendedProps: {
+                            counselor: 'Siti Nurhaliza',
+                            type: 'career'
+                        }
+                    },
+                    {
+                        title: 'Konseling Sosial - Rizki',
+                        start: '2024-01-15T13:00:00',
+                        end: '2024-01-15T14:00:00',
+                        color: '#FF9800',
+                        extendedProps: {
+                            counselor: 'Ahmad Hidayat',
+                            type: 'social'
+                        }
+                    }
+                ],
+                eventClick: function(info) {
+                    viewScheduleFromCalendar(info.event);
+                },
+                eventContent: function(info) {
+                    const typeIcon = info.event.extendedProps.type === 'academic' ? '📚' : 
+                                   info.event.extendedProps.type === 'career' ? '🎯' : '🤝';
+                    
+                    return {
+                        html: `
+                            <div class="fc-event-content">
+                                <div class="fc-event-title">${typeIcon} ${info.event.title}</div>
+                                <div class="fc-event-counselor">${info.event.extendedProps.counselor}</div>
+                            </div>
+                        `
+                    };
+                },
+                locale: 'id',
+                buttonText: {
+                    today: 'Hari Ini',
+                    month: 'Bulan',
+                    week: 'Minggu',
+                    day: 'Hari'
+                }
+            });
+            calendar.render();
+
+            // Calendar controls
+            document.getElementById('prevWeek').addEventListener('click', function() {
+                calendar.prev();
+                updateWeekDisplay();
+            });
+
+            document.getElementById('nextWeek').addEventListener('click', function() {
+                calendar.next();
+                updateWeekDisplay();
+            });
+        }
+
+        function updateWeekDisplay() {
+            const currentDate = calendar.getDate();
+            const options = { month: 'long', year: 'numeric' };
+            document.getElementById('currentWeek').textContent = 
+                currentDate.toLocaleDateString('id-ID', options);
+        }
+
+        function changeViewMode() {
+            const viewMode = document.getElementById('viewMode').value;
+            calendar.changeView(viewMode);
+        }
+
+        function initCharts() {
+            // Counseling Type Chart
+            const typeCtx = document.getElementById('counselingTypeChart').getContext('2d');
+            new Chart(typeCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Akademik', 'Karir', 'Sosial', 'Pribadi', 'Lainnya'],
+                    datasets: [{
+                        data: [45, 25, 15, 10, 5],
+                        backgroundColor: [
+                            '#4CAF50',
+                            '#2196F3',
+                            '#FF9800',
+                            '#9C27B0',
+                            '#607D8B'
+                        ],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+
+            // Demand Trend Chart
+            const trendCtx = document.getElementById('demandTrendChart').getContext('2d');
+            new Chart(trendCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun'],
+                    datasets: [{
+                        label: 'Jumlah Konseling',
+                        data: [120, 135, 142, 155, 148, 160],
+                        borderColor: '#4CAF50',
+                        backgroundColor: 'rgba(76, 175, 80, 0.1)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            grid: {
+                                color: 'rgba(0,0,0,0.05)'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function showAddModal() {
+            isEditMode = false;
+            currentScheduleId = null;
+            document.getElementById('modalTitle').textContent = 'Tambah Jadwal BK Baru';
+            document.getElementById('scheduleForm').reset();
+            
+            // Set default time
+            const now = new Date();
+            const startTime = new Date(now.getTime() + 60 * 60 * 1000); // 1 hour from now
+            const endTime = new Date(startTime.getTime() + 60 * 60 * 1000); // 2 hours from now
+            
+            document.getElementById('startTime').value = startTime.toTimeString().slice(0, 5);
+            document.getElementById('endTime').value = endTime.toTimeString().slice(0, 5);
+            
+            document.getElementById('scheduleModal').style.display = 'block';
+        }
+
+        function editSchedule(id) {
+            isEditMode = true;
+            currentScheduleId = id;
+            document.getElementById('modalTitle').textContent = 'Edit Jadwal BK';
+            loadScheduleData(id);
+            document.getElementById('scheduleModal').style.display = 'block';
+        }
+
+        function viewSchedule(id) {
+            currentScheduleId = id;
+            loadViewData(id);
+            document.getElementById('viewModal').style.display = 'block';
+        }
+
+        function viewScheduleFromCalendar(event) {
+            const scheduleId = event.id || 1; // Get from event data
+            viewSchedule(scheduleId);
+        }
+
+        function viewCounselorSchedule(counselorId) {
+            alert(`Melihat jadwal konselor #${counselorId}`);
+            // Implement view counselor schedule
+        }
+
+        function loadScheduleData(id) {
+            // Simulate loading data
+            const scheduleData = {
+                counselor: '1',
+                student: '1',
+                counselingType: 'academic',
+                priority: 'high',
+                scheduleDate: '2024-01-15',
+                startTime: '08:00',
+                endTime: '09:00',
+                location: 'Ruang BK 1',
+                topic: 'Konseling Akademik',
+                description: 'Siswa mengalami penurunan nilai akademik yang signifikan dalam 3 bulan terakhir. Perlu konseling untuk mengidentifikasi penyebab dan solusi.',
+                notes: 'Orang tua telah dihubungi dan menyetujui konseling ini.',
+                status: 'scheduled',
+                notifyStudent: true,
+                notifyCounselor: true,
+                notifyParent: true
+            };
+
+            // Populate form
+            Object.keys(scheduleData).forEach(key => {
+                const element = document.getElementById(key);
+                if (element) {
+                    if (element.type === 'checkbox') {
+                        element.checked = scheduleData[key];
+                    } else {
+                        element.value = scheduleData[key];
+                    }
+                }
+            });
+        }
+
+        function loadViewData(id) {
+            // Simulate loading view data
+            const viewData = {
+                topic: 'Konseling Akademik',
+                code: 'BK-2024-001',
+                type: 'Akademik',
+                status: 'scheduled',
+                priority: 'Tinggi',
+                date: '15 Januari 2024',
+                time: '08:00 - 09:00 (60 menit)',
+                location: 'Ruang BK 1',
+                duration: '60 menit',
+                description: 'Siswa mengalami penurunan nilai akademik yang signifikan dalam 3 bulan terakhir. Perlu konseling untuk mengidentifikasi penyebab dan solusi.',
+                notes: 'Orang tua telah dihubungi dan menyetujui konseling ini.',
+                counselor: 'Budi Santoso, S.Pd',
+                student: 'Andi Pratama'
+            };
+
+            // Populate view
+            Object.keys(viewData).forEach(key => {
+                const element = document.getElementById('view' + key.charAt(0).toUpperCase() + key.slice(1));
+                if (element) {
+                    element.textContent = viewData[key];
+                    
+                    if (element.classList) {
+                        if (element.classList.contains('status-badge')) {
+                            element.className = 'status-badge ' + viewData[key];
+                        } else if (element.classList.contains('badge')) {
+                            element.className = 'badge badge-' + viewData[key].toLowerCase();
+                        } else if (element.classList.contains('priority-badge')) {
+                            element.className = 'priority-badge ' + viewData[key].toLowerCase();
+                        }
+                    }
+                }
+            });
+        }
+
+        function saveSchedule() {
+            const form = document.getElementById('scheduleForm');
+            if (form.checkValidity()) {
+                if (isEditMode) {
+                    alert(`Jadwal BK #${currentScheduleId} berhasil diperbarui!`);
+                } else {
+                    alert('Jadwal BK baru berhasil ditambahkan!');
+                    // Add to calendar
+                    addToCalendar();
+                }
+                closeModal();
+            } else {
+                alert('Harap lengkapi semua field yang wajib diisi!');
+            }
+        }
+
+        function addToCalendar() {
+            // Get form data
+            const topic = document.getElementById('topic').value;
+            const date = document.getElementById('scheduleDate').value;
+            const startTime = document.getElementById('startTime').value;
+            const endTime = document.getElementById('endTime').value;
+            const counselor = document.getElementById('counselor').options[document.getElementById('counselor').selectedIndex].text;
+            const type = document.getElementById('counselingType').value;
+
+            // Add event to calendar
+            calendar.addEvent({
+                title: topic,
+                start: date + 'T' + startTime,
+                end: date + 'T' + endTime,
+                color: getTypeColor(type),
+                extendedProps: {
+                    counselor: counselor,
+                    type: type
+                }
+            });
+        }
+
+        function getTypeColor(type) {
+            const colors = {
+                'academic': '#4CAF50',
+                'career': '#2196F3',
+                'social': '#FF9800',
+                'personal': '#9C27B0',
+                'other': '#607D8B'
+            };
+            return colors[type] || '#4CAF50';
+        }
+
+        function cancelSchedule(id) {
+            if (confirm('Apakah Anda yakin ingin membatalkan jadwal ini?')) {
+                alert(`Jadwal #${id} berhasil dibatalkan!`);
+                // Implement cancel functionality
+            }
+        }
+
+        function cancelScheduleFromView() {
+            if (confirm('Batalkan jadwal konseling ini?')) {
+                alert('Jadwal berhasil dibatalkan!');
+                closeViewModal();
+            }
+        }
+
+        function startCounseling() {
+            alert('Memulai sesi konseling...');
+            // Implement start counseling functionality
+        }
+
+        function filterSchedule() {
+            const counselorFilter = document.getElementById('filterCounselor').value;
+            const statusFilter = document.getElementById('filterStatus').value;
+            const dateFilter = document.getElementById('filterDate').value;
+            const searchTerm = document.getElementById('searchSchedule').value.toLowerCase();
+            
+            // Implement filtering logic
+            console.log(`Filtering: Counselor=${counselorFilter}, Status=${statusFilter}, Date=${dateFilter}, Search=${searchTerm}`);
+        }
+
+        function resetFilters() {
+            document.getElementById('filterCounselor').value = 'all';
+            document.getElementById('filterStatus').value = 'all';
+            document.getElementById('filterDate').value = '';
+            document.getElementById('searchSchedule').value = '';
+            filterSchedule();
+        }
+
+        function updateStatistics() {
+            const period = document.getElementById('statPeriod').value;
+            alert(`Memperbarui statistik untuk periode: ${period}`);
+            // Implement statistics update
+        }
+
+        function closeModal() {
+            document.getElementById('scheduleModal').style.display = 'none';
+        }
+
+        function closeViewModal() {
+            document.getElementById('viewModal').style.display = 'none';
+        }
+
+        function editFromView() {
+            closeViewModal();
+            editSchedule(currentScheduleId);
+        }
+
+        function showTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Remove active class from all buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Show selected tab
+            document.getElementById(tabName + 'Tab').classList.add('active');
+            
+            // Add active class to clicked button
+            event.currentTarget.classList.add('active');
+        }
+
+        // Close modals when clicking outside
+        window.onclick = function(event) {
+            const modals = document.querySelectorAll('.modal');
+            modals.forEach(modal => {
+                if (event.target === modal) {
+                    modal.style.display = 'none';
+                }
+            });
+        };
+    </script>
+</body>
+</html>

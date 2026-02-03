@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Admin - SIAKAD SMA Mishbahul Ulum</title>
+    <link rel="stylesheet" href="{{asset('assets/css/main.css')}}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        fetch('/api/admin/dashboardAdmin', {
+            headers: {
+                'Authorization': 'Bearer ' + localStorage.getItem('token'),
+                'Accept': 'application/json'
+            }
+        })
+            .then(res => res.json())
+            .then(res => {
+                const data = res.data;
+                document.getElementById('gurus-count').innerText  = data.gurus.length;
+                document.getElementById('siswas-count').innerText = data.siswas.length;
+                document.getElementById('kelas-count').innerText  = data.kelas.length;
+                document.getElementById('mapel-count').innerText  = data.mapel.length;
+            });
+    });
+</script>
+<body>
+    <!-- Mobile Menu Toggle -->
+    <button class="mobile-menu-toggle" id="mobileMenuToggle">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- Sidebar Navigation -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="user-profile">
+                <img src="../assets/images/user-avatar.png" alt="Avatar Admin">
+                <div class="user-info">
+                    <h4>Administrator</h4>
+                    <span class="role-badge">Admin Sistem</span>
+                </div>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <ul>
+                <li class="active">
+                    <a href="/admin/dashboard">
+                        <i class="fas fa-home"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/admin/siswa">
+                        <i class="fas fa-users"></i>
+                        <span>Data Siswa</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/admin/guru">
+                        <i class="fas fa-chalkboard-teacher"></i>
+                        <span>Data Guru</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/admin/kelas">
+                        <i class="fas fa-school"></i>
+                        <span>Data Kelas</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/admin/mapel">
+                        <i class="fas fa-book"></i>
+                        <span>Mata Pelajaran</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/admin/jadwal-bk">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>Jadwal BK</span>
+                    </a>
+                </li>
+                <li class="divider"></li>
+                <li>
+                    <a href="/logout">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Keluar</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content" id="mainContent">
+        <!-- Top Header -->
+        <header class="top-header">
+            <div class="header-left">
+                <h1>Dashboard Administrator</h1>
+                <p class="breadcrumb">Dashboard / Admin</p>
+            </div>
+            <div class="header-right">
+                <div class="date-display">
+                    <span id="current-date">Senin, 15 Januari 2024</span>
+                    <span id="current-time">08:30 AM</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content Container -->
+        <div class="content-container">
+            <!-- Welcome Card -->
+            <div class="welcome-card admin-welcome">
+                <div class="welcome-content">
+                    <h2><i class="fas fa-crown"></i> Selamat datang, <strong>Administrator</strong>!</h2>
+                    <p>Anda dapat mengelola seluruh sistem akademik SMA Mishbahul Ulum dari dashboard ini.</p>
+                </div>
+                <div class="welcome-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+            </div>
+
+            <!-- Stats Grid -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="siswas-count">0</h3>
+                        <p>Total Siswa</p>
+                        <div class="stat-trend up">
+
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                        <i class="fas fa-chalkboard-teacher"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="gurus-count">0</h3>
+                        <p>Total Guru</p>
+                        <div class="stat-trend up">
+
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                        <i class="fas fa-school"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="kelas-count">0</h3>
+                        <p>Total Kelas</p>
+                        <div class="stat-trend stable">
+
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">
+                        <i class="fas fa-book-open"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="mapel-count">0</h3>
+                        <p>Mata Pelajaran</p>
+                        <div class="stat-trend up">
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Content Grid -->
+            <div class="content-grid">
+                <!-- Left Column -->
+                <div class="left-column">
+                    <!-- Quick Actions -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-bolt"></i> Tindakan Cepat</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="quick-actions-grid">
+                                <button class="quick-action-btn" onclick="location.href='/admin/siswa'">
+                                    <div class="action-icon">
+                                        <i class="fas fa-user-plus"></i>
+                                    </div>
+                                    <span>Tambah Siswa</span>
+                                </button>
+                                <button class="quick-action-btn" onclick="location.href='/admin/guru'">
+                                    <div class="action-icon">
+                                        <i class="fas fa-user-tie"></i>
+                                    </div>
+                                    <span>Tambah Guru</span>
+                                </button>
+                                <button class="quick-action-btn" onclick="location.href='/admin/kelas'">
+                                    <div class="action-icon">
+                                        <i class="fas fa-plus-circle"></i>
+                                    </div>
+                                    <span>Buat Kelas</span>
+                                </button>
+                                <button class="quick-action-btn" onclick="showReportModal()">
+                                    <div class="action-icon">
+                                        <i class="fas fa-chart-bar"></i>
+                                    </div>
+                                    <span>Generate Report</span>
+                                </button>
+
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Activities -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-history"></i> Aktivitas Terbaru</h3>
+                            <a href="#" class="btn-link">Lihat Semua</a>
+                        </div>
+                        <div class="card-body">
+                            <div class="activity-list">
+                                <div class="activity-item">
+                                    <div class="activity-icon success">
+                                        <i class="fas fa-user-plus"></i>
+                                    </div>
+                                    <div class="activity-content">
+                                        <h5>Siswa Baru Ditambahkan</h5>
+                                        <p>Ahmad Fauzi (X MIPA 1) telah ditambahkan ke sistem</p>
+                                        <span class="activity-time">10 menit yang lalu</span>
+                                    </div>
+                                </div>
+                                <div class="activity-item">
+                                    <div class="activity-icon warning">
+                                        <i class="fas fa-exclamation-triangle"></i>
+                                    </div>
+                                    <div class="activity-content">
+                                        <h5>Peringatan Sistem</h5>
+                                        <p>Backup otomatis akan dilakukan malam ini pukul 00:00</p>
+                                        <span class="activity-time">1 jam yang lalu</span>
+                                    </div>
+                                </div>
+                                <div class="activity-item">
+                                    <div class="activity-icon info">
+                                        <i class="fas fa-chalkboard-teacher"></i>
+                                    </div>
+                                    <div class="activity-content">
+                                        <h5>Update Data Guru</h5>
+                                        <p>Data guru matematika telah diperbarui</p>
+                                        <span class="activity-time">3 jam yang lalu</span>
+                                    </div>
+                                </div>
+                                <div class="activity-item">
+                                    <div class="activity-icon primary">
+                                        <i class="fas fa-file-export"></i>
+                                    </div>
+                                    <div class="activity-content">
+                                        <h5>Report Generated</h5>
+                                        <p>Laporan bulanan Desember 2023 telah diexport</p>
+                                        <span class="activity-time">5 jam yang lalu</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column -->
+                <div class="right-column">
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="{{asset('assets/js/main.js')}}"></script>
+    <script src="{{asset('assets/js/admin-dashboard.js')}}"></script>
+    <script>
+        // Update date and time
+        function updateDateTime() {
+            const now = new Date();
+
+            // Update date
+            const dateOptions = {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            };
+            document.getElementById('current-date').textContent =
+                now.toLocaleDateString('id-ID', dateOptions);
+
+            // Update time
+            const timeOptions = {
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: true
+            };
+            document.getElementById('current-time').textContent =
+                now.toLocaleTimeString('id-ID', timeOptions);
+        }
+
+        // Initialize charts
+        function initCharts() {
+            // Student Growth Chart
+            const studentCtx = document.getElementById('studentGrowthChart').getContext('2d');
+            new Chart(studentCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun'],
+                    datasets: [{
+                        label: 'Jumlah Siswa',
+                        data: [420, 430, 435, 440, 445, 452],
+                        borderColor: '#4CAF50',
+                        backgroundColor: 'rgba(76, 175, 80, 0.1)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            grid: {
+                                color: 'rgba(0,0,0,0.05)'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Class Distribution Chart
+            const classCtx = document.getElementById('classDistributionChart').getContext('2d');
+            new Chart(classCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['X MIPA', 'X IPS', 'XI MIPA', 'XI IPS', 'XII MIPA', 'XII IPS'],
+                    datasets: [{
+                        data: [80, 70, 75, 68, 85, 74],
+                        backgroundColor: [
+                            '#4CAF50',
+                            '#2196F3',
+                            '#FF9800',
+                            '#9C27B0',
+                            '#F44336',
+                            '#00BCD4'
+                        ],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+        }
+
+        // Mobile menu toggle
+        document.addEventListener('DOMContentLoaded', function() {
+            // Update date and time
+            updateDateTime();
+            setInterval(updateDateTime, 60000);
+
+            // Initialize charts
+            initCharts();
+
+            // Mobile menu
+            const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+            const sidebar = document.getElementById('sidebar');
+
+            if (mobileMenuToggle && sidebar) {
+                mobileMenuToggle.addEventListener('click', function() {
+                    sidebar.classList.toggle('active');
+                    mobileMenuToggle.innerHTML = sidebar.classList.contains('active')
+                        ? '<i class="fas fa-times"></i>'
+                        : '<i class="fas fa-bars"></i>';
+                });
+            }
+
+            // Chart period change
+            document.getElementById('chartPeriod').addEventListener('change', function() {
+                alert('Mengubah periode grafik menjadi: ' + this.value);
+                // Implement chart data reload
+            });
+        });
+
+        function showReportModal() {
+            alert('Membuka modal untuk generate report');
+            // Implement report modal
+        }
+
+        function backupSystem() {
+            if (confirm('Lakukan backup sistem sekarang?')) {
+                alert('Backup sedang diproses...');
+                // Implement backup functionality
+            }
+        }
+    </script>
+</body>
+</html>

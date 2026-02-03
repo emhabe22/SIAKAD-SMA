@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Siakad SMA Mishbahul Ulum</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #E8F7EF, #FFFFFF);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #333;
+        }
+
+        .container {
+            text-align: center;
+            max-width: 600px;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 155, 72, 0.1);
+        }
+
+        .logo {
+            font-size: 4rem;
+            color: #009B48;
+            margin-bottom: 1rem;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        h1 {
+            color: #009B48;
+            margin-bottom: 0.5rem;
+            font-size: 2.2rem;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
+
+        .status {
+            background: #f0f9f4;
+            padding: 1rem;
+            border-radius: 10px;
+            margin: 1.5rem 0;
+            border-left: 4px solid #009B48;
+        }
+
+        .loading {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #009B48;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 1rem auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .message {
+            margin: 1.5rem 0;
+            padding: 1rem;
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            color: #856404;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.8rem 1.5rem;
+            background: linear-gradient(135deg, #009B48, #00C853);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            margin: 0.5rem;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 155, 72, 0.3);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid #009B48;
+            color: #009B48;
+        }
+
+        .btn-outline:hover {
+            background: #009B48;
+            color: white;
+        }
+
+        .footer {
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid #eee;
+            color: #888;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <i class="fas fa-graduation-cap"></i>
+        </div>
+
+        <h1>Siakad SMA Mishbahul Ulum</h1>
+        <p class="subtitle">Sistem Informasi Akademik Terpadu</p>
+
+        <div class="status">
+            <p><strong>Status Sistem:</strong> <span style="color: #009B48;">● Online</span></p>
+            <p>Mengarahkan ke halaman login...</p>
+        </div>
+
+        <div class="loading"></div>
+
+        <div class="message">
+            <p>Jika tidak otomatis terarah dalam 5 detik, gunakan tombol di bawah:</p>
+        </div>
+
+        <div>
+            <a href="login.html" class="btn">
+                <i class="fas fa-sign-in-alt"></i> Halaman Login
+            </a>
+
+            <button onclick="directAccess()" class="btn btn-outline">
+                <i class="fas fa-user-graduate"></i> Akses Langsung
+            </button>
+        </div>
+
+        <div class="footer">
+            <p>&copy; 2024 Siakad SMA Mishbahul Ulum. Versi 1.0.0</p>
+            <p style="font-size: 0.8rem; margin-top: 0.5rem;">
+                Server: <span id="server-url">http://localhost:3000</span>
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Set server URL
+        document.getElementById('server-url').textContent = window.location.origin;
+
+        // Cek apakah sudah login
+        function checkAuth() {
+            const isAuthenticated = localStorage.getItem('isAuthenticated');
+            const userRole = localStorage.getItem('userRole');
+
+            if (isAuthenticated === 'true' && userRole) {
+                return userRole;
+            }
+            return null;
+        }
+
+        // Redirect berdasarkan status login
+        function redirectUser() {
+            const role = checkAuth();
+
+            if (role) {
+                // Sudah login, redirect ke dashboard sesuai role
+                window.location.href = `${role}/dashboard`;
+            } else {
+                // Belum login, redirect ke halaman login
+                window.location.href = '/login';
+            }
+        }
+
+        // Tombol akses langsung (untuk testing)
+        function directAccess() {
+            const roles = ['admin', 'siswa', 'guru', 'bk'];
+            let html = '<p><strong>Pilih role untuk testing:</strong></p>';
+
+            roles.forEach(role => {
+                html += `<button onclick="goToRole('${role}')" style="margin: 5px; padding: 8px 15px; background: #009B48; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                    <i class="fas fa-${getRoleIcon(role)}"></i> ${role.toUpperCase()}
+                </button>`;
+            });
+
+            document.querySelector('.message').innerHTML = html;
+        }
+
+        function goToRole(role) {
+            // Simpan data demo
+            localStorage.setItem('isAuthenticated', 'true');
+            localStorage.setItem('userRole', role);
+            localStorage.setItem('userData', JSON.stringify({
+                id: 1,
+                username: `${role}01`,
+                name: `Demo ${role}`,
+                role: role,
+                email: `${role}01@smamu.sch.id`
+            }));
+
+            window.location.href = `${role}/dashboard.html`;
+        }
+
+        function getRoleIcon(role) {
+            const icons = {
+                'admin': 'user-shield',
+                'siswa': 'user-graduate',
+                'guru': 'chalkboard-teacher',
+                'bk': 'hands-helping'
+            };
+            return icons[role] || 'user';
+        }
+
+        // Auto redirect setelah 3 detik
+        setTimeout(() => {
+            redirectUser();
+        }, 3000);
+
+        // Manual redirect jika diperlukan
+        document.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                redirectUser();
+            }
+        });
+    </script>
+
+    <!-- Font Awesome -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+</body>
+</html>
