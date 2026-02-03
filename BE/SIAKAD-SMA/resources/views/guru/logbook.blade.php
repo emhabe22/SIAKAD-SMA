@@ -1,14 +1,17 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Logbook Guru - SIAKAD SMA Mishbahul Ulum</title>
-    <link rel="stylesheet" href="../assets/css/main.css">
-    <link rel="stylesheet" href="../assets/css/layout.css">
-    <link rel="stylesheet" href="../assets/css/components.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
+@extends('layouts.app')
+
+@section('title', 'Logbook Mengajar - SIAKAD SMA Mishbahul Ulum')
+@section('page-title', 'Logbook Mengajar')
+@section('breadcrumb', 'Guru / Logbook')
+
+@php
+    $role = 'guru';
+    $userName = 'Budi Santoso, S.Pd';
+    $userRole = 'Guru Matematika';
+@endphp
+
+@push('styles')
+<style>
         /* Styling khusus untuk logbook */
         .logbook-entries {
             display: flex;
@@ -542,77 +545,9 @@
             }
         }
     </style>
-</head>
-<body>
-    <!-- Sidebar Navigation -->
-    <div class="sidebar">
-        <div class="sidebar-header">
-            <div class="user-profile">
-                <img src="../assets/images/user-avatar.png" alt="Avatar Guru">
-                <div class="user-info">
-                    <h4>Budi Santoso, S.Pd</h4>
-                    <span class="role-badge">Guru Matematika</span>
-                </div>
-            </div>
-        </div>
+@endpush
 
-        <nav class="sidebar-nav">
-            <ul>
-                <li>
-                    <a href="dashboard.html">
-                        <i class="fas fa-home"></i>
-                        <span>Dashboard</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="jadwal-mengajar.html">
-                        <i class="fas fa-calendar-alt"></i>
-                        <span>Jadwal Mengajar</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="absensi.html">
-                        <i class="fas fa-clipboard-check"></i>
-                        <span>Absensi Siswa</span>
-                    </a>
-                </li>
-                <li class="active">
-                    <a href="logbook.html">
-                        <i class="fas fa-book"></i>
-                        <span>Logbook</span>
-                    </a>
-                </li>
-                <!-- FITUR DIHAPUS: Nilai Siswa -->
-                <li class="divider"></li>
-                <li>
-                    <a href="../login.html">
-                        <i class="fas fa-sign-out-alt"></i>
-                        <span>Keluar</span>
-                    </a>
-                </li>
-            </ul>
-        </nav>
-    </div>
-
-    <!-- Main Content -->
-    <div class="main-content">
-        <!-- Top Header -->
-        <header class="top-header">
-            <div class="header-left">
-                <h1>Logbook Guru</h1>
-                <p class="breadcrumb">Guru / Logbook</p>
-            </div>
-            <div class="header-right">
-                <button class="btn btn-primary" onclick="showNewEntryModal()">
-                    <i class="fas fa-plus"></i> Entri Baru
-                </button>
-                <button class="btn btn-success" onclick="exportLogbook()">
-                    <i class="fas fa-download"></i> Export
-                </button>
-            </div>
-        </header>
-
-        <!-- Filter Section -->
+@section('content')
         <div class="filter-section">
             <div class="filter-group">
                 <label>Filter Bulan:</label>
@@ -1119,10 +1054,10 @@
             </div>
         </div>
     </div>
+@endsection
 
-    <script src="../assets/js/main.js"></script>
-    <script src="../assets/js/logbook.js"></script>
-    <script>
+@push('scripts')
+<script>
         let currentEntryId = null;
         let isEditMode = false;
 
@@ -1290,5 +1225,4 @@
         });
     });
 </script>
-</body>
-</html>
+@endpush

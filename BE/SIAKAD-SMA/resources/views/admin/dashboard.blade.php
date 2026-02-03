@@ -1,127 +1,30 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Admin - SIAKAD SMA Mishbahul Ulum</title>
-    <link rel="stylesheet" href="{{asset('assets/css/main.css')}}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-</head>
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        fetch('/api/admin/dashboardAdmin', {
-            headers: {
-                'Authorization': 'Bearer ' + localStorage.getItem('token'),
-                'Accept': 'application/json'
-            }
-        })
-            .then(res => res.json())
-            .then(res => {
-                const data = res.data;
-                document.getElementById('gurus-count').innerText  = data.gurus.length;
-                document.getElementById('siswas-count').innerText = data.siswas.length;
-                document.getElementById('kelas-count').innerText  = data.kelas.length;
-                document.getElementById('mapel-count').innerText  = data.mapel.length;
-            });
-    });
-</script>
-<body>
-    <!-- Mobile Menu Toggle -->
-    <button class="mobile-menu-toggle" id="mobileMenuToggle">
-        <i class="fas fa-bars"></i>
-    </button>
+@extends('layouts.app')
 
-    <!-- Sidebar Navigation -->
-    <div class="sidebar" id="sidebar">
-        <div class="sidebar-header">
-            <div class="user-profile">
-                <img src="../assets/images/user-avatar.png" alt="Avatar Admin">
-                <div class="user-info">
-                    <h4>Administrator</h4>
-                    <span class="role-badge">Admin Sistem</span>
-                </div>
-            </div>
-        </div>
+@section('title', 'Dashboard Admin - SIAKAD SMA Mishbahul Ulum')
 
-        <nav class="sidebar-nav">
-            <ul>
-                <li class="active">
-                    <a href="/admin/dashboard">
-                        <i class="fas fa-home"></i>
-                        <span>Dashboard</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="/admin/siswa">
-                        <i class="fas fa-users"></i>
-                        <span>Data Siswa</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="/admin/guru">
-                        <i class="fas fa-chalkboard-teacher"></i>
-                        <span>Data Guru</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="/admin/kelas">
-                        <i class="fas fa-school"></i>
-                        <span>Data Kelas</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="/admin/mapel">
-                        <i class="fas fa-book"></i>
-                        <span>Mata Pelajaran</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="/admin/jadwal-bk">
-                        <i class="fas fa-calendar-alt"></i>
-                        <span>Jadwal BK</span>
-                    </a>
-                </li>
-                <li class="divider"></li>
-                <li>
-                    <a href="/logout">
-                        <i class="fas fa-sign-out-alt"></i>
-                        <span>Keluar</span>
-                    </a>
-                </li>
-            </ul>
-        </nav>
+@section('page-title', 'Dashboard Administrator')
+@section('breadcrumb', 'Dashboard / Admin')
+@section('notification-count', '0')
+
+@php
+    $role = 'admin';
+    $userName = 'Administrator';
+    $userRole = 'Admin Sistem';
+@endphp
+
+@section('content')
+<!-- Welcome Card -->
+<div class="welcome-card admin-welcome">
+    <div class="welcome-content">
+        <h2><i class="fas fa-crown"></i> Selamat datang, <strong>Administrator</strong>!</h2>
+        <p>Anda dapat mengelola seluruh sistem akademik SMA Mishbahul Ulum dari dashboard ini.</p>
     </div>
+    <div class="welcome-icon">
+        <i class="fas fa-shield-alt"></i>
+    </div>
+</div>
 
-    <!-- Main Content -->
-    <div class="main-content" id="mainContent">
-        <!-- Top Header -->
-        <header class="top-header">
-            <div class="header-left">
-                <h1>Dashboard Administrator</h1>
-                <p class="breadcrumb">Dashboard / Admin</p>
-            </div>
-            <div class="header-right">
-                <div class="date-display">
-                    <span id="current-date">Senin, 15 Januari 2024</span>
-                    <span id="current-time">08:30 AM</span>
-                </div>
-            </div>
-        </header>
-
-        <!-- Main Content Container -->
-        <div class="content-container">
-            <!-- Welcome Card -->
-            <div class="welcome-card admin-welcome">
-                <div class="welcome-content">
-                    <h2><i class="fas fa-crown"></i> Selamat datang, <strong>Administrator</strong>!</h2>
-                    <p>Anda dapat mengelola seluruh sistem akademik SMA Mishbahul Ulum dari dashboard ini.</p>
-                </div>
-                <div class="welcome-icon">
-                    <i class="fas fa-shield-alt"></i>
-                </div>
-            </div>
-
-            <!-- Stats Grid -->
+<!-- Stats Grid -->
             <div class="stats-grid">
                 <div class="stat-card">
                     <div class="stat-icon" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
@@ -274,155 +177,35 @@
                     </div>
                 </div>
 
-                <!-- Right Column -->
-                <div class="right-column">
-
-
-                </div>
-            </div>
-        </div>
+    <!-- Right Column -->
+    <div class="right-column">
     </div>
+</div>
+@endsection
 
-    <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="{{asset('assets/js/main.js')}}"></script>
-    <script src="{{asset('assets/js/admin-dashboard.js')}}"></script>
-    <script>
-        // Update date and time
-        function updateDateTime() {
-            const now = new Date();
-
-            // Update date
-            const dateOptions = {
-                weekday: 'long',
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric'
-            };
-            document.getElementById('current-date').textContent =
-                now.toLocaleDateString('id-ID', dateOptions);
-
-            // Update time
-            const timeOptions = {
-                hour: '2-digit',
-                minute: '2-digit',
-                hour12: true
-            };
-            document.getElementById('current-time').textContent =
-                now.toLocaleTimeString('id-ID', timeOptions);
-        }
-
-        // Initialize charts
-        function initCharts() {
-            // Student Growth Chart
-            const studentCtx = document.getElementById('studentGrowthChart').getContext('2d');
-            new Chart(studentCtx, {
-                type: 'line',
-                data: {
-                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun'],
-                    datasets: [{
-                        label: 'Jumlah Siswa',
-                        data: [420, 430, 435, 440, 445, 452],
-                        borderColor: '#4CAF50',
-                        backgroundColor: 'rgba(76, 175, 80, 0.1)',
-                        borderWidth: 2,
-                        fill: true,
-                        tension: 0.4
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: {
-                            display: false
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: false,
-                            grid: {
-                                color: 'rgba(0,0,0,0.05)'
-                            }
-                        },
-                        x: {
-                            grid: {
-                                display: false
-                            }
-                        }
-                    }
-                }
-            });
-
-            // Class Distribution Chart
-            const classCtx = document.getElementById('classDistributionChart').getContext('2d');
-            new Chart(classCtx, {
-                type: 'doughnut',
-                data: {
-                    labels: ['X MIPA', 'X IPS', 'XI MIPA', 'XI IPS', 'XII MIPA', 'XII IPS'],
-                    datasets: [{
-                        data: [80, 70, 75, 68, 85, 74],
-                        backgroundColor: [
-                            '#4CAF50',
-                            '#2196F3',
-                            '#FF9800',
-                            '#9C27B0',
-                            '#F44336',
-                            '#00BCD4'
-                        ],
-                        borderWidth: 0
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: {
-                            position: 'bottom'
-                        }
-                    }
-                }
-            });
-        }
-
-        // Mobile menu toggle
-        document.addEventListener('DOMContentLoaded', function() {
-            // Update date and time
-            updateDateTime();
-            setInterval(updateDateTime, 60000);
-
-            // Initialize charts
-            initCharts();
-
-            // Mobile menu
-            const mobileMenuToggle = document.getElementById('mobileMenuToggle');
-            const sidebar = document.getElementById('sidebar');
-
-            if (mobileMenuToggle && sidebar) {
-                mobileMenuToggle.addEventListener('click', function() {
-                    sidebar.classList.toggle('active');
-                    mobileMenuToggle.innerHTML = sidebar.classList.contains('active')
-                        ? '<i class="fas fa-times"></i>'
-                        : '<i class="fas fa-bars"></i>';
-                });
+@push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Fetch dashboard data
+    document.addEventListener('DOMContentLoaded', () => {
+        fetch('/api/admin/dashboardAdmin', {
+            headers: {
+                'Authorization': 'Bearer ' + localStorage.getItem('token'),
+                'Accept': 'application/json'
             }
-
-            // Chart period change
-            document.getElementById('chartPeriod').addEventListener('change', function() {
-                alert('Mengubah periode grafik menjadi: ' + this.value);
-                // Implement chart data reload
-            });
+        })
+        .then(res => res.json())
+        .then(res => {
+            const data = res.data;
+            document.getElementById('gurus-count').innerText  = data.gurus.length;
+            document.getElementById('siswas-count').innerText = data.siswas.length;
+            document.getElementById('kelas-count').innerText  = data.kelas.length;
+            document.getElementById('mapel-count').innerText  = data.mapel.length;
         });
+    });
 
-        function showReportModal() {
-            alert('Membuka modal untuk generate report');
-            // Implement report modal
-        }
-
-        function backupSystem() {
-            if (confirm('Lakukan backup sistem sekarang?')) {
-                alert('Backup sedang diproses...');
-                // Implement backup functionality
-            }
-        }
-    </script>
-</body>
-</html>
+    function showReportModal() {
+        alert('Membuka modal untuk generate report');
+    }
+</script>
+@endpush

@@ -1,13 +1,16 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Absensi - SIAKAD SMA Mishbahul Ulum</title>
-    <link rel="stylesheet" href="/assets/css/main.css">
-    <link rel="stylesheet" href="/assets/css/layout.css">
-    <link rel="stylesheet" href="/assets/css/components.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+@extends('layouts.app')
+
+@section('title', 'Absensi Saya - SIAKAD SMA Mishbahul Ulum')
+@section('page-title', 'Absensi Saya')
+@section('breadcrumb', 'Siswa / Absensi')
+
+@php
+    $role = 'siswa';
+    $userName = 'Ahmad Fauzi';
+    $userRole = 'Siswa X MIPA 1';
+@endphp
+
+@push('styles')
     <style>
         /* Styles khusus untuk halaman absensi */
         .attendance-container {
@@ -341,99 +344,9 @@
             }
         }
     </style>
-</head>
-<body>
-    <div class="container">
-        <!-- Sidebar Navigation -->
-        <aside class="sidebar">
-            <div class="sidebar-header">
-                <div class="logo">
-                    <i class="fas fa-graduation-cap"></i>
-                    <h2>SIAKAD<br><span>SMA Mishbahul Ulum</span></h2>
-                </div>
-            </div>
-            
-            <div class="sidebar-menu">
-                <div class="user-info">
-                    <div class="user-avatar">
-                        <i class="fas fa-user-circle"></i>
-                    </div>
-                    <div class="user-details">
-                        <h4 class="user-name">Nama Siswa</h4>
-                        <span class="user-role badge badge-primary">SISWA</span>
-                    </div>
-                </div>
-                
-                <nav>
-                    <ul>
-                        <li>
-                            <a href="dashboard.html">
-                                <i class="fas fa-home"></i>
-                                <span>Dashboard</span>
-                            </a>
-                        </li>
-                        <li class="active">
-                            <a href="absensi.html">
-                                <i class="fas fa-calendar-check"></i>
-                                <span>Absensi</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="bk.html">
-                                <i class="fas fa-hands-helping"></i>
-                                <span>Bimbingan Konseling</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="surat-pemanggilan.html">
-                                <i class="fas fa-envelope"></i>
-                                <span>Surat Pemanggilan</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="/index.html">
-                                <i class="fas fa-info-circle"></i>
-                                <span>Informasi Sekolah</span>
-                            </a>
-                        </li>
-                    </ul>
-                </nav>
-            </div>
-            
-            <div class="sidebar-footer">
-                <a href="#" id="logoutBtn" class="logout-btn">
-                    <i class="fas fa-sign-out-alt"></i>
-                    <span>Keluar</span>
-                </a>
-            </div>
-        </aside>
+@endpush
 
-        <!-- Main Content -->
-        <main class="content">
-            <!-- Top Navigation -->
-            <header class="top-nav">
-                <div class="nav-left">
-                    <button class="menu-toggle">
-                        <i class="fas fa-bars"></i>
-                    </button>
-                    <h1>Absensi</h1>
-                </div>
-                <div class="nav-right">
-                    <div class="notifications">
-                        <button class="notification-btn">
-                            <i class="fas fa-bell"></i>
-                            <span class="notification-count">2</span>
-                        </button>
-                    </div>
-                    <div class="date-display">
-                        <i class="fas fa-calendar-alt"></i>
-                        <span id="currentDate">Senin, 1 Januari 2024</span>
-                    </div>
-                </div>
-            </header>
-
-            <!-- Main Content -->
-            <div class="main-content">
+@section('content')
                 <!-- Welcome Banner -->
                 <div class="welcome-banner" style="background: linear-gradient(135deg, #0066CC, #009B48);">
                     <div class="welcome-text">
@@ -648,7 +561,9 @@
             </div>
         </div>
     </div>
+@endsection
 
+@push('scripts')
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="/assets/js/auth.js"></script>
     <script src="/assets/js/api.js"></script>
@@ -963,5 +878,4 @@
             new AttendancePage();
         });
     </script>
-</body>
-</html>
+@endpush

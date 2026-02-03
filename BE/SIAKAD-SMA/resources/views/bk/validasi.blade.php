@@ -1,607 +1,480 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Validasi Siswa - BK SIAKAD</title>
-    <link rel="stylesheet" href="../assets/css/main.css">
-    <link rel="stylesheet" href="../assets/css/layout.css">
-    <link rel="stylesheet" href="../assets/css/components.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-</head>
-<body>
-    <!-- Sidebar Navigation (sama seperti dashboard) -->
-    <div class="sidebar">
-        <div class="sidebar-header">
-            <div class="user-profile">
-                <img src="../assets/images/user-avatar.png" alt="Avatar BK">
-                <div class="user-info">
-                    <h4>Nama Konselor BK</h4>
-                    <span class="role-badge">Bimbingan Konseling</span>
-                </div>
-            </div>
-        </div>
+@extends('layouts.app')
 
-        <nav class="sidebar-nav">
-            <ul>
-                <li>
-                    <a href="dashboard.html">
-                        <i class="fas fa-home"></i>
-                        <span>Dashboard</span>
-                    </a>
-                </li>
-                <li class="active">
-                    <a href="validasi.html">
-                        <i class="fas fa-check-circle"></i>
-                        <span>Validasi Siswa</span>
-                        <span class="badge">3</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="feedback.html">
-                        <i class="fas fa-comments"></i>
-                        <span>Feedback</span>
-                        <span class="badge">5</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="surat-pemanggilan.html">
-                        <i class="fas fa-envelope"></i>
-                        <span>Surat Pemanggilan</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="laporan.html">
-                        <i class="fas fa-chart-bar"></i>
-                        <span>Laporan</span>
-                    </a>
-                </li>
-                <li class="divider"></li>
-                <li>
-                    <a href="../login.html">
-                        <i class="fas fa-sign-out-alt"></i>
-                        <span>Keluar</span>
-                    </a>
-                </li>
-            </ul>
-        </nav>
+@section('title', 'Validasi Bimbingan - SIAKAD SMA Mishbahul Ulum')
+@section('page-title', 'Validasi Bimbingan')
+@section('breadcrumb', 'BK / Validasi')
+
+@php
+    $role = 'bk';
+    $userName = 'Siti Nurhaliza, S.Pd';
+    $userRole = 'Guru BK';
+@endphp
+
+@section('content')
+<!-- Filter Section -->
+<div class="filter-section">
+    <div class="filter-group">
+        <label>Filter Status:</label>
+        <select id="statusFilter" onchange="filterTable()">
+            <option value="all">Semua</option>
+            <option value="pending">Menunggu</option>
+            <option value="approved">Disetujui</option>
+            <option value="rejected">Ditolak</option>
+        </select>
     </div>
+    <div class="filter-group">
+        <label>Filter Kelas:</label>
+        <select id="classFilter" onchange="filterTable()">
+            <option value="all">Semua Kelas</option>
+            <option value="X">Kelas X</option>
+            <option value="XI">Kelas XI</option>
+            <option value="XII">Kelas XII</option>
+        </select>
+    </div>
+    <div class="filter-group">
+        <label>Filter Tanggal:</label>
+        <input type="date" id="dateFilter" onchange="filterTable()">
+    </div>
+    <button class="btn btn-secondary" onclick="resetFilters()">
+        <i class="fas fa-redo"></i> Reset Filter
+    </button>
+</div>
 
-    <!-- Main Content -->
-    <div class="main-content">
-        <!-- Top Header -->
-        <header class="top-header">
-            <div class="header-left">
-                <h1>Validasi Siswa</h1>
-                <p class="breadcrumb">BK / Validasi Siswa</p>
-            </div>
-            <div class="header-right">
-                <div class="search-box">
-                    <input type="text" placeholder="Cari siswa..." id="searchStudent">
-                    <i class="fas fa-search"></i>
-                </div>
-                <button class="btn btn-primary" onclick="showAddModal()">
-                    <i class="fas fa-plus"></i> Tambah Validasi
-                </button>
-            </div>
-        </header>
-
-        <!-- Filter Section -->
-        <div class="filter-section">
-            <div class="filter-group">
-                <label>Filter Status:</label>
-                <select id="statusFilter" onchange="filterTable()">
-                    <option value="all">Semua</option>
-                    <option value="pending">Menunggu</option>
-                    <option value="approved">Disetujui</option>
-                    <option value="rejected">Ditolak</option>
-                </select>
-            </div>
-            <div class="filter-group">
-                <label>Filter Kelas:</label>
-                <select id="classFilter" onchange="filterTable()">
-                    <option value="all">Semua Kelas</option>
-                    <option value="X">Kelas X</option>
-                    <option value="XI">Kelas XI</option>
-                    <option value="XII">Kelas XII</option>
-                </select>
-            </div>
-            <div class="filter-group">
-                <label>Filter Tanggal:</label>
-                <input type="date" id="dateFilter" onchange="filterTable()">
-            </div>
-            <button class="btn btn-secondary" onclick="resetFilters()">
-                <i class="fas fa-redo"></i> Reset Filter
+<!-- Validation List -->
+<div class="card">
+    <div class="card-header">
+        <h3><i class="fas fa-list-check"></i> Daftar Validasi</h3>
+        <div class="card-actions">
+            <button class="btn-icon" onclick="exportToExcel()">
+                <i class="fas fa-file-excel"></i>
+            </button>
+            <button class="btn-icon" onclick="printTable()">
+                <i class="fas fa-print"></i>
             </button>
         </div>
-
-        <!-- Validation List -->
-        <div class="card">
-            <div class="card-header">
-                <h3><i class="fas fa-list-check"></i> Daftar Validasi</h3>
-                <div class="card-actions">
-                    <button class="btn-icon" onclick="exportToExcel()">
-                        <i class="fas fa-file-excel"></i>
-                    </button>
-                    <button class="btn-icon" onclick="printTable()">
-                        <i class="fas fa-print"></i>
-                    </button>
-                </div>
-            </div>
-            <div class="card-body">
-                <div class="table-responsive">
-                    <table class="data-table" id="validationTable">
-                        <thead>
-                            <tr>
-                                <th>No</th>
-                                <th>Nama Siswa</th>
-                                <th>Kelas</th>
-                                <th>Jenis Validasi</th>
-                                <th>Tanggal</th>
-                                <th>Keterangan</th>
-                                <th>Status</th>
-                                <th>Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr data-status="pending" data-class="X">
-                                <td>1</td>
-                                <td>
-                                    <div class="student-cell">
-                                        <img src="https://via.placeholder.com/35" alt="Student" class="student-thumb">
-                                        <div>
-                                            <strong>Ahmad Hidayat</strong>
-                                            <small>NIS: 2024001</small>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td>X MIPA 2</td>
-                                <td>Izin Sakit</td>
-                                <td>15 Jan 2024</td>
-                                <td>Membutuhkan surat dokter</td>
-                                <td>
-                                    <span class="status-badge pending">Menunggu</span>
-                                </td>
-                                <td>
-                                    <button class="btn-icon btn-success" onclick="approveValidation(1)">
-                                        <i class="fas fa-check"></i>
-                                    </button>
-                                    <button class="btn-icon btn-danger" onclick="rejectValidation(1)">
-                                        <i class="fas fa-times"></i>
-                                    </button>
-                                    <button class="btn-icon" onclick="viewDetails(1)">
-                                        <i class="fas fa-eye"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr data-status="approved" data-class="XI">
-                                <td>2</td>
-                                <td>
-                                    <div class="student-cell">
-                                        <img src="https://via.placeholder.com/35" alt="Student" class="student-thumb">
-                                        <div>
-                                            <strong>Siti Nurhaliza</strong>
-                                            <small>NIS: 2023112</small>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td>XI IPS 2</td>
-                                <td>Izin Keluarga</td>
-                                <td>14 Jan 2024</td>
-                                <td>Acara keluarga penting</td>
-                                <td>
-                                    <span class="status-badge completed">Disetujui</span>
-                                </td>
-                                <td>
-                                    <button class="btn-icon" onclick="viewDetails(2)">
-                                        <i class="fas fa-eye"></i>
-                                    </button>
-                                    <button class="btn-icon" onclick="editValidation(2)">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr data-status="rejected" data-class="XII">
-                                <td>3</td>
-                                <td>
-                                    <div class="student-cell">
-                                        <img src="https://via.placeholder.com/35" alt="Student" class="student-thumb">
-                                        <div>
-                                            <strong>Andi Pratama</strong>
-                                            <small>NIS: 2023123</small>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td>XII IPA 1</td>
-                                <td>Alpha Berkali-kali</td>
-                                <td>13 Jan 2024</td>
-                                <td>Perlu pemanggilan orang tua</td>
-                                <td>
-                                    <span class="status-badge rejected">Ditolak</span>
-                                </td>
-                                <td>
-                                    <button class="btn-icon" onclick="viewDetails(3)">
-                                        <i class="fas fa-eye"></i>
-                                    </button>
-                                    <button class="btn-icon btn-warning" onclick="revalidate(3)">
-                                        <i class="fas fa-redo"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr data-status="pending" data-class="X">
-                                <td>4</td>
-                                <td>
-                                    <div class="student-cell">
-                                        <img src="https://via.placeholder.com/35" alt="Student" class="student-thumb">
-                                        <div>
-                                            <strong>Rina Amelia</strong>
-                                            <small>NIS: 2024005</small>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td>X IPS 1</td>
-                                <td>Izin Sakit</td>
-                                <td>15 Jan 2024</td>
-                                <td>Demam tinggi, surat dokter terlampir</td>
-                                <td>
-                                    <span class="status-badge pending">Menunggu</span>
-                                </td>
-                                <td>
-                                    <button class="btn-icon btn-success" onclick="approveValidation(4)">
-                                        <i class="fas fa-check"></i>
-                                    </button>
-                                    <button class="btn-icon btn-danger" onclick="rejectValidation(4)">
-                                        <i class="fas fa-times"></i>
-                                    </button>
-                                    <button class="btn-icon" onclick="viewDetails(4)">
-                                        <i class="fas fa-eye"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-
-                <!-- Pagination -->
-                <div class="pagination">
-                    <button class="page-btn" disabled>
-                        <i class="fas fa-chevron-left"></i>
-                    </button>
-                    <button class="page-btn active">1</button>
-                    <button class="page-btn">2</button>
-                    <button class="page-btn">3</button>
-                    <button class="page-btn">
-                        <i class="fas fa-chevron-right"></i>
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Statistics Card -->
-        <div class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-icon" style="background: #FF9800;">
-                    <i class="fas fa-clock"></i>
-                </div>
-                <div class="stat-info">
-                    <h3>8</h3>
-                    <p>Menunggu Validasi</p>
-                </div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon" style="background: #4CAF50;">
-                    <i class="fas fa-check-circle"></i>
-                </div>
-                <div class="stat-info">
-                    <h3>24</h3>
-                    <p>Disetujui (Bulan Ini)</p>
-                </div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon" style="background: #F44336;">
-                    <i class="fas fa-times-circle"></i>
-                </div>
-                <div class="stat-info">
-                    <h3>5</h3>
-                    <p>Ditolak (Bulan Ini)</p>
-                </div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon" style="background: #2196F3;">
-                    <i class="fas fa-chart-line"></i>
-                </div>
-                <div class="stat-info">
-                    <h3>82%</h3>
-                    <p>Rata-rata Disetujui</p>
-                </div>
-            </div>
-        </div>
     </div>
-
-    <!-- Modal View Details -->
-    <div id="detailModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Detail Validasi</h3>
-                <span class="close" onclick="closeModal()">&times;</span>
-            </div>
-            <div class="modal-body">
-                <div class="detail-grid">
-                    <div class="detail-item">
-                        <label>Nama Siswa:</label>
-                        <span id="detailNama">Ahmad Hidayat</span>
-                    </div>
-                    <div class="detail-item">
-                        <label>NIS:</label>
-                        <span id="detailNIS">2024001</span>
-                    </div>
-                    <div class="detail-item">
-                        <label>Kelas:</label>
-                        <span id="detailKelas">X MIPA 2</span>
-                    </div>
-                    <div class="detail-item">
-                        <label>Jenis Validasi:</label>
-                        <span id="detailJenis">Izin Sakit</span>
-                    </div>
-                    <div class="detail-item">
-                        <label>Tanggal:</label>
-                        <span id="detailTanggal">15 Januari 2024</span>
-                    </div>
-                    <div class="detail-item full-width">
-                        <label>Keterangan:</label>
-                        <p id="detailKeterangan">Siswa tidak masuk sekolah selama 3 hari dengan alasan sakit. Membutuhkan surat dokter untuk validasi lebih lanjut.</p>
-                    </div>
-                    <div class="detail-item full-width">
-                        <label>Dokumen Pendukung:</label>
-                        <div class="document-list">
-                            <div class="document-item">
-                                <i class="fas fa-file-pdf"></i>
-                                <span>surat_dokter.pdf</span>
-                                <button class="btn-icon btn-small">
-                                    <i class="fas fa-download"></i>
-                                </button>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="data-table" id="validationTable">
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>Nama Siswa</th>
+                        <th>Kelas</th>
+                        <th>Jenis Validasi</th>
+                        <th>Tanggal</th>
+                        <th>Keterangan</th>
+                        <th>Status</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr data-status="pending" data-class="X">
+                        <td>1</td>
+                        <td>
+                            <div class="student-cell">
+                                <img src="https://via.placeholder.com/35" alt="Student" class="student-thumb">
+                                <div>
+                                    <strong>Ahmad Hidayat</strong>
+                                    <small>NIS: 2024001</small>
+                                </div>
                             </div>
+                        </td>
+                        <td>X MIPA 2</td>
+                        <td>Izin Sakit</td>
+                        <td>15 Jan 2024</td>
+                        <td>Membutuhkan surat dokter</td>
+                        <td>
+                            <span class="status-badge pending">Menunggu</span>
+                        </td>
+                        <td>
+                            <button class="btn-icon btn-success" onclick="approveValidation(1)">
+                                <i class="fas fa-check"></i>
+                            </button>
+                            <button class="btn-icon btn-danger" onclick="rejectValidation(1)">
+                                <i class="fas fa-times"></i>
+                            </button>
+                            <button class="btn-icon" onclick="viewDetails(1)">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr data-status="approved" data-class="XI">
+                        <td>2</td>
+                        <td>
+                            <div class="student-cell">
+                                <img src="https://via.placeholder.com/35" alt="Student" class="student-thumb">
+                                <div>
+                                    <strong>Siti Nurhaliza</strong>
+                                    <small>NIS: 2023112</small>
+                                </div>
+                            </div>
+                        </td>
+                        <td>XI IPS 2</td>
+                        <td>Izin Keluarga</td>
+                        <td>14 Jan 2024</td>
+                        <td>Acara keluarga penting</td>
+                        <td>
+                            <span class="status-badge completed">Disetujui</span>
+                        </td>
+                        <td>
+                            <button class="btn-icon" onclick="viewDetails(2)">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button class="btn-icon" onclick="editValidation(2)">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr data-status="rejected" data-class="XII">
+                        <td>3</td>
+                        <td>
+                            <div class="student-cell">
+                                <img src="https://via.placeholder.com/35" alt="Student" class="student-thumb">
+                                <div>
+                                    <strong>Andi Pratama</strong>
+                                    <small>NIS: 2023123</small>
+                                </div>
+                            </div>
+                        </td>
+                        <td>XII IPA 1</td>
+                        <td>Alpha Berkali-kali</td>
+                        <td>13 Jan 2024</td>
+                        <td>Perlu pemanggilan orang tua</td>
+                        <td>
+                            <span class="status-badge rejected">Ditolak</span>
+                        </td>
+                        <td>
+                            <button class="btn-icon" onclick="viewDetails(3)">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button class="btn-icon btn-warning" onclick="revalidate(3)">
+                                <i class="fas fa-redo"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr data-status="pending" data-class="X">
+                        <td>4</td>
+                        <td>
+                            <div class="student-cell">
+                                <img src="https://via.placeholder.com/35" alt="Student" class="student-thumb">
+                                <div>
+                                    <strong>Rina Amelia</strong>
+                                    <small>NIS: 2024005</small>
+                                </div>
+                            </div>
+                        </td>
+                        <td>X IPS 1</td>
+                        <td>Izin Sakit</td>
+                        <td>15 Jan 2024</td>
+                        <td>Demam tinggi, surat dokter terlampir</td>
+                        <td>
+                            <span class="status-badge pending">Menunggu</span>
+                        </td>
+                        <td>
+                            <button class="btn-icon btn-success" onclick="approveValidation(4)">
+                                <i class="fas fa-check"></i>
+                            </button>
+                            <button class="btn-icon btn-danger" onclick="rejectValidation(4)">
+                                <i class="fas fa-times"></i>
+                            </button>
+                            <button class="btn-icon" onclick="viewDetails(4)">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination -->
+        <div class="pagination">
+            <button class="page-btn" disabled>
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <button class="page-btn active">1</button>
+            <button class="page-btn">2</button>
+            <button class="page-btn">3</button>
+            <button class="page-btn">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Statistics Card -->
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-icon" style="background: #FF9800;">
+            <i class="fas fa-clock"></i>
+        </div>
+        <div class="stat-info">
+            <h3>8</h3>
+            <p>Menunggu Validasi</p>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon" style="background: #4CAF50;">
+            <i class="fas fa-check-circle"></i>
+        </div>
+        <div class="stat-info">
+            <h3>24</h3>
+            <p>Disetujui (Bulan Ini)</p>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon" style="background: #F44336;">
+            <i class="fas fa-times-circle"></i>
+        </div>
+        <div class="stat-info">
+            <h3>5</h3>
+            <p>Ditolak (Bulan Ini)</p>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon" style="background: #2196F3;">
+            <i class="fas fa-chart-line"></i>
+        </div>
+        <div class="stat-info">
+            <h3>82%</h3>
+            <p>Rata-rata Disetujui</p>
+        </div>
+    </div>
+</div>
+
+<!-- Modal View Details -->
+<div id="detailModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Detail Validasi</h3>
+            <span class="close" onclick="closeModal()">&times;</span>
+        </div>
+        <div class="modal-body">
+            <div class="detail-grid">
+                <div class="detail-item">
+                    <label>Nama Siswa:</label>
+                    <span id="detailNama">Ahmad Hidayat</span>
+                </div>
+                <div class="detail-item">
+                    <label>NIS:</label>
+                    <span id="detailNIS">2024001</span>
+                </div>
+                <div class="detail-item">
+                    <label>Kelas:</label>
+                    <span id="detailKelas">X MIPA 2</span>
+                </div>
+                <div class="detail-item">
+                    <label>Jenis Validasi:</label>
+                    <span id="detailJenis">Izin Sakit</span>
+                </div>
+                <div class="detail-item">
+                    <label>Tanggal:</label>
+                    <span id="detailTanggal">15 Januari 2024</span>
+                </div>
+                <div class="detail-item full-width">
+                    <label>Keterangan:</label>
+                    <p id="detailKeterangan">Siswa tidak masuk sekolah selama 3 hari dengan alasan sakit. Membutuhkan surat dokter untuk validasi lebih lanjut.</p>
+                </div>
+                <div class="detail-item full-width">
+                    <label>Dokumen Pendukung:</label>
+                    <div class="document-list">
+                        <div class="document-item">
+                            <i class="fas fa-file-pdf"></i>
+                            <span>surat_dokter.pdf</span>
+                            <button class="btn-icon btn-small">
+                                <i class="fas fa-download"></i>
+                            </button>
                         </div>
-                    </div>
-                    <div class="detail-item">
-                        <label>Status:</label>
-                        <span class="status-badge pending" id="detailStatus">Menunggu</span>
                     </div>
                 </div>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" onclick="closeModal()">Tutup</button>
-                <button class="btn btn-success" onclick="approveFromModal()">
-                    <i class="fas fa-check"></i> Setujui
-                </button>
-                <button class="btn btn-danger" onclick="rejectFromModal()">
-                    <i class="fas fa-times"></i> Tolak
-                </button>
+                <div class="detail-item">
+                    <label>Status:</label>
+                    <span class="status-badge pending" id="detailStatus">Menunggu</span>
+                </div>
             </div>
         </div>
-    </div>
-
-    <!-- Modal Add Validation -->
-    <div id="addModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Tambah Validasi Baru</h3>
-                <span class="close" onclick="closeAddModal()">&times;</span>
-            </div>
-            <div class="modal-body">
-                <form id="addValidationForm">
-                    <div class="form-group">
-                        <label for="studentSelect">Pilih Siswa *</label>
-                        <select id="studentSelect" required>
-                            <option value="">-- Pilih Siswa --</option>
-                            <option value="1">Ahmad Hidayat (X MIPA 2)</option>
-                            <option value="2">Siti Nurhaliza (XI IPS 2)</option>
-                            <option value="3">Andi Pratama (XII IPA 1)</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="validationType">Jenis Validasi *</label>
-                        <select id="validationType" required>
-                            <option value="">-- Pilih Jenis --</option>
-                            <option value="sakit">Izin Sakit</option>
-                            <option value="keluarga">Izin Keluarga</option>
-                            <option value="alpha">Alpha Berkali-kali</option>
-                            <option value="lainnya">Lainnya</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="validationDate">Tanggal *</label>
-                        <input type="date" id="validationDate" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="description">Keterangan *</label>
-                        <textarea id="description" rows="3" placeholder="Masukkan keterangan validasi..." required></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label>Upload Dokumen Pendukung</label>
-                        <div class="file-upload">
-                            <input type="file" id="documentUpload" accept=".pdf,.jpg,.png">
-                            <label for="documentUpload" class="upload-btn">
-                                <i class="fas fa-cloud-upload-alt"></i>
-                                Pilih File
-                            </label>
-                            <span class="file-name">Belum ada file dipilih</span>
-                        </div>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" onclick="closeAddModal()">Batal</button>
-                <button class="btn btn-primary" onclick="submitValidation()">
-                    <i class="fas fa-save"></i> Simpan
-                </button>
-            </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="closeModal()">Tutup</button>
+            <button class="btn btn-success" onclick="approveFromModal()">
+                <i class="fas fa-check"></i> Setujui
+            </button>
+            <button class="btn btn-danger" onclick="rejectFromModal()">
+                <i class="fas fa-times"></i> Tolak
+            </button>
         </div>
     </div>
+</div>
 
-    <script src="../assets/js/main.js"></script>
-    <script src="../assets/js/validation.js"></script>
-    <script>
-        let currentDetailId = null;
+<!-- Modal Add Validation -->
+<div id="addModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Tambah Validasi Baru</h3>
+            <span class="close" onclick="closeAddModal()">&times;</span>
+        </div>
+        <div class="modal-body">
+            <form id="addValidationForm">
+                <div class="form-group">
+                    <label for="studentSelect">Pilih Siswa *</label>
+                    <select id="studentSelect" required>
+                        <option value="">-- Pilih Siswa --</option>
+                        <option value="1">Ahmad Hidayat (X MIPA 2)</option>
+                        <option value="2">Siti Nurhaliza (XI IPS 2)</option>
+                        <option value="3">Andi Pratama (XII IPA 1)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="validationType">Jenis Validasi *</label>
+                    <select id="validationType" required>
+                        <option value="">-- Pilih Jenis --</option>
+                        <option value="sakit">Izin Sakit</option>
+                        <option value="keluarga">Izin Keluarga</option>
+                        <option value="alpha">Alpha Berkali-kali</option>
+                        <option value="lainnya">Lainnya</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="validationDate">Tanggal *</label>
+                    <input type="date" id="validationDate" required>
+                </div>
+                <div class="form-group">
+                    <label for="description">Keterangan *</label>
+                    <textarea id="description" rows="3" placeholder="Masukkan keterangan validasi..." required></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Upload Dokumen Pendukung</label>
+                    <div class="file-upload">
+                        <input type="file" id="documentUpload" accept=".pdf,.jpg,.png">
+                        <label for="documentUpload" class="upload-btn">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            Pilih File
+                        </label>
+                        <span class="file-name">Belum ada file dipilih</span>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="closeAddModal()">Batal</button>
+            <button class="btn btn-primary" onclick="submitValidation()">
+                <i class="fas fa-save"></i> Simpan
+            </button>
+        </div>
+    </div>
+</div>
+@endsection
 
-        function filterTable() {
-            const statusFilter = document.getElementById('statusFilter').value;
-            const classFilter = document.getElementById('classFilter').value;
-            const dateFilter = document.getElementById('dateFilter').value;
-            const searchTerm = document.getElementById('searchStudent').value.toLowerCase();
+@push('scripts')
+<script>
+    let currentDetailId = null;
+
+    function filterTable() {
+        const statusFilter = document.getElementById('statusFilter').value;
+        const classFilter = document.getElementById('classFilter').value;
+        const dateFilter = document.getElementById('dateFilter').value;
+        const searchTerm = document.getElementById('searchStudent').value.toLowerCase();
+        
+        const rows = document.querySelectorAll('#validationTable tbody tr');
+        
+        rows.forEach(row => {
+            let show = true;
             
-            const rows = document.querySelectorAll('#validationTable tbody tr');
+            // Filter status
+            if (statusFilter !== 'all' && row.dataset.status !== statusFilter) {
+                show = false;
+            }
             
-            rows.forEach(row => {
-                let show = true;
-                
-                // Filter status
-                if (statusFilter !== 'all' && row.dataset.status !== statusFilter) {
+            // Filter class
+            if (classFilter !== 'all') {
+                const className = row.querySelector('td:nth-child(3)').textContent;
+                if (!className.includes(classFilter)) {
                     show = false;
                 }
-                
-                // Filter class
-                if (classFilter !== 'all') {
-                    const className = row.querySelector('td:nth-child(3)').textContent;
-                    if (!className.includes(classFilter)) {
-                        show = false;
-                    }
-                }
-                
-                // Filter search
-                if (searchTerm) {
-                    const studentName = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
-                    if (!studentName.includes(searchTerm)) {
-                        show = false;
-                    }
-                }
-                
-                row.style.display = show ? '' : 'none';
-            });
-        }
-
-        function viewDetails(id) {
-            currentDetailId = id;
-            const modal = document.getElementById('detailModal');
-            modal.style.display = 'block';
-        }
-
-        function approveValidation(id) {
-            if (confirm('Setujui validasi ini?')) {
-                alert(`Validasi #${id} telah disetujui`);
-                // Implement API call here
             }
-        }
-
-        function rejectValidation(id) {
-            if (confirm('Tolak validasi ini?')) {
-                alert(`Validasi #${id} telah ditolak`);
-                // Implement API call here
-            }
-        }
-
-        function showAddModal() {
-            document.getElementById('addModal').style.display = 'block';
-        }
-
-        function closeAddModal() {
-            document.getElementById('addModal').style.display = 'none';
-            document.getElementById('addValidationForm').reset();
-        }
-
-        function closeModal() {
-            document.getElementById('detailModal').style.display = 'none';
-        }
-
-        function resetFilters() {
-            document.getElementById('statusFilter').value = 'all';
-            document.getElementById('classFilter').value = 'all';
-            document.getElementById('dateFilter').value = '';
-            document.getElementById('searchStudent').value = '';
-            filterTable();
-        }
-
-        function submitValidation() {
-            const form = document.getElementById('addValidationForm');
-            if (form.checkValidity()) {
-                alert('Validasi baru berhasil ditambahkan!');
-                closeAddModal();
-            } else {
-                alert('Harap lengkapi semua field yang wajib diisi!');
-            }
-        }
-
-        function exportToExcel() {
-            alert('Fitur export ke Excel akan segera tersedia!');
-        }
-
-        function printTable() {
-            window.print();
-        }
-
-        // File upload preview
-        document.getElementById('documentUpload').addEventListener('change', function(e) {
-            const fileName = e.target.files[0] ? e.target.files[0].name : 'Belum ada file dipilih';
-            document.querySelector('.file-name').textContent = fileName;
-        });
-
-        // Search with debounce
-        let searchTimeout;
-        document.getElementById('searchStudent').addEventListener('input', function() {
-            clearTimeout(searchTimeout);
-            searchTimeout = setTimeout(filterTable, 300);
-        });
-
-        // Close modal when clicking outside
-        window.onclick = function(event) {
-            const modals = document.querySelectorAll('.modal');
-            modals.forEach(modal => {
-                if (event.target === modal) {
-                    modal.style.display = 'none';
-                }
-            });
-        }
-    </script>
-    <script>
-    // Mobile menu toggle
-    document.addEventListener('DOMContentLoaded', function() {
-        const mobileMenuToggle = document.getElementById('mobileMenuToggle');
-        const sidebar = document.getElementById('sidebar');
-        const mainContent = document.getElementById('mainContent');
-        
-        if (mobileMenuToggle && sidebar) {
-            mobileMenuToggle.addEventListener('click', function() {
-                sidebar.classList.toggle('active');
-                mobileMenuToggle.innerHTML = sidebar.classList.contains('active') 
-                    ? '<i class="fas fa-times"></i>' 
-                    : '<i class="fas fa-bars"></i>';
-            });
             
-            // Close sidebar when clicking outside on mobile
-            document.addEventListener('click', function(event) {
-                if (window.innerWidth <= 1024) {
-                    if (!sidebar.contains(event.target) && 
-                        !mobileMenuToggle.contains(event.target) && 
-                        sidebar.classList.contains('active')) {
-                        sidebar.classList.remove('active');
-                        mobileMenuToggle.innerHTML = '<i class="fas fa-bars"></i>';
-                    }
+            // Filter search
+            if (searchTerm) {
+                const studentName = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
+                if (!studentName.includes(searchTerm)) {
+                    show = false;
                 }
-            });
+            }
+            
+            row.style.display = show ? '' : 'none';
+        });
+    }
+
+    function viewDetails(id) {
+        currentDetailId = id;
+        const modal = document.getElementById('detailModal');
+        modal.style.display = 'block';
+    }
+
+    function approveValidation(id) {
+        if (confirm('Setujui validasi ini?')) {
+            alert(`Validasi #${id} telah disetujui`);
         }
-        
-        // Update active link in sidebar
-        const currentPage = window.location.pathname.split('/').pop();
-        const navLinks = document.querySelectorAll('.sidebar-nav a');
-        navLinks.forEach(link => {
-            const href = link.getAttribute('href');
-            if (href === currentPage || 
-                (href === 'dashboard.html' && currentPage === '') ||
-                (href.includes(currentPage) && currentPage !== '')) {
-                link.classList.add('active');
+    }
+
+    function rejectValidation(id) {
+        if (confirm('Tolak validasi ini?')) {
+            alert(`Validasi #${id} telah ditolak`);
+        }
+    }
+
+    function showAddModal() {
+        document.getElementById('addModal').style.display = 'block';
+    }
+
+    function closeAddModal() {
+        document.getElementById('addModal').style.display = 'none';
+        document.getElementById('addValidationForm').reset();
+    }
+
+    function closeModal() {
+        document.getElementById('detailModal').style.display = 'none';
+    }
+
+    function resetFilters() {
+        document.getElementById('statusFilter').value = 'all';
+        document.getElementById('classFilter').value = 'all';
+        document.getElementById('dateFilter').value = '';
+        document.getElementById('searchStudent').value = '';
+        filterTable();
+    }
+
+    function submitValidation() {
+        const form = document.getElementById('addValidationForm');
+        if (form.checkValidity()) {
+            alert('Validasi baru berhasil ditambahkan!');
+            closeAddModal();
+        } else {
+            alert('Harap lengkapi semua field yang wajib diisi!');
+        }
+    }
+
+    function exportToExcel() {
+        alert('Fitur export ke Excel akan segera tersedia!');
+    }
+
+    function printTable() {
+        window.print();
+    }
+
+    // File upload preview
+    document.getElementById('documentUpload').addEventListener('change', function(e) {
+        const fileName = e.target.files[0] ? e.target.files[0].name : 'Belum ada file dipilih';
+        document.querySelector('.file-name').textContent = fileName;
+    });
+
+    // Close modal when clicking outside
+    window.onclick = function(event) {
+        const modals = document.querySelectorAll('.modal');
+        modals.forEach(modal => {
+            if (event.target === modal) {
+                modal.style.display = 'none';
             }
         });
-    });
+    }
 </script>
-</body>
-</html>
+@endpush

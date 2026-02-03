@@ -1,11 +1,17 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Siswa - SIAKAD</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
+@extends('layouts.app')
+
+@section('title', 'Dashboard Siswa - SIAKAD SMA Mishbahul Ulum')
+@section('page-title', 'Dashboard Siswa')
+@section('breadcrumb', 'Home / Dashboard')
+
+@php
+    $role = 'siswa';
+    $userName = 'Ahmad Fauzi';
+    $userRole = 'Siswa X MIPA 1';
+@endphp
+
+@push('styles')
+<style>
         * {
             margin: 0;
             padding: 0;
@@ -657,72 +663,10 @@
                 width: 100%;
             }
         }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <!-- Sidebar Navigasi -->
-        <aside class="sidebar">
-            <div class="logo-area">
-                <div class="logo">
-                    <i class="fas fa-graduation-cap"></i>
-                </div>
-                <div class="logo-text">
-                    <h1>SIAKAD</h1>
-                    <p>Portal Akademik Digital</p>
-                </div>
-            </div>
+</style>
+@endpush
 
-            <div class="user-info">
-                <div class="user-avatar">
-                    <i class="fas fa-user"></i>
-                </div>
-                <div class="user-details">
-                    <h3 id="student-name">Nama Siswa</h3>
-                    <span>Siswa Aktif</span>
-                </div>
-            </div>
-
-            <div class="nav-section">
-                <h3>Navigasi Siswa</h3>
-                <ul class="nav-menu">
-                    <li class="active" data-page="dashboard"><a><i class="fas fa-home"></i> Dashboard</a></li>
-                    <li data-page="attendance"><a><i class="fas fa-calendar-check"></i> Kehadiran</a></li>
-                    <li data-page="bk"><a><i class="fas fa-comments"></i> Bimbingan Konseling</a></li>
-                    <li data-page="schedule"><a><i class="fas fa-calendar-alt"></i> Jadwal</a></li>
-                    
-                    <!-- Tombol Logout -->
-                    <li id="logout-menu">
-                        <a><i class="fas fa-sign-out-alt"></i> Logout</a>
-                    </li>
-                </ul>
-            </div>
-
-            <div class="status-indicator">
-                <div class="status-dot"></div>
-                <div>
-                    <p><strong>Status:</strong> Online</p>
-                    <p><small id="last-sync">Terakhir sinkron: 14.30.48</small></p>
-                </div>
-            </div>
-        </aside>
-
-        <!-- Konten Utama -->
-        <main class="main-content">
-            <div class="header">
-                <h2 id="page-title">Dashboard Siswa</h2>
-                <div class="header-right">
-                    <button class="menu-toggle">
-                        <i class="fas fa-bars"></i>
-                    </button>
-                    <div class="date-time">
-                        <i class="fas fa-calendar"></i> <span id="current-date">Sabtu, 31 Januari 2026</span> | 
-                        <i class="fas fa-clock"></i> <span id="current-time">14:30:48</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Konten Dinamis -->
+@section('content')
             <div id="page-content">
                 <!-- Dashboard Content (Default) -->
                 <div id="dashboard-content" class="page-content active">
@@ -1064,7 +1008,9 @@
             </div>
         </div>
     </div>
+@endsection
 
+@push('scripts')
     <script>
         // Data siswa
         const studentData = {
@@ -1363,5 +1309,4 @@ function performLogout() {
         // Auto sync every 5 minutes
         setInterval(updateLastSync, 300000);
     </script>
-</body>
-</html>
+@endpush

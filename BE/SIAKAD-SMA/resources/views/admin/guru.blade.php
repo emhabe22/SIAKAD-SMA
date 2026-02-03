@@ -1,104 +1,16 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kelola Guru - Admin SIAKAD</title>
-    <link rel="stylesheet" href="../assets/css/main.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
-</head>
-<body>
-    <!-- Mobile Menu Toggle -->
-    <button class="mobile-menu-toggle" id="mobileMenuToggle">
-        <i class="fas fa-bars"></i>
-    </button>
+@extends('layouts.app')
 
-    <!-- Sidebar Navigation -->
-    <div class="sidebar" id="sidebar">
-        <div class="sidebar-header">
-            <div class="user-profile">
-                <img src="../assets/images/user-avatar.png" alt="Avatar Admin">
-                <div class="user-info">
-                    <h4>Administrator</h4>
-                    <span class="role-badge">Admin Sistem</span>
-                </div>
-            </div>
-        </div>
+@section('title', 'Kelola Guru - SIAKAD SMA Mishbahul Ulum')
+@section('page-title', 'Kelola Data Guru')
+@section('breadcrumb', 'Admin / Data Guru')
 
-        <nav class="sidebar-nav">
-            <ul>
-                <li>
-                    <a href="dashboard.html">
-                        <i class="fas fa-home"></i>
-                        <span>Dashboard</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="siswa.html">
-                        <i class="fas fa-users"></i>
-                        <span>Data Siswa</span>
-                    </a>
-                </li>
-                <li class="active">
-                    <a href="guru.html">
-                        <i class="fas fa-chalkboard-teacher"></i>
-                        <span>Data Guru</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="kelas.html">
-                        <i class="fas fa-school"></i>
-                        <span>Data Kelas</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="mata-pelajaran.html">
-                        <i class="fas fa-book"></i>
-                        <span>Mata Pelajaran</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="jadwal-bk.html">
-                        <i class="fas fa-calendar-alt"></i>
-                        <span>Jadwal BK</span>
-                    </a>
-                </li>
-                <li class="divider"></li>
-                <li>
-                    <a href="pengaturan.html">
-                        <i class="fas fa-cog"></i>
-                        <span>Pengaturan</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="../login.html">
-                        <i class="fas fa-sign-out-alt"></i>
-                        <span>Keluar</span>
-                    </a>
-                </li>
-            </ul>
-        </nav>
-    </div>
+@php
+    $role = 'admin';
+    $userName = 'Administrator';
+    $userRole = 'Admin Sistem';
+@endphp
 
-    <!-- Main Content -->
-    <div class="main-content" id="mainContent">
-        <!-- Top Header -->
-        <header class="top-header">
-            <div class="header-left">
-                <h1>Kelola Data Guru</h1>
-                <p class="breadcrumb">Admin / Data Guru</p>
-            </div>
-            <div class="header-right">
-                <div class="search-box">
-                    <input type="text" id="searchTeacher" placeholder="Cari guru...">
-                    <i class="fas fa-search"></i>
-                </div>
-                <button class="btn btn-primary" onclick="showAddModal()">
-                    <i class="fas fa-plus"></i> Tambah Guru
-                </button>
-            </div>
-        </header>
+@section('content')
 
         <!-- Main Content Container -->
         <div class="content-container">
@@ -429,7 +341,6 @@
                 </div>
             </div>
         </div>
-    </div>
 
     <!-- Modal Add/Edit Teacher -->
     <div id="teacherModal" class="modal">
@@ -806,12 +717,15 @@
         </div>
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
-    <script src="../assets/js/main.js"></script>
-    <script src="../assets/js/admin-teachers.js"></script>
-    <script>
+@endsection
+
+@push('scripts')
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+<script src="../assets/js/main.js"></script>
+<script src="../assets/js/admin-teachers.js"></script>
+<script>
         let currentTeacherId = null;
         let isEditMode = false;
 
@@ -1084,6 +998,5 @@
                 }
             });
         };
-    </script>
-</body>
-</html>
+</script>
+@endpush

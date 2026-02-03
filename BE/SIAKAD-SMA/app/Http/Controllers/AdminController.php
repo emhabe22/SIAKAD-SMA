@@ -13,24 +13,45 @@ use Illuminate\Support\Facades\Hash;
 
 class AdminController extends Controller
 {
-    public function index() {
+    /**
+     * Display admin dashboard
+     */
+    public function dashboard() {
         return view('admin.dashboard');
     }
-    public function guru() {
-        $guru = Guru::all();
-        return view('admin.guru', compact('guru'));
-    }
-    public function kelas() {
-        $kelas = Kelas::all();
-        return view('admin.kelas', compact('kelas'));
-    }
-    public function mapel() {
-        $mapel = Mapel::all();
-        return view('admin.mapel', compact('mapel'));
-    }
+
+    /**
+     * Display data siswa page
+     */
     public function siswa() {
-        $siswa = Siswa::all();
-        return view('admin.siswa', compact('siswa'));
+        return view('admin.siswa');
     }
 
+    /**
+     * Display data guru page
+     */
+    public function guru() {
+        return view('admin.guru');
+    }
+
+    /**
+     * Display data kelas page
+     */
+    public function kelas() {
+        return view('admin.kelas');
+    }
+
+    /**
+     * Display mata pelajaran page
+     */
+    public function mapel() {
+        return view('admin.mata-pelajaran');
+    }
+
+    /**
+     * Display jadwal BK page
+     */
+    public function jadwalBk() {
+        return view('admin.jadwal-bk');
+    }
 }

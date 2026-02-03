@@ -1,85 +1,17 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Guru - SIAKAD SMA Mishbahul Ulum</title>
-    <link rel="stylesheet" href="../assets/css/main.css">
-    <link rel="stylesheet" href="../assets/css/layout.css">
-    <link rel="stylesheet" href="../assets/css/components.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/5.11.3/main.min.css">
-</head>
-<body>
-    <!-- Sidebar Navigation -->
-    <div class="sidebar">
-        <div class="sidebar-header">
-            <div class="user-profile">
-                <img src="../assets/images/user-avatar.png" alt="Avatar Guru">
-                <div class="user-info">
-                    <h4>Budi Santoso, S.Pd</h4>
-                    <span class="role-badge">Guru Matematika</span>
-                </div>
-            </div>
-        </div>
+@extends('layouts.app')
 
-        <nav class="sidebar-nav">
-            <ul>
-                <li class="active">
-                    <a href="dashboard.html">
-                        <i class="fas fa-home"></i>
-                        <span>Dashboard</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="jadwal-mengajar.html">
-                        <i class="fas fa-calendar-alt"></i>
-                        <span>Jadwal Mengajar</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="absensi.html">
-                        <i class="fas fa-clipboard-check"></i>
-                        <span>Absensi Siswa</span>
-                        <span class="badge">3</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="logbook.html">
-                        <i class="fas fa-book"></i>
-                        <span>Logbook</span>
-                    </a>
-                </li>
-                <li class="divider"></li>
-                <li>
-                    <a href="../login.html">
-                        <i class="fas fa-sign-out-alt"></i>
-                        <span>Keluar</span>
-                    </a>
-                </li>
-            </ul>
-        </nav>
-    </div>
+@section('title', 'Dashboard Guru - SIAKAD SMA Mishbahul Ulum')
+@section('page-title', 'Dashboard Guru')
+@section('breadcrumb', 'Home / Dashboard')
+@section('notification-count', '5')
 
-    <!-- Main Content -->
-    <div class="main-content">
-        <!-- Top Header -->
-        <header class="top-header">
-            <div class="header-left">
-                <h1>Dashboard Guru</h1>
-                <p class="breadcrumb">Home / Dashboard</p>
-            </div>
-            <div class="header-right">
-                <div class="notifications">
-                    <i class="fas fa-bell"></i>
-                    <span class="notification-count">5</span>
-                </div>
-                <div class="date-display">
-                    <span id="current-date">Selasa, 16 Januari 2024</span>
-                    <span id="current-time">08:30 AM</span>
-                </div>
-            </div>
-        </header>
+@php
+    $role = 'guru';
+    $userName = 'Budi Santoso, S.Pd';
+    $userRole = 'Guru Matematika';
+@endphp
+
+@section('content')
 
         <!-- Welcome Message -->
         <div class="welcome-card">
@@ -325,154 +257,78 @@
         </div>
     </div>
 
-    <!-- Scripts -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/5.11.3/main.min.js"></script>
-    <script src="../assets/js/main.js"></script>
-    <script src="../assets/js/dashboard.js"></script>
-    <script>
+@endsection
+
+@push('styles')
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/5.11.3/main.min.css">
+@endpush
+
+@push('scripts')
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/5.11.3/main.min.js"></script>
+<script>
+    // Initialize mini calendar
+    document.addEventListener('DOMContentLoaded', function() {
         // Initialize mini calendar
-        document.addEventListener('DOMContentLoaded', function() {
-            // Update date and time
-            updateDateTime();
-            setInterval(updateDateTime, 60000); // Update every minute
-            
-            // Initialize mini calendar
-            initMiniCalendar();
-            
-            // Calendar navigation
-            document.getElementById('prevMonth').addEventListener('click', function() {
-                alert('Previous month');
-            });
-            
-            document.getElementById('nextMonth').addEventListener('click', function() {
-                alert('Next month');
-            });
-            
-            // Set active menu
-            setActiveMenu();
+        initMiniCalendar();
+        
+        // Calendar navigation
+        document.getElementById('prevMonth')?.addEventListener('click', function() {
+            alert('Previous month');
         });
+        
+        document.getElementById('nextMonth')?.addEventListener('click', function() {
+            alert('Next month');
+        });
+    });
 
-        function updateDateTime() {
-            const now = new Date();
-            
-            // Update date
-            const dateOptions = { 
-                weekday: 'long', 
-                year: 'numeric', 
-                month: 'long', 
-                day: 'numeric' 
-            };
-            document.getElementById('current-date').textContent = 
-                now.toLocaleDateString('id-ID', dateOptions);
-            
-            // Update time
-            const timeOptions = { 
-                hour: '2-digit', 
-                minute: '2-digit',
-                hour12: false 
-            };
-            const timeString = now.toLocaleTimeString('id-ID', timeOptions);
-            document.getElementById('current-time').textContent = timeString;
-        }
-
-        function initMiniCalendar() {
-            const calendarEl = document.getElementById('miniCalendar');
-            const calendar = new FullCalendar.Calendar(calendarEl, {
-                initialView: 'dayGridMonth',
-                headerToolbar: false,
-                height: 250,
-                events: [
-                    {
-                        title: 'UTS',
-                        start: '2024-01-18',
-                        color: '#FF9800'
-                    },
-                    {
-                        title: 'Rapat Guru',
-                        start: '2024-01-22',
-                        color: '#2196F3'
-                    },
-                    {
-                        title: 'Deadline Logbook',
-                        start: '2024-01-25',
-                        color: '#9C27B0'
-                    }
-                ]
-            });
-            calendar.render();
-        }
-
-        function takeAttendance(classId) {
-            alert(`Membuka form absensi untuk kelas ID: ${classId}`);
-            // Redirect to attendance page with class ID
-            window.location.href = `absensi.html?class=${classId}`;
-        }
-
-        function createAnnouncement() {
-            alert('Membuat pengumuman baru...');
-            // Open announcement modal
-        }
-
-        function createAssignment() {
-            alert('Membuat tugas baru...');
-            // Open assignment modal
-        }
-
-        function viewStudentProgress() {
-            alert('Melihat progress siswa...');
-            // Open student progress page
-        }
-
-        function scheduleMeeting() {
-            alert('Menjadwalkan pertemuan...');
-            // Open meeting scheduler
-        }
-
-        function setActiveMenu() {
-            const currentPage = window.location.pathname.split('/').pop();
-            const navLinks = document.querySelectorAll('.sidebar-nav a');
-            
-            navLinks.forEach(link => {
-                const href = link.getAttribute('href');
-                if (href === currentPage || (href === 'dashboard.html' && currentPage === '')) {
-                    link.parentElement.classList.add('active');
-                } else {
-                    link.parentElement.classList.remove('active');
+    function initMiniCalendar() {
+        const calendarEl = document.getElementById('miniCalendar');
+        if (!calendarEl) return;
+        
+        const calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: 'dayGridMonth',
+            headerToolbar: false,
+            height: 250,
+            events: [
+                {
+                    title: 'UTS',
+                    start: '2024-01-18',
+                    color: '#FF9800'
+                },
+                {
+                    title: 'Rapat Guru',
+                    start: '2024-01-22',
+                    color: '#2196F3'
+                },
+                {
+                    title: 'Deadline Logbook',
+                    start: '2024-01-25',
+                    color: '#9C27B0'
                 }
-            });
-        }
-
-        // Mobile menu toggle functionality
-        function initMobileMenu() {
-            const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
-            const sidebar = document.querySelector('.sidebar');
-            
-            if (mobileMenuToggle && sidebar) {
-                mobileMenuToggle.addEventListener('click', function() {
-                    sidebar.classList.toggle('active');
-                    mobileMenuToggle.innerHTML = sidebar.classList.contains('active') 
-                        ? '<i class="fas fa-times"></i>' 
-                        : '<i class="fas fa-bars"></i>';
-                });
-                
-                // Close sidebar when clicking outside on mobile
-                document.addEventListener('click', function(event) {
-                    if (window.innerWidth <= 1024) {
-                        if (!sidebar.contains(event.target) && 
-                            !mobileMenuToggle.contains(event.target) && 
-                            sidebar.classList.contains('active')) {
-                            sidebar.classList.remove('active');
-                            mobileMenuToggle.innerHTML = '<i class="fas fa-bars"></i>';
-                        }
-                    }
-                });
-            }
-        }
-
-        // Initialize mobile menu
-        document.addEventListener('DOMContentLoaded', function() {
-            initMobileMenu();
+            ]
         });
-    </script>
-</body>
-</html>
+        calendar.render();
+    }
+
+    function takeAttendance(classId) {
+        alert(`Membuka form absensi untuk kelas ID: ${classId}`);
+        window.location.href = `absensi.html?class=${classId}`;
+    }
+
+    function createAnnouncement() {
+        alert('Membuat pengumuman baru...');
+    }
+
+    function createAssignment() {
+        alert('Membuat tugas baru...');
+    }
+
+    function viewStudentProgress() {
+        alert('Melihat progress siswa...');
+    }
+
+    function scheduleMeeting() {
+        alert('Menjadwalkan pertemuan...');
+    }
+</script>
+@endpush

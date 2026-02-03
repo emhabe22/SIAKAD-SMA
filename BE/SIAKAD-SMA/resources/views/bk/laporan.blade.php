@@ -1,865 +1,315 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Laporan BK - SIAKAD SMA Mishbahul Ulum</title>
-    <link rel="stylesheet" href="../../assets/css/main.css">
-    <link rel="stylesheet" href="../../assets/css/layout.css">
-    <link rel="stylesheet" href="../../assets/css/components.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.css">
-    <style>
-        /* Styles khusus untuk halaman laporan */
-        .reports-container {
-            display: flex;
-            flex-direction: column;
-            gap: 24px;
-        }
+@extends('layouts.app')
 
-        .reports-controls {
-            background: white;
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        }
+@section('title', 'Laporan - SIAKAD SMA Mishbahul Ulum')
+@section('page-title', 'Laporan')
+@section('breadcrumb', 'BK / Laporan')
 
-        .controls-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 16px;
-            align-items: end;
-        }
+@php
+    $role = 'bk';
+    $userName = 'Siti Nurhaliza, S.Pd';
+    $userRole = 'Guru BK';
+@endphp
 
-        .control-group {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .control-group label {
-            font-size: 14px;
-            color: #555;
-            font-weight: 500;
-        }
-
-        .control-select, .control-input {
-            padding: 10px 12px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            font-size: 14px;
-            background: white;
-        }
-
-        .report-tabs {
-            display: flex;
-            gap: 8px;
-            margin-top: 20px;
-            flex-wrap: wrap;
-        }
-
-        .report-tab {
-            padding: 10px 20px;
-            background: #f8f9fa;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            white-space: nowrap;
-        }
-
-        .report-tab.active {
-            background: #2196F3;
-            color: white;
-        }
-
-        .report-tab:hover:not(.active) {
-            background: #e9ecef;
-        }
-
-        /* Charts container */
-        .charts-container {
-            background: white;
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .charts-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-
-        .chart-card {
-            background: #f8f9fa;
-            border-radius: 10px;
-            padding: 20px;
-            height: 300px;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .chart-card h4 {
-            margin: 0 0 15px 0;
-            color: #333;
-            font-size: 16px;
-        }
-
-        .chart-container {
-            flex: 1;
-            position: relative;
-        }
-
-        /* Reports table */
-        .reports-table-container {
-            background: white;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .reports-table-header {
-            padding: 20px;
-            border-bottom: 1px solid #eee;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .reports-table-header h3 {
-            margin: 0;
-            color: #333;
-        }
-
-        .table-actions {
-            display: flex;
-            gap: 10px;
-        }
-
-        .table-responsive {
-            overflow-x: auto;
-        }
-
-        .reports-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .reports-table th {
-            background: #f8f9fa;
-            padding: 16px;
-            text-align: left;
-            font-weight: 600;
-            color: #555;
-            border-bottom: 2px solid #eee;
-        }
-
-        .reports-table td {
-            padding: 16px;
-            border-bottom: 1px solid #eee;
-        }
-
-        .reports-table tbody tr:hover {
-            background: #f8f9fa;
-        }
-
-        .status-badge {
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-        }
-
-        .status-completed {
-            background: #4CAF50;
-            color: white;
-        }
-
-        .status-pending {
-            background: #FF9800;
-            color: white;
-        }
-
-        .status-in-progress {
-            background: #2196F3;
-            color: white;
-        }
-
-        .status-cancelled {
-            background: #F44336;
-            color: white;
-        }
-
-        /* Report summary */
-        .report-summary {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-
-        .summary-card {
-            background: white;
-            border-radius: 10px;
-            padding: 20px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            text-align: center;
-        }
-
-        .summary-card h3 {
-            margin: 0 0 10px 0;
-            color: #333;
-            font-size: 18px;
-        }
-
-        .summary-value {
-            font-size: 32px;
-            font-weight: bold;
-            color: #2196F3;
-            display: block;
-            margin-bottom: 5px;
-        }
-
-        .summary-label {
-            font-size: 14px;
-            color: #666;
-        }
-
-        /* Export options */
-        .export-actions {
-            display: flex;
-            gap: 12px;
-            justify-content: flex-end;
-            margin-top: 20px;
-        }
-
-        .btn-export {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 10px 20px;
-            background: #28a745;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 500;
-            transition: background 0.3s;
-        }
-
-        .btn-export:hover {
-            background: #218838;
-        }
-
-        .btn-export.print {
-            background: #007bff;
-        }
-
-        .btn-export.print:hover {
-            background: #0056b3;
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .controls-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .report-tabs {
-                overflow-x: auto;
-                flex-wrap: nowrap;
-            }
-
-            .charts-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .table-actions {
-                flex-direction: column;
-                width: 100%;
-            }
-
-            .export-actions {
-                flex-direction: column;
-            }
-
-            .btn-export {
-                justify-content: center;
-            }
-
-            .reports-table-header {
-                flex-direction: column;
-                gap: 15px;
-                align-items: stretch;
-            }
-        }
-    </style>
-</head>
-<body>
-    <!-- Sidebar Navigation -->
-    <div class="sidebar">
-        <div class="sidebar-header">
-            <div class="user-profile">
-                <img src="../../assets/images/user-avatar.png" alt="Avatar BK">
-                <div class="user-info">
-                    <h4>Nama Konselor BK</h4>
-                    <span class="role-badge">Bimbingan Konseling</span>
-                </div>
-            </div>
-        </div>
-
-        <nav class="sidebar-nav">
-            <ul>
-                <li>
-                    <a href="../dashboard.html">
-                        <i class="fas fa-home"></i>
-                        <span>Dashboard</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="../validasi.html">
-                        <i class="fas fa-check-circle"></i>
-                        <span>Validasi Siswa</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="../feedback.html">
-                        <i class="fas fa-comments"></i>
-                        <span>Feedback</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="../surat-pemanggilan.html">
-                        <i class="fas fa-envelope"></i>
-                        <span>Surat Pemanggilan</span>
-                    </a>
-                </li>
-                <li class="active">
-                    <a href="../laporan.html">
-                        <i class="fas fa-chart-bar"></i>
-                        <span>Laporan</span>
-                    </a>
-                </li>
-                <li class="divider"></li>
-                <li>
-                    <a href="../../login.html">
-                        <i class="fas fa-sign-out-alt"></i>
-                        <span>Keluar</span>
-                    </a>
-                </li>
-            </ul>
-        </nav>
+@section('content')
+<!-- Report Summary -->
+<div class="report-summary">
+    <div class="summary-card">
+        <h3>Total Kasus</h3>
+        <span class="summary-value">156</span>
+        <span class="summary-label">Kasus ditangani</span>
     </div>
+    <div class="summary-card">
+        <h3>Kasus Selesai</h3>
+        <span class="summary-value">128</span>
+        <span class="summary-label">Resolved cases</span>
+    </div>
+    <div class="summary-card">
+        <h3>Rate Success</h3>
+        <span class="summary-value">82%</span>
+        <span class="summary-label">Tingkat keberhasilan</span>
+    </div>
+    <div class="summary-card">
+        <h3>Rata-rata Waktu</h3>
+        <span class="summary-value">14</span>
+        <span class="summary-label">Hari per kasus</span>
+    </div>
+</div>
 
-    <!-- Main Content -->
-    <div class="main-content">
-        <!-- Top Header -->
-        <header class="top-header">
-            <div class="header-left">
-                <h1>Laporan Bimbingan Konseling</h1>
-                <p class="breadcrumb">BK / Laporan</p>
+<!-- Reports Controls -->
+<div class="card">
+    <div class="card-header">
+        <h3><i class="fas fa-filter"></i> Filter Laporan</h3>
+    </div>
+    <div class="card-body">
+        <div class="controls-grid">
+            <div class="control-group">
+                <label>Periode Laporan</label>
+                <select class="form-control" id="periodSelect">
+                    <option value="month">Bulan Ini</option>
+                    <option value="week">Minggu Ini</option>
+                    <option value="quarter">Triwulan Ini</option>
+                    <option value="semester">Semester Ini</option>
+                    <option value="year">Tahun Ini</option>
+                </select>
             </div>
-            <div class="header-right">
-                <div class="notifications">
-                    <i class="fas fa-bell"></i>
-                    <span class="notification-count">3</span>
-                </div>
-                <div class="date-display">
-                    <span id="current-date">Senin, 15 Januari 2024</span>
-                </div>
+            <div class="control-group">
+                <label>Bulan</label>
+                <select class="form-control" id="monthSelect">
+                    <option value="1">Januari</option>
+                    <option value="2">Februari</option>
+                    <option value="3">Maret</option>
+                    <option value="4">April</option>
+                    <option value="5">Mei</option>
+                    <option value="6">Juni</option>
+                    <option value="7">Juli</option>
+                    <option value="8">Agustus</option>
+                    <option value="9">September</option>
+                    <option value="10">Oktober</option>
+                    <option value="11">November</option>
+                    <option value="12">Desember</option>
+                </select>
             </div>
-        </header>
-
-        <!-- Report Summary -->
-        <div class="report-summary">
-            <div class="summary-card">
-                <h3>Total Kasus</h3>
-                <span class="summary-value">156</span>
-                <span class="summary-label">Kasus ditangani</span>
+            <div class="control-group">
+                <label>Tahun</label>
+                <select class="form-control" id="yearSelect">
+                    <option value="2023">2023</option>
+                    <option value="2024" selected>2024</option>
+                </select>
             </div>
-            <div class="summary-card">
-                <h3>Kasus Selesai</h3>
-                <span class="summary-value">128</span>
-                <span class="summary-label">Resolved cases</span>
-            </div>
-            <div class="summary-card">
-                <h3>Rate Success</h3>
-                <span class="summary-value">82%</span>
-                <span class="summary-label">Tingkat keberhasilan</span>
-            </div>
-            <div class="summary-card">
-                <h3>Rata-rata Waktu</h3>
-                <span class="summary-value">14</span>
-                <span class="summary-label">Hari per kasus</span>
+            <div class="control-group">
+                <label>Jenis Kasus</label>
+                <select class="form-control" id="caseTypeSelect">
+                    <option value="all">Semua Jenis</option>
+                    <option value="academic">Akademik</option>
+                    <option value="social">Sosial</option>
+                    <option value="career">Karir</option>
+                    <option value="personal">Pribadi</option>
+                </select>
             </div>
         </div>
+    </div>
+</div>
 
-        <!-- Reports Controls -->
-        <div class="reports-controls">
-            <div class="controls-grid">
-                <div class="control-group">
-                    <label>Periode Laporan</label>
-                    <select class="control-select" id="periodSelect">
-                        <option value="month">Bulan Ini</option>
-                        <option value="week">Minggu Ini</option>
-                        <option value="quarter">Triwulan Ini</option>
-                        <option value="semester">Semester Ini</option>
-                        <option value="year">Tahun Ini</option>
-                        <option value="custom">Custom</option>
-                    </select>
-                </div>
-                <div class="control-group" id="monthGroup">
-                    <label>Bulan</label>
-                    <select class="control-select" id="monthSelect">
-                        <option value="1">Januari</option>
-                        <option value="2">Februari</option>
-                        <option value="3">Maret</option>
-                        <option value="4">April</option>
-                        <option value="5">Mei</option>
-                        <option value="6">Juni</option>
-                        <option value="7">Juli</option>
-                        <option value="8">Agustus</option>
-                        <option value="9">September</option>
-                        <option value="10">Oktober</option>
-                        <option value="11">November</option>
-                        <option value="12">Desember</option>
-                    </select>
-                </div>
-                <div class="control-group" id="yearGroup">
-                    <label>Tahun</label>
-                    <select class="control-select" id="yearSelect">
-                        <option value="2023">2023</option>
-                        <option value="2024" selected>2024</option>
-                    </select>
-                </div>
-                <div class="control-group">
-                    <label>Jenis Kasus</label>
-                    <select class="control-select" id="caseTypeSelect">
-                        <option value="all">Semua Jenis</option>
-                        <option value="academic">Akademik</option>
-                        <option value="social">Sosial</option>
-                        <option value="career">Karir</option>
-                        <option value="personal">Pribadi</option>
-                    </select>
-                </div>
-            </div>
-
-            <div class="report-tabs">
-                <button class="report-tab active" data-report="statistik">
-                    <i class="fas fa-chart-bar"></i> Statistik
-                </button>
-                <button class="report-tab" data-report="kasus">
-                    <i class="fas fa-list"></i> Daftar Kasus
-                </button>
-                <button class="report-tab" data-report="trend">
-                    <i class="fas fa-chart-line"></i> Trend
-                </button>
-                <button class="report-tab" data-report="evaluasi">
-                    <i class="fas fa-chart-pie"></i> Evaluasi
-                </button>
-            </div>
-        </div>
-
-
-        <!-- Cases Table -->
-        <div id="kasusReport" class="reports-table-container" style="display: none;">
-            <div class="reports-table-header">
-                <h3><i class="fas fa-list"></i> Daftar Kasus Konseling</h3>
-                <div class="table-actions">
-                    <button class="btn btn-primary" onclick="createNewReport()">
-                        <i class="fas fa-plus"></i> Buat Laporan Baru
-                    </button>
-                    <button class="btn btn-success" onclick="generateReport()">
-                        <i class="fas fa-file-export"></i> Generate Report
-                    </button>
-                </div>
-            </div>
-            <div class="table-responsive">
-                <table class="reports-table">
-                    <thead>
-                        <tr>
-                            <th>ID Kasus</th>
-                            <th>Nama Siswa</th>
-                            <th>Kelas</th>
-                            <th>Jenis Kasus</th>
-                            <th>Tanggal Mulai</th>
-                            <th>Status</th>
-                            <th>Konselor</th>
-                            <th>Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody id="casesTable">
-                        <!-- Data akan diisi oleh JavaScript -->
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- Export Options -->
-        <div class="export-actions">
-            <button class="btn-export print" onclick="printReport()">
-                <i class="fas fa-print"></i> Cetak Laporan
-            </button>
-            <button class="btn-export" onclick="exportToPDF()">
-                <i class="fas fa-file-pdf"></i> Export PDF
-            </button>
-            <button class="btn-export" onclick="exportToExcel()">
+<!-- Cases Table -->
+<div class="card">
+    <div class="card-header">
+        <h3><i class="fas fa-list"></i> Daftar Kasus Konseling</h3>
+        <div class="card-actions">
+            <button class="btn btn-success" onclick="exportReport()">
                 <i class="fas fa-file-excel"></i> Export Excel
             </button>
+            <button class="btn btn-primary" onclick="printReport()">
+                <i class="fas fa-print"></i> Cetak
+            </button>
         </div>
     </div>
-
-    <!-- Scripts -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
-    <script src="../../assets/js/main.js"></script>
-    <script>
-        class BKReports {
-            constructor() {
-                this.charts = {};
-                this.currentReport = 'statistik';
-                this.init();
-            }
-
-            init() {
-                this.updateDate();
-                this.initCharts();
-                this.loadCasesData();
-                this.setupEventListeners();
-            }
-
-            updateDate() {
-                const now = new Date();
-                const options = { 
-                    weekday: 'long', 
-                    year: 'numeric', 
-                    month: 'long', 
-                    day: 'numeric' 
-                };
-                document.getElementById('current-date').textContent = 
-                    now.toLocaleDateString('id-ID', options);
-                
-                // Set current month
-                const currentMonth = now.getMonth() + 1;
-                document.getElementById('monthSelect').value = currentMonth;
-            }
-
-            initCharts() {
-                // Case Distribution Chart (Pie)
-                const caseDistCtx = document.getElementById('caseDistributionChart').getContext('2d');
-                this.charts.caseDistribution = new Chart(caseDistCtx, {
-                    type: 'doughnut',
-                    data: {
-                        labels: ['Akademik', 'Sosial', 'Karir', 'Pribadi'],
-                        datasets: [{
-                            data: [45, 30, 15, 10],
-                            backgroundColor: ['#4CAF50', '#2196F3', '#FF9800', '#9C27B0'],
-                            borderWidth: 1
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: {
-                                position: 'bottom'
-                            }
-                        }
-                    }
-                });
-
-                // Resolution Chart (Bar)
-                const resolutionCtx = document.getElementById('resolutionChart').getContext('2d');
-                this.charts.resolution = new Chart(resolutionCtx, {
-                    type: 'bar',
-                    data: {
-                        labels: ['Selesai', 'Dalam Proses', 'Pending', 'Ditunda'],
-                        datasets: [{
-                            label: 'Jumlah Kasus',
-                            data: [82, 35, 28, 11],
-                            backgroundColor: ['#4CAF50', '#2196F3', '#FF9800', '#9C27B0'],
-                            borderWidth: 1
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        scales: {
-                            y: {
-                                beginAtZero: true
-                            }
-                        }
-                    }
-                });
-
-                // Monthly Trend Chart (Line)
-                const trendCtx = document.getElementById('monthlyTrendChart').getContext('2d');
-                this.charts.monthlyTrend = new Chart(trendCtx, {
-                    type: 'line',
-                    data: {
-                        labels: ['Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des', 'Jan'],
-                        datasets: [{
-                            label: 'Kasus Baru',
-                            data: [12, 19, 15, 25, 22, 30, 28],
-                            borderColor: '#4CAF50',
-                            backgroundColor: 'rgba(76, 175, 80, 0.1)',
-                            fill: true
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        scales: {
-                            y: {
-                                beginAtZero: true
-                            }
-                        }
-                    }
-                });
-
-                // Class Case Chart (Bar Horizontal)
-                const classCaseCtx = document.getElementById('classCaseChart').getContext('2d');
-                this.charts.classCase = new Chart(classCaseCtx, {
-                    type: 'bar',
-                    data: {
-                        labels: ['X MIPA 1', 'X MIPA 2', 'XI IPA 1', 'XI IPA 2', 'XII IPA 1', 'XII IPA 2'],
-                        datasets: [{
-                            label: 'Jumlah Kasus',
-                            data: [12, 8, 15, 10, 18, 7],
-                            backgroundColor: '#2196F3'
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        indexAxis: 'y',
-                        scales: {
-                            x: {
-                                beginAtZero: true
-                            }
-                        }
-                    }
-                });
-            }
-
-            loadCasesData() {
-                const casesData = this.getMockCasesData();
-                const tbody = document.getElementById('casesTable');
-                tbody.innerHTML = '';
-
-                casesData.forEach(caseItem => {
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td>${caseItem.id}</td>
-                        <td><strong>${caseItem.student}</strong></td>
-                        <td>${caseItem.class}</td>
-                        <td><span class="tag ${caseItem.typeClass}">${caseItem.type}</span></td>
-                        <td>${caseItem.startDate}</td>
-                        <td><span class="status-badge ${caseItem.statusClass}">${caseItem.status}</span></td>
-                        <td>${caseItem.counselor}</td>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>ID Kasus</th>
+                        <th>Nama Siswa</th>
+                        <th>Kelas</th>
+                        <th>Jenis Kasus</th>
+                        <th>Tanggal Mulai</th>
+                        <th>Status</th>
+                        <th>Konselor</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>BK-2024-001</td>
+                        <td><strong>Andi Pratama</strong></td>
+                        <td>XII IPA 1</td>
+                        <td><span class="tag academic">Akademik</span></td>
+                        <td>15 Jan 2024</td>
+                        <td><span class="status-badge completed">Selesai</span></td>
+                        <td>Bu Ani</td>
                         <td>
-                            <button class="btn-icon" onclick="bkReports.viewCase('${caseItem.id}')" title="Lihat Detail">
+                            <button class="btn-icon" onclick="viewCase(1)">
                                 <i class="fas fa-eye"></i>
                             </button>
-                            <button class="btn-icon" onclick="bkReports.editCase('${caseItem.id}')" title="Edit">
+                            <button class="btn-icon" onclick="editCase(1)">
                                 <i class="fas fa-edit"></i>
                             </button>
-                            <button class="btn-icon" onclick="bkReports.downloadReport('${caseItem.id}')" title="Download">
-                                <i class="fas fa-download"></i>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>BK-2024-002</td>
+                        <td><strong>Siti Nurhaliza</strong></td>
+                        <td>XI IPS 2</td>
+                        <td><span class="tag career">Karir</span></td>
+                        <td>14 Jan 2024</td>
+                        <td><span class="status-badge in-progress">Dalam Proses</span></td>
+                        <td>Pak Budi</td>
+                        <td>
+                            <button class="btn-icon" onclick="viewCase(2)">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button class="btn-icon" onclick="editCase(2)">
+                                <i class="fas fa-edit"></i>
                             </button>
                         </td>
-                    `;
-                    tbody.appendChild(row);
-                });
-            }
+                    </tr>
+                    <tr>
+                        <td>BK-2024-003</td>
+                        <td><strong>Rizki Ramadhan</strong></td>
+                        <td>X MIPA</td>
+                        <td><span class="tag social">Sosial</span></td>
+                        <td>13 Jan 2024</td>
+                        <td><span class="status-badge pending">Pending</span></td>
+                        <td>Bu Ani</td>
+                        <td>
+                            <button class="btn-icon" onclick="viewCase(3)">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button class="btn-icon" onclick="editCase(3)">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>BK-2024-004</td>
+                        <td><strong>M. Rizki Fadillah</strong></td>
+                        <td>XII IPA 1</td>
+                        <td><span class="tag personal">Pribadi</span></td>
+                        <td>12 Jan 2024</td>
+                        <td><span class="status-badge completed">Selesai</span></td>
+                        <td>Pak Budi</td>
+                        <td>
+                            <button class="btn-icon" onclick="viewCase(4)">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button class="btn-icon" onclick="editCase(4)">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>BK-2024-005</td>
+                        <td><strong>Dewi Sartika</strong></td>
+                        <td>XI IPS 3</td>
+                        <td><span class="tag academic">Akademik</span></td>
+                        <td>10 Jan 2024</td>
+                        <td><span class="status-badge in-progress">Dalam Proses</span></td>
+                        <td>Bu Ani</td>
+                        <td>
+                            <button class="btn-icon" onclick="viewCase(5)">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button class="btn-icon" onclick="editCase(5)">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+@endsection
 
-            getMockCasesData() {
-                return [
-                    {
-                        id: 'BK-2024-001',
-                        student: 'Andi Pratama',
-                        class: 'XII IPA 1',
-                        type: 'Akademik',
-                        typeClass: 'academic',
-                        startDate: '15 Jan 2024',
-                        status: 'Selesai',
-                        statusClass: 'status-completed',
-                        counselor: 'Bu Ani'
-                    },
-                    {
-                        id: 'BK-2024-002',
-                        student: 'Siti Nurhaliza',
-                        class: 'XI IPS 2',
-                        type: 'Karir',
-                        typeClass: 'career',
-                        startDate: '14 Jan 2024',
-                        status: 'Dalam Proses',
-                        statusClass: 'status-in-progress',
-                        counselor: 'Pak Budi'
-                    },
-                    {
-                        id: 'BK-2024-003',
-                        student: 'Rizki Ramadhan',
-                        class: 'X MIPA',
-                        type: 'Sosial',
-                        typeClass: 'social',
-                        startDate: '13 Jan 2024',
-                        status: 'Pending',
-                        statusClass: 'status-pending',
-                        counselor: 'Bu Ani'
-                    },
-                    {
-                        id: 'BK-2024-004',
-                        student: 'M. Rizki Fadillah',
-                        class: 'XII IPA 1',
-                        type: 'Pribadi',
-                        typeClass: 'personal',
-                        startDate: '12 Jan 2024',
-                        status: 'Selesai',
-                        statusClass: 'status-completed',
-                        counselor: 'Pak Budi'
-                    },
-                    {
-                        id: 'BK-2024-005',
-                        student: 'Dewi Sartika',
-                        class: 'XI IPS 3',
-                        type: 'Akademik',
-                        typeClass: 'academic',
-                        startDate: '10 Jan 2024',
-                        status: 'Dalam Proses',
-                        statusClass: 'status-in-progress',
-                        counselor: 'Bu Ani'
-                    }
-                ];
-            }
+@push('scripts')
+<script>
+    function viewCase(id) {
+        alert('Melihat detail kasus #' + id);
+    }
 
-            setupEventListeners() {
-                // Report tabs
-                document.querySelectorAll('.report-tab').forEach(tab => {
-                    tab.addEventListener('click', () => {
-                        const report = tab.dataset.report;
-                        this.switchReport(report);
-                        
-                        // Update active tab
-                        document.querySelectorAll('.report-tab').forEach(t => {
-                            t.classList.remove('active');
-                        });
-                        tab.classList.add('active');
-                    });
-                });
+    function editCase(id) {
+        alert('Mengedit kasus #' + id);
+    }
 
-                // Filter controls
-                document.getElementById('periodSelect').addEventListener('change', (e) => {
-                    const isCustom = e.target.value === 'custom';
-                    document.getElementById('monthGroup').style.display = 
-                        isCustom ? 'block' : 'block';
-                    document.getElementById('yearGroup').style.display = 
-                        isCustom ? 'block' : 'block';
-                    this.applyFilters();
-                });
+    function exportReport() {
+        alert('Export laporan ke Excel');
+    }
 
-                document.getElementById('monthSelect').addEventListener('change', this.applyFilters.bind(this));
-                document.getElementById('yearSelect').addEventListener('change', this.applyFilters.bind(this));
-                document.getElementById('caseTypeSelect').addEventListener('change', this.applyFilters.bind(this));
-            }
+    function printReport() {
+        window.print();
+    }
 
-            switchReport(report) {
-                // Hide all reports
-                document.getElementById('statistikReport').style.display = 'none';
-                document.getElementById('kasusReport').style.display = 'none';
-                
-                // Show selected report
-                if (report === 'statistik') {
-                    document.getElementById('statistikReport').style.display = 'block';
-                } else if (report === 'kasus') {
-                    document.getElementById('kasusReport').style.display = 'block';
-                }
-                
-                this.currentReport = report;
-            }
+    // Set current month
+    document.addEventListener('DOMContentLoaded', function() {
+        const currentMonth = new Date().getMonth() + 1;
+        document.getElementById('monthSelect').value = currentMonth;
+    });
+</script>
 
-            applyFilters() {
-                const period = document.getElementById('periodSelect').value;
-                const month = document.getElementById('monthSelect').value;
-                const year = document.getElementById('yearSelect').value;
-                const caseType = document.getElementById('caseTypeSelect').value;
+<style>
+    .report-summary {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+        margin-bottom: 30px;
+    }
 
-                console.log('Applying filters:', { period, month, year, caseType });
-                
-                // In real app, this would reload data with filters
-                this.loadCasesData();
-                
-                // Update charts based on filters
-                this.updateChartsData(period, caseType);
-            }
+    .summary-card {
+        background: white;
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        text-align: center;
+    }
 
-            updateChartsData(period, caseType) {
-                // Simulated data update based on filters
-                const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
-                const currentMonth = new Date().getMonth();
-                
-                // Update trend chart
-                const trendData = [];
-                for (let i = 6; i >= 0; i--) {
-                    const monthIndex = (currentMonth - i + 12) % 12;
-                    trendData.push(Math.floor(Math.random() * 20) + 10);
-                }
-                
-                this.charts.monthlyTrend.data.labels = monthNames.slice(Math.max(0, currentMonth - 6), currentMonth + 1);
-                this.charts.monthlyTrend.data.datasets[0].data = trendData;
-                this.charts.monthlyTrend.update();
-            }
+    .summary-card h3 {
+        margin: 0 0 10px 0;
+        color: #333;
+        font-size: 18px;
+    }
 
-            viewCase(caseId) {
-                alert(`Melihat detail kasus: ${caseId}`);
-                // In real app, open case detail modal or page
-            }
+    .summary-value {
+        font-size: 32px;
+        font-weight: bold;
+        color: #2196F3;
+        display: block;
+        margin-bottom: 5px;
+    }
 
-            editCase(caseId) {
-                alert(`Mengedit kasus: ${caseId}`);
-                // In real app, open edit form
-            }
+    .summary-label {
+        font-size: 14px;
+        color: #666;
+    }
 
-            downloadReport(caseId) {
-                alert(`Mendownload laporan kasus: ${caseId}`);
-                // In real app, download report PDF
-            }
+    .controls-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 16px;
+    }
 
-            createNewReport() {
-                alert('Membuat laporan baru...');
-                // In real app, open new report form
-            }
+    .control-group {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
 
-            generateReport() {
-                alert('Membuat laporan statistik...');
-                // In real app, generate comprehensive report
-            }
+    .control-group label {
+        font-size: 14px;
+        color: #555;
+        font-weight: 500;
+    }
+
+    .tag {
+        padding: 4px 10px;
+        border-radius: 12px;
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+
+    .tag.academic { background: #4CAF50; color: white; }
+    .tag.social { background: #2196F3; color: white; }
+    .tag.career { background: #FF9800; color: white; }
+    .tag.personal { background: #9C27B0; color: white; }
+
+    @media (max-width: 768px) {
+        .controls-grid {
+            grid-template-columns: 1fr;
         }
-
-        // Global functions for export
-        function printReport() {
-            window.print();
+        
+        .report-summary {
+            grid-template-columns: 1fr;
         }
-
-        function exportToPDF() {
-            alert('Fitur export PDF akan segera tersedia!');
-        }
-
-        function exportToExcel() {
-            alert('Fitur export Excel akan segera tersedia!');
-        }
-
-        // Initialize when page loads
-        document.addEventListener('DOMContentLoaded', () => {
-            window.bkReports = new BKReports();
-            
-            // Set current month
-            const currentMonth = new Date().getMonth() + 1;
-            document.getElementById('monthSelect').value = currentMonth;
-        });
-    </script>
-</body>
-</html>
+    }
+</style>
+@endpush

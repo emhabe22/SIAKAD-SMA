@@ -1,15 +1,18 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jadwal Mengajar - SIAKAD SMA Mishbahul Ulum</title>
-    <link rel="stylesheet" href="../assets/css/main.css">
-    <link rel="stylesheet" href="../assets/css/layout.css">
-    <link rel="stylesheet" href="../assets/css/components.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/5.11.3/main.min.css">
-    <style>
+@extends('layouts.app')
+
+@section('title', 'Jadwal Mengajar - SIAKAD SMA Mishbahul Ulum')
+@section('page-title', 'Jadwal Mengajar')
+@section('breadcrumb', 'Guru / Jadwal Mengajar')
+
+@php
+    $role = 'guru';
+    $userName = 'Budi Santoso, S.Pd';
+    $userRole = 'Guru Matematika';
+@endphp
+
+@push('styles')
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/5.11.3/main.min.css">
+<style>
         /* Styles khusus untuk halaman jadwal mengajar */
         .teaching-schedule-container {
             display: flex;
@@ -389,80 +392,9 @@
             border-color: #4CAF50;
         }
     </style>
-</head>
-<body>
-    <!-- Sidebar Navigation -->
-    <div class="sidebar">
-        <div class="sidebar-header">
-            <div class="user-profile">
-                <img src="../assets/images/user-avatar.png" alt="Avatar Guru">
-                <div class="user-info">
-                    <h4>Budi Santoso, S.Pd</h4>
-                    <span class="role-badge">Guru Matematika</span>
-                </div>
-            </div>
-        </div>
+@endpush
 
-        <nav class="sidebar-nav">
-            <ul>
-                <li>
-                    <a href="dashboard.html">
-                        <i class="fas fa-home"></i>
-                        <span>Dashboard</span>
-                    </a>
-                </li>
-                <li class="active">
-                    <a href="jadwal-mengajar.html">
-                        <i class="fas fa-calendar-alt"></i>
-                        <span>Jadwal Mengajar</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="absensi.html">
-                        <i class="fas fa-clipboard-check"></i>
-                        <span>Absensi Siswa</span>
-                        <span class="badge">3</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="logbook.html">
-                        <i class="fas fa-book"></i>
-                        <span>Logbook</span>
-                    </a>
-                </li>
-                <!-- FITUR DIHAPUS: Nilai Siswa dan Materi Ajar -->
-                <li class="divider"></li>
-                <li>
-                    <a href="../login.html">
-                        <i class="fas fa-sign-out-alt"></i>
-                        <span>Keluar</span>
-                    </a>
-                </li>
-            </ul>
-        </nav>
-    </div>
-
-    <!-- Main Content -->
-    <div class="main-content">
-        <!-- Top Header -->
-        <header class="top-header">
-            <div class="header-left">
-                <h1>Jadwal Mengajar</h1>
-                <p class="breadcrumb">Guru / Jadwal Mengajar</p>
-            </div>
-            <div class="header-right">
-                <div class="notifications">
-                    <i class="fas fa-bell"></i>
-                    <span class="notification-count">2</span>
-                </div>
-                <div class="date-display">
-                    <span id="current-date">Selasa, 16 Januari 2024</span>
-                    <span id="current-time">08:30 AM</span>
-                </div>
-            </div>
-        </header>
-
-        <!-- Stats Overview -->
+@section('content')
         <div class="schedule-stats">
             <div class="stat-card-schedule">
                 <h3>Jam Mengajar/Minggu</h3>
@@ -652,12 +584,13 @@
             </button>
         </div>
     </div>
+@endsection
 
-    <!-- Scripts -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/5.11.3/main.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/locale/id.min.js"></script>
-    <script>
+@push('scripts')
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/5.11.3/main.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/locale/id.min.js"></script>
+<script>
         // Set locale to Indonesian
         moment.locale('id');
 
@@ -1166,5 +1099,4 @@
             document.getElementById('monthSelect').value = currentMonth;
         });
     </script>
-</body>
-</html>
+@endpush
