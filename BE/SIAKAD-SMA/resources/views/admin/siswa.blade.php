@@ -14,39 +14,7 @@
 
         <!-- Main Content Container -->
         <div class="content-container">
-            <!-- Filter Section -->
-            <div class="filter-section">
-                <div class="filter-group">
-                    <label>Filter Kelas:</label>
-                    <select id="filterClass" onchange="filterTable()">
-                        <option value="all">Semua Kelas</option>
-                        <option value="X">Kelas X</option>
-                        <option value="XI">Kelas XI</option>
-                        <option value="XII">Kelas XII</option>
-                    </select>
-                </div>
-                <div class="filter-group">
-                    <label>Filter Jurusan:</label>
-                    <select id="filterMajor" onchange="filterTable()">
-                        <option value="all">Semua Jurusan</option>
-                        <option value="MIPA">MIPA</option>
-                        <option value="IPS">IPS</option>
-                        <option value="BAHASA">Bahasa</option>
-                    </select>
-                </div>
-                <div class="filter-group">
-                    <label>Filter Status:</label>
-                    <select id="filterStatus" onchange="filterTable()">
-                        <option value="all">Semua Status</option>
-                        <option value="active">Aktif</option>
-                        <option value="inactive">Tidak Aktif</option>
-                        <option value="alumni">Alumni</option>
-                    </select>
-                </div>
-                <button class="btn btn-secondary" onclick="resetFilters()">
-                    <i class="fas fa-redo"></i> Reset Filter
-                </button>
-            </div>
+
 
             <!-- Stats Cards -->
             <div class="stats-grid compact">
@@ -306,33 +274,7 @@
                 </div>
             </div>
 
-            <!-- Bulk Actions -->
-            <div class="card">
-                <div class="card-header">
-                    <h3><i class="fas fa-tasks"></i> Tindakan Massal</h3>
-                </div>
-                <div class="card-body">
-                    <div class="bulk-actions">
-                        <select id="bulkAction" class="bulk-select">
-                            <option value="">-- Pilih Tindakan --</option>
-                            <option value="export">Export Terpilih</option>
-                            <option value="activate">Aktifkan</option>
-                            <option value="deactivate">Nonaktifkan</option>
-                            <option value="move">Pindah Kelas</option>
-                            <option value="delete">Hapus</option>
-                        </select>
-                        <button class="btn btn-primary" onclick="applyBulkAction()">
-                            <i class="fas fa-play"></i> Terapkan
-                        </button>
-                        <button class="btn btn-secondary" onclick="selectAllStudents()">
-                            <i class="fas fa-check-square"></i> Pilih Semua
-                        </button>
-                        <button class="btn btn-secondary" onclick="deselectAllStudents()">
-                            <i class="fas fa-square"></i> Batalkan Pilihan
-                        </button>
-                    </div>
-                </div>
-            </div>
+
         </div>
 
     <!-- Modal Add/Edit Student -->
@@ -517,7 +459,7 @@
                             <button class="tab-btn active" onclick="showTab('personal')">Data Pribadi</button>
                             <button class="tab-btn" onclick="showTab('academic')">Data Akademik</button>
                             <button class="tab-btn" onclick="showTab('family')">Data Keluarga</button>
-                            <button class="tab-btn" onclick="showTab('history')">Riwayat</button>
+
                         </div>
 
                         <div class="tab-content active" id="personalTab">
@@ -563,10 +505,7 @@
                                     <label>Jurusan:</label>
                                     <span id="viewMajor">MIPA</span>
                                 </div>
-                                <div class="detail-item">
-                                    <label>Wali Kelas:</label>
-                                    <span id="viewHomeroom">Budi Santoso, S.Pd</span>
-                                </div>
+
                                 <div class="detail-item">
                                     <label>Tahun Masuk:</label>
                                     <span id="viewEntryYear">2024</span>
@@ -610,9 +549,7 @@
                 <button class="btn btn-primary" onclick="editFromView()">
                     <i class="fas fa-edit"></i> Edit Data
                 </button>
-                <button class="btn btn-success" onclick="printStudentCard()">
-                    <i class="fas fa-id-card"></i> Cetak Kartu Siswa
-                </button>
+
             </div>
         </div>
     </div>
@@ -649,12 +586,12 @@
             // Mobile menu
             const mobileMenuToggle = document.getElementById('mobileMenuToggle');
             const sidebar = document.getElementById('sidebar');
-            
+
             if (mobileMenuToggle && sidebar) {
                 mobileMenuToggle.addEventListener('click', function() {
                     sidebar.classList.toggle('active');
-                    mobileMenuToggle.innerHTML = sidebar.classList.contains('active') 
-                        ? '<i class="fas fa-times"></i>' 
+                    mobileMenuToggle.innerHTML = sidebar.classList.contains('active')
+                        ? '<i class="fas fa-times"></i>'
                         : '<i class="fas fa-bars"></i>';
                 });
             }
@@ -663,7 +600,7 @@
             document.getElementById('photoUpload').addEventListener('change', function(e) {
                 const file = e.target.files[0];
                 const preview = document.getElementById('filePreview');
-                
+
                 if (file) {
                     const reader = new FileReader();
                     reader.onload = function(e) {
@@ -801,7 +738,7 @@
             const majorFilter = document.getElementById('filterMajor').value;
             const statusFilter = document.getElementById('filterStatus').value;
             const searchTerm = document.getElementById('searchStudent').value.toLowerCase();
-            
+
             // Implement filtering logic
             console.log(`Filtering: Class=${classFilter}, Major=${majorFilter}, Status=${statusFilter}, Search=${searchTerm}`);
         }
@@ -832,7 +769,7 @@
                 alert('Pilih tindakan terlebih dahulu!');
                 return;
             }
-            
+
             if (confirm(`Terapkan tindakan "${action}" pada siswa terpilih?`)) {
                 alert(`Tindakan "${action}" berhasil diterapkan!`);
             }
@@ -868,15 +805,15 @@
             document.querySelectorAll('.tab-content').forEach(tab => {
                 tab.classList.remove('active');
             });
-            
+
             // Remove active class from all buttons
             document.querySelectorAll('.tab-btn').forEach(btn => {
                 btn.classList.remove('active');
             });
-            
+
             // Show selected tab
             document.getElementById(tabName + 'Tab').classList.add('active');
-            
+
             // Add active class to clicked button
             event.currentTarget.classList.add('active');
         }
