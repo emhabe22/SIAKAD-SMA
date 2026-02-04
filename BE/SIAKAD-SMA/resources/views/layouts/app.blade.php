@@ -28,10 +28,7 @@
                 <p class="breadcrumb">@yield('breadcrumb', 'Home / Dashboard')</p>
             </div>
             <div class="header-right">
-                <div class="notifications">
-                    <i class="fas fa-bell"></i>
-                    <span class="notification-count">@yield('notification-count', '0')</span>
-                </div>
+
                 <div class="date-display">
                     <span id="current-date"></span>
                     <span id="current-time"></span>
@@ -43,15 +40,13 @@
         @yield('content')
 
         <!-- Footer -->
-        <footer class="main-footer">
-            <p>&copy; 2024 SMA Mishbahul Ulum. All rights reserved.</p>
-        </footer>
+
     </div>
 
     <!-- Scripts -->
     <script src="{{ asset('assets/js/main.js') }}"></script>
     @stack('scripts')
-    
+
     <script>
         // Update current date and time
         function updateDateTime() {
@@ -59,11 +54,11 @@
             const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
             const dateStr = now.toLocaleDateString('id-ID', options);
             const timeStr = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
-            
+
             document.getElementById('current-date').textContent = dateStr;
             document.getElementById('current-time').textContent = timeStr;
         }
-        
+
         updateDateTime();
         setInterval(updateDateTime, 60000); // Update every minute
 

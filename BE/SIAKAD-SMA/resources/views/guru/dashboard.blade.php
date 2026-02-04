@@ -49,15 +49,7 @@
                     <p>Siswa Diajar</p>
                 </div>
             </div>
-            <div class="stat-card">
-                <div class="stat-icon" style="background: #9C27B0;">
-                    <i class="fas fa-calendar-check"></i>
-                </div>
-                <div class="stat-info">
-                    <h3>94%</h3>
-                    <p>Kehadiran</p>
-                </div>
-            </div>
+
         </div>
 
         <!-- Main Content Grid -->
@@ -68,7 +60,7 @@
                 <div class="card">
                     <div class="card-header">
                         <h3><i class="fas fa-calendar-day"></i> Jadwal Mengajar Hari Ini</h3>
-                        <a href="jadwal-mengajar.html" class="btn-link">Lihat Semua</a>
+                        <a href="/guru/jadwal-mengajar" class="btn-link">Lihat Semua</a>
                     </div>
                     <div class="card-body">
                         <div class="today-schedule">
@@ -79,41 +71,13 @@
                                 </div>
                                 <div class="schedule-details">
                                     <h4>Matematika - Kelas X MIPA 1</h4>
-                                    <p><i class="fas fa-map-marker-alt"></i> Ruang 201</p>
-                                    <p><i class="fas fa-book"></i> Bab: Trigonometri</p>
+                                 
                                 </div>
-                                <button class="btn btn-sm btn-primary" onclick="takeAttendance(1)">
+                                <button class="btn btn-sm btn-primary" >
                                     <i class="fas fa-clipboard-check"></i> Absen
                                 </button>
                             </div>
-                            <div class="schedule-item">
-                                <div class="schedule-time">
-                                    <span class="time">10:00 - 11:30</span>
-                                    <span class="status-badge upcoming">Akan Datang</span>
-                                </div>
-                                <div class="schedule-details">
-                                    <h4>Matematika - Kelas XI IPA 2</h4>
-                                    <p><i class="fas fa-map-marker-alt"></i> Ruang 305</p>
-                                    <p><i class="fas fa-book"></i> Bab: Integral</p>
-                                </div>
-                                <button class="btn btn-sm btn-outline" disabled>
-                                    <i class="fas fa-clock"></i> Menunggu
-                                </button>
-                            </div>
-                            <div class="schedule-item">
-                                <div class="schedule-time">
-                                    <span class="time">13:00 - 14:30</span>
-                                    <span class="status-badge upcoming">Akan Datang</span>
-                                </div>
-                                <div class="schedule-details">
-                                    <h4>Matematika - Kelas XII IPS 1</h4>
-                                    <p><i class="fas fa-map-marker-alt"></i> Ruang 402</p>
-                                    <p><i class="fas fa-book"></i> Bab: Statistika</p>
-                                </div>
-                                <button class="btn btn-sm btn-outline" disabled>
-                                    <i class="fas fa-clock"></i> Menunggu
-                                </button>
-                            </div>
+
                         </div>
                     </div>
                 </div>
@@ -125,37 +89,37 @@
                     </div>
                     <div class="card-body">
                         <div class="quick-actions-grid">
-                            <button class="quick-action-btn" onclick="location.href='absensi.html'">
+                            <button class="quick-action-btn" onclick="location.href='/guru/absensi'">
                                 <div class="action-icon">
                                     <i class="fas fa-clipboard-check"></i>
                                 </div>
                                 <span>Input Absensi</span>
                             </button>
-                            <button class="quick-action-btn" onclick="location.href='logbook.html'">
+                            <button class="quick-action-btn" onclick="location.href='/guru/logbook'">
                                 <div class="action-icon">
                                     <i class="fas fa-book"></i>
                                 </div>
                                 <span>Isi Logbook</span>
                             </button>
-                            <button class="quick-action-btn" onclick="createAnnouncement()">
+                            <button class="quick-action-btn">
                                 <div class="action-icon">
                                     <i class="fas fa-bullhorn"></i>
                                 </div>
                                 <span>Buat Pengumuman</span>
                             </button>
-                            <button class="quick-action-btn" onclick="createAssignment()">
+                            <button class="quick-action-btn" >
                                 <div class="action-icon">
                                     <i class="fas fa-tasks"></i>
                                 </div>
                                 <span>Buat Tugas</span>
                             </button>
-                            <button class="quick-action-btn" onclick="viewStudentProgress()">
+                            <button class="quick-action-btn" >
                                 <div class="action-icon">
                                     <i class="fas fa-chart-line"></i>
                                 </div>
                                 <span>Progress Siswa</span>
                             </button>
-                            <button class="quick-action-btn" onclick="scheduleMeeting()">
+                            <button class="quick-action-btn" >
                                 <div class="action-icon">
                                     <i class="fas fa-users"></i>
                                 </div>
@@ -167,49 +131,6 @@
             </div>
 
             <!-- Right Column -->
-            <div class="right-column">
-                <!-- Notifikasi -->
-                <div class="card">
-                    <div class="card-header">
-                        <h3><i class="fas fa-bell"></i> Notifikasi Terbaru</h3>
-                    </div>
-                    <div class="card-body">
-                        <div class="notifications-list">
-                            <div class="notification-item unread">
-                                <div class="notification-icon">
-                                    <i class="fas fa-exclamation-circle"></i>
-                                </div>
-                                <div class="notification-content">
-                                    <h5>Pengingat: Deadline Input Absen</h5>
-                                    <p>Deadline input absen hari ini: 16:00 WIB</p>
-                                    <span class="notification-time">2 jam yang lalu</span>
-                                </div>
-                            </div>
-                            <div class="notification-item unread">
-                                <div class="notification-icon">
-                                    <i class="fas fa-users"></i>
-                                </div>
-                                <div class="notification-content">
-                                    <h5>Rapat Guru Bulanan</h5>
-                                    <p>Rapat akan dilaksanakan di Aula sekolah</p>
-                                    <span class="notification-time">1 hari yang lalu</span>
-                                </div>
-                            </div>
-                            <div class="notification-item">
-                                <div class="notification-icon">
-                                    <i class="fas fa-book"></i>
-                                </div>
-                                <div class="notification-content">
-                                    <h5>Logbook Terbaru</h5>
-                                    <p>3 siswa mengumpulkan logbook hari ini</p>
-                                    <span class="notification-time">3 hari yang lalu</span>
-                                </div>
-                            </div>
-                        </div>
-                        <a href="#" class="view-all">Lihat Semua Notifikasi</a>
-                    </div>
-                </div>
-            </div>
         </div>
 
         <!-- Recent Activities & Tasks -->
@@ -231,26 +152,7 @@
                                 <span class="activity-time">Kemarin, 15:30</span>
                             </div>
                         </div>
-                        <div class="activity-item">
-                            <div class="activity-icon">
-                                <i class="fas fa-book"></i>
-                            </div>
-                            <div class="activity-content">
-                                <h5>Update Logbook Kelas XI</h5>
-                                <p>Memeriksa dan memberikan feedback logbook bab integral</p>
-                                <span class="activity-time">2 hari yang lalu</span>
-                            </div>
-                        </div>
-                        <div class="activity-item">
-                            <div class="activity-icon">
-                                <i class="fas fa-bullhorn"></i>
-                            </div>
-                            <div class="activity-content">
-                                <h5>Buat Pengumuman</h5>
-                                <p>Membuat pengumuman jadwal ulangan untuk kelas XII</p>
-                                <span class="activity-time">3 hari yang lalu</span>
-                            </div>
-                        </div>
+
                     </div>
                 </div>
             </div>
@@ -270,12 +172,12 @@
     document.addEventListener('DOMContentLoaded', function() {
         // Initialize mini calendar
         initMiniCalendar();
-        
+
         // Calendar navigation
         document.getElementById('prevMonth')?.addEventListener('click', function() {
             alert('Previous month');
         });
-        
+
         document.getElementById('nextMonth')?.addEventListener('click', function() {
             alert('Next month');
         });
@@ -284,7 +186,7 @@
     function initMiniCalendar() {
         const calendarEl = document.getElementById('miniCalendar');
         if (!calendarEl) return;
-        
+
         const calendar = new FullCalendar.Calendar(calendarEl, {
             initialView: 'dayGridMonth',
             headerToolbar: false,
