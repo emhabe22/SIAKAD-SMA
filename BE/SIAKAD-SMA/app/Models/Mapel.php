@@ -6,20 +6,23 @@ use Illuminate\Database\Eloquent\Model;
 
 class Mapel extends Model
 {
-    protected $fillable = ['nama_mapel', 'kelas_id'];
+    protected $fillable = ['nama_mapel'];
 
-    public function kelas()
-    {
-        return $this->belongsTo(Kelas::class);
-    }
-
+    /**
+     * Relasi Many-to-Many dengan Guru melalui tabel guru_mapel
+     */
     public function gurus()
     {
-        return $this->hasMany(Guru::class);
+        return $this->belongsToMany(Guru::class, 'guru_mapel');
     }
 
     public function absens()
     {
         return $this->hasMany(Absen::class);
+    }
+
+    public function jadwalPelajarans()
+    {
+        return $this->hasMany(JadwalPelajaran::class);
     }
 }

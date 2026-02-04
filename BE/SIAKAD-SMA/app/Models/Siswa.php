@@ -27,4 +27,9 @@ class Siswa extends Model
     {
         return $this->hasMany(Penjadwalan::class);
     }
+
+    public function pelanggaranSiswas()
+    {
+        return $this->hasMany(PelanggaranSiswa::class);
+    }
 }

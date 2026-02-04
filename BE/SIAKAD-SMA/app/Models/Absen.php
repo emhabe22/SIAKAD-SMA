@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Absen extends Model
 {
-    protected $fillable = ['tanggal', 'pertemuan', 'mapel_id', 'guru_id'];
+    protected $fillable = ['tanggal', 'jam_mulai', 'jam_selesai', 'kelas_id', 'pertemuan', 'mapel_id', 'guru_id'];
 
     public function mapel()
     {
@@ -16,6 +16,11 @@ class Absen extends Model
     public function guru()
     {
         return $this->belongsTo(Guru::class);
+    }
+
+    public function kelas()
+    {
+        return $this->belongsTo(Kelas::class);
     }
 
     public function absensis()

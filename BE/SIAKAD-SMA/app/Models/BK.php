@@ -18,4 +18,9 @@ class BK extends Model
     {
         return $this->hasMany(Penjadwalan::class, 'bk_id');
     }
+
+    public function pelanggaranSiswas()
+    {
+        return $this->hasMany(PelanggaranSiswa::class);
+    }
 }

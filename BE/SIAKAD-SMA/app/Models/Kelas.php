@@ -6,15 +6,20 @@ use Illuminate\Database\Eloquent\Model;
 
 class Kelas extends Model
 {
-    protected $fillable = [];
+    protected $fillable = ['nama_kelas', 'tingkat', 'jurusan'];
 
     public function siswas()
     {
         return $this->hasMany(Siswa::class);
     }
 
-    public function mapels()
+    public function absens()
     {
-        return $this->hasMany(Mapel::class);
+        return $this->hasMany(Absen::class);
+    }
+
+    public function jadwalPelajarans()
+    {
+        return $this->hasMany(JadwalPelajaran::class);
     }
 }

@@ -7,13 +7,14 @@ use App\Models\Guru;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 
 class GuruController extends Controller
 {
     // Tampilkan semua guru
     public function index()
     {
-        $gurus = Guru::with(['user', 'mapel'])->get();
+        $gurus = Guru::with(['user', 'mapels'])->get();
         return response()->json([
             'success' => true,
             'data' => $gurus
@@ -23,22 +24,29 @@ class GuruController extends Controller
     // Tambah guru baru
     public function store(Request $request)
     {
-        $request->validate([
+        $validator = Validator::make($request->all(), [
             'nama' => 'required|string',
             'nip' => 'required|unique:gurus',
             'alamat' => 'required|string',
-            'no_telp' => 'required|integer',
-            'mapel_id' => 'required|exists:mapels,id',
+            'no_telp' => 'required|string',
+            'mapel_ids' => 'array',
+            'mapel_ids.*' => 'exists:mapels,id',
             'username' => 'required|unique:users',
             'password' => 'required|min:6',
         ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'errors' => $validator->errors()
+            ], 422);
+        }
 
         // Buat user dulu
         $user = User::create([
             'username' => $request->username,
             'password' => Hash::make($request->password),
-            'nip' => $request->nip,
-            'role_id' => 2, // role guru
+            'role_id' => 3, // role guru
         ]);
 
         // Buat guru
@@ -47,21 +55,25 @@ class GuruController extends Controller
             'nip' => $request->nip,
             'alamat' => $request->alamat,
             'no_telp' => $request->no_telp,
-            'mapel_id' => $request->mapel_id,
             'user_id' => $user->id,
         ]);
+
+        // Attach mapels if provided
+        if ($request->has('mapel_ids')) {
+            $guru->mapels()->attach($request->mapel_ids);
+        }
 
         return response()->json([
             'success' => true,
             'message' => 'Guru berhasil ditambahkan',
-            'data' => $guru->load(['user', 'mapel'])
+            'data' => $guru->load(['user', 'mapels'])
         ], 201);
     }
 
     // Tampilkan satu guru
     public function show($id)
     {
-        $guru = Guru::with(['user', 'mapel'])->find($id);
+        $guru = Guru::with(['user', 'mapels', 'jadwalPelajarans.kelas'])->find($id);
 
         if (!$guru) {
             return response()->json([
@@ -88,18 +100,28 @@ class GuruController extends Controller
             ], 404);
         }
 
-        $request->validate([
-            'nama' => 'required|string',
-            'nip' => 'required|unique:gurus,nip,' . $id,
-            'alamat' => 'required|string',
-            'no_telp' => 'required|integer',
-            'mapel_id' => 'required|exists:mapels,id',
+        $validator = Validator::make($request->all(), [
+            'nama' => 'sometimes|required|string',
+            'nip' => 'sometimes|required|unique:gurus,nip,' . $id,
+            'alamat' => 'sometimes|required|string',
+            'no_telp' => 'sometimes|required|string',
+            'mapel_ids' => 'array',
+            'mapel_ids.*' => 'exists:mapels,id',
         ]);
 
-        $guru->update($request->only(['nama', 'nip', 'alamat', 'no_telp', 'mapel_id']));
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'errors' => $validator->errors()
+            ], 422);
+        }
 
-        // Update user nip
-        $guru->user->update(['nip' => $request->nip]);
+        $guru->update($request->only(['nama', 'nip', 'alamat', 'no_telp']));
+
+        // Update mapels if provided
+        if ($request->has('mapel_ids')) {
+            $guru->mapels()->sync($request->mapel_ids);
+        }
 
         // Update password jika ada
         if ($request->password) {
@@ -111,7 +133,7 @@ class GuruController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Guru berhasil diupdate',
-            'data' => $guru->load(['user', 'mapel'])
+            'data' => $guru->load(['user', 'mapels'])
         ]);
     }
 
@@ -132,6 +154,42 @@ class GuruController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Guru berhasil dihapus'
+        ]);
+    }
+
+    /**
+     * Assign mapel to guru
+     */
+    public function assignMapel(Request $request, $id)
+    {
+        $guru = Guru::find($id);
+
+        if (!$guru) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Guru tidak ditemukan'
+            ], 404);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'mapel_ids' => 'required|array',
+            'mapel_ids.*' => 'exists:mapels,id',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        $guru->mapels()->sync($request->mapel_ids);
+        $guru->load('mapels');
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Mapel berhasil di-assign ke guru',
+            'data' => $guru
         ]);
     }
 }

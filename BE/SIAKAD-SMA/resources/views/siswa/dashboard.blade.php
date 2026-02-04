@@ -25,171 +25,7 @@
             line-height: 1.6;
         }
 
-        .container {
-            display: flex;
-            min-height: 100vh;
-        }
-
-        /* Sidebar Navigasi */
-        .sidebar {
-            width: 260px;
-            background: linear-gradient(180deg, #1a3a8f 0%, #2d5bd6 100%);
-            color: white;
-            padding: 25px 20px;
-            box-shadow: 3px 0 15px rgba(0, 0, 0, 0.1);
-            position: sticky;
-            top: 0;
-            height: 100vh;
-            overflow-y: auto;
-            transition: transform 0.3s ease;
-        }
-
-        .logo-area {
-            display: flex;
-            align-items: center;
-            margin-bottom: 30px;
-            padding-bottom: 20px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .logo {
-            width: 50px;
-            height: 50px;
-            background-color: white;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-right: 15px;
-        }
-
-        .logo i {
-            font-size: 24px;
-            color: #2d5bd6;
-        }
-
-        .logo-text h1 {
-            font-size: 20px;
-            font-weight: 700;
-        }
-
-        .logo-text p {
-            font-size: 12px;
-            opacity: 0.8;
-            margin-top: 3px;
-        }
-
-        .user-info {
-            display: flex;
-            align-items: center;
-            background-color: rgba(255, 255, 255, 0.1);
-            padding: 12px;
-            border-radius: 10px;
-            margin-bottom: 25px;
-        }
-
-        .user-avatar {
-            width: 45px;
-            height: 45px;
-            background-color: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-right: 12px;
-        }
-
-        .user-avatar i {
-            font-size: 20px;
-            color: #2d5bd6;
-        }
-
-        .user-details h3 {
-            font-size: 16px;
-            margin-bottom: 3px;
-        }
-
-        .user-details span {
-            font-size: 12px;
-            background-color: #4caf50;
-            padding: 2px 8px;
-            border-radius: 10px;
-            display: inline-block;
-        }
-
-        .nav-section {
-            margin-bottom: 25px;
-        }
-
-        .nav-section h3 {
-            font-size: 14px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 15px;
-            opacity: 0.7;
-        }
-
-        .nav-menu {
-            list-style: none;
-        }
-
-        .nav-menu li {
-            margin-bottom: 8px;
-        }
-
-        .nav-menu li a {
-            color: white;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            padding: 12px 15px;
-            border-radius: 10px;
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-
-        .nav-menu li a:hover, .nav-menu li.active a {
-            background-color: rgba(255, 255, 255, 0.15);
-        }
-
-        .nav-menu li a i {
-            margin-right: 12px;
-            font-size: 18px;
-            width: 24px;
-            text-align: center;
-        }
-
-        .status-indicator {
-            display: flex;
-            align-items: center;
-            background-color: rgba(255, 255, 255, 0.1);
-            padding: 12px;
-            border-radius: 10px;
-            margin-top: 30px;
-            font-size: 14px;
-        }
-
-        .status-dot {
-            width: 10px;
-            height: 10px;
-            background-color: #4caf50;
-            border-radius: 50%;
-            margin-right: 10px;
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0% { opacity: 1; }
-            50% { opacity: 0.5; }
-            100% { opacity: 1; }
-        }
-
-        /* Konten Utama */
-        .main-content {
-            flex: 1;
-            padding: 30px;
-            overflow-y: auto;
-        }
+        /* Konten Utama - sudah dihandle oleh layout */
 
         .header {
             display: flex;
@@ -216,16 +52,6 @@
             padding: 10px 20px;
             border-radius: 10px;
             box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
-        }
-
-        .menu-toggle {
-            display: none;
-            background: none;
-            border: none;
-            font-size: 20px;
-            color: #1a3a8f;
-            cursor: pointer;
-            padding: 10px;
         }
 
         /* Pengingat Penting */
@@ -471,163 +297,8 @@
 
         /* ========== STYLE LOGOUT ========== */
 
-        /* Style untuk tombol logout di sidebar */
-        #logout-menu a {
-            color: #ff6b6b;
-            background-color: rgba(255, 107, 107, 0.1);
-        }
-
-        #logout-menu a:hover {
-            background-color: rgba(255, 107, 107, 0.2);
-        }
-
-        #logout-menu a i {
-            color: #ff6b6b;
-        }
-
-        /* Modal konfirmasi logout */
-        .logout-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            z-index: 2000;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .logout-modal.active {
-            display: flex;
-        }
-
-        .logout-modal-content {
-            background-color: white;
-            padding: 30px;
-            border-radius: 15px;
-            max-width: 400px;
-            width: 90%;
-            text-align: center;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            animation: modalFadeIn 0.3s ease;
-        }
-
-        @keyframes modalFadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .logout-modal-icon {
-            font-size: 60px;
-            color: #ff6b6b;
-            margin-bottom: 20px;
-        }
-
-        .logout-modal-title {
-            font-size: 24px;
-            color: #333;
-            margin-bottom: 10px;
-        }
-
-        .logout-modal-message {
-            color: #666;
-            margin-bottom: 30px;
-            line-height: 1.5;
-        }
-
-        .logout-modal-buttons {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-        }
-
-        .logout-btn-confirm, .logout-btn-cancel {
-            padding: 12px 30px;
-            border: none;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            min-width: 120px;
-        }
-
-        .logout-btn-confirm {
-            background-color: #ff6b6b;
-            color: white;
-        }
-
-        .logout-btn-confirm:hover {
-            background-color: #ff5252;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(255, 82, 82, 0.3);
-        }
-
-        .logout-btn-cancel {
-            background-color: #f8f9fa;
-            color: #333;
-            border: 1px solid #ddd;
-        }
-
-        .logout-btn-cancel:hover {
-            background-color: #e9ecef;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        }
-
         /* Responsif */
         @media (max-width: 1100px) {
-            .container {
-                flex-direction: column;
-            }
-            
-            .sidebar {
-                width: 100%;
-                height: auto;
-                position: fixed;
-                top: 0;
-                left: 0;
-                z-index: 1000;
-                transform: translateX(-100%);
-            }
-            
-            .sidebar.active {
-                transform: translateX(0);
-            }
-            
-            .menu-toggle {
-                display: block;
-            }
-            
-            .nav-menu {
-                display: flex;
-                flex-wrap: wrap;
-            }
-            
-            .nav-menu li {
-                flex: 1;
-                min-width: 120px;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .reminder-card {
-                flex-direction: column;
-                text-align: center;
-            }
-            
-            .reminder-buttons {
-                justify-content: center;
-                margin-top: 15px;
-            }
-            
             .stats-section {
                 grid-template-columns: 1fr;
             }
@@ -636,31 +307,23 @@
                 flex-direction: column;
                 gap: 20px;
             }
-            
-            .main-content {
-                padding: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .stats-section {
+                grid-template-columns: 1fr;
             }
             
-            .header {
+            .schedule-summary {
                 flex-direction: column;
-                gap: 15px;
-                align-items: flex-start;
-            }
-            
-            .header-right {
-                width: 100%;
-                justify-content: space-between;
+                gap: 20px;
             }
         }
 
         /* Responsif untuk modal logout */
         @media (max-width: 480px) {
-            .logout-modal-buttons {
-                flex-direction: column;
-            }
-            
-            .logout-btn-confirm, .logout-btn-cancel {
-                width: 100%;
+            .stats-section {
+                grid-template-columns: 1fr;
             }
         }
 </style>
@@ -988,26 +651,6 @@
                     </div>
                 </div>
             </div>
-        </main>
-    </div>
-
-    <!-- Modal Konfirmasi Logout -->
-    <div id="logoutModal" class="logout-modal">
-        <div class="logout-modal-content">
-            <div class="logout-modal-icon">
-                <i class="fas fa-sign-out-alt"></i>
-            </div>
-            <h3 class="logout-modal-title">Konfirmasi Logout</h3>
-            <p class="logout-modal-message">
-                Apakah Anda yakin ingin keluar dari sistem?<br>
-                Semua data yang belum tersimpan akan hilang.
-            </p>
-            <div class="logout-modal-buttons">
-                <button id="logoutConfirm" class="logout-btn-confirm">Ya, Logout</button>
-                <button id="logoutCancel" class="logout-btn-cancel">Batal</button>
-            </div>
-        </div>
-    </div>
 @endsection
 
 @push('scripts')
@@ -1025,160 +668,18 @@
         // Inisialisasi
         document.addEventListener('DOMContentLoaded', function() {
             initializeDashboard();
-            updateDateTime();
-            setInterval(updateDateTime, 1000);
             setupEventListeners();
-            updateLastSync();
         });
-
-        // ========== FUNGSI LOGOUT ==========
-
-        // Fungsi untuk setup logout
-        function setupLogout() {
-            // Event listener untuk tombol logout di menu
-            document.getElementById('logout-menu').addEventListener('click', function(e) {
-                e.preventDefault();
-                showLogoutModal();
-            });
-
-            // Event listener untuk tombol logout di modal
-            document.getElementById('logoutConfirm').addEventListener('click', function() {
-                performLogout();
-            });
-
-            // Event listener untuk tombol cancel di modal
-            document.getElementById('logoutCancel').addEventListener('click', function() {
-                hideLogoutModal();
-            });
-
-            // Tutup modal saat klik di luar
-            document.getElementById('logoutModal').addEventListener('click', function(e) {
-                if (e.target === this) {
-                    hideLogoutModal();
-                }
-            });
-        }
-
-        // Tampilkan modal konfirmasi logout
-        function showLogoutModal() {
-            document.getElementById('logoutModal').classList.add('active');
-            // Close sidebar jika di mobile
-            if (window.innerWidth <= 1100) {
-                document.querySelector('.sidebar').classList.remove('active');
-            }
-        }
-
-        // Sembunyikan modal konfirmasi logout
-        function hideLogoutModal() {
-            document.getElementById('logoutModal').classList.remove('active');
-        }
-
-        // Proses logout
-        // Proses logout
-function performLogout() {
-    // Tampilkan loading
-    const modalContent = document.querySelector('.logout-modal-content');
-    modalContent.innerHTML = `
-        <div class="logout-modal-icon">
-            <i class="fas fa-spinner fa-spin"></i>
-        </div>
-        <h3 class="logout-modal-title">Sedang logout...</h3>
-        <p class="logout-modal-message">Menyimpan data dan mengakhiri sesi...</p>
-    `;
-
-    // Simulasi proses logout
-    setTimeout(() => {
-        // Clear data sesi
-        clearSessionData();
-        
-        // Redirect ke halaman login umum
-        window.location.href = '../login.html'; // atau 'index.html' tergantung struktur
-    }, 1500);
-}
-
-        // Fungsi untuk clear session data
-        function clearSessionData() {
-            // Hapus data dari localStorage/sessionStorage
-            localStorage.removeItem('student_token');
-            localStorage.removeItem('student_data');
-            sessionStorage.clear();
-            
-            // Log aktivitas logout
-            console.log('Siswa berhasil logout');
-        }
 
         // ========== FUNGSI UTAMA ==========
 
-        // Fungsi untuk update waktu dan tanggal real-time
-        function updateDateTime() {
-            const now = new Date();
-            
-            // Format tanggal
-            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-            const formattedDate = now.toLocaleDateString('id-ID', options);
-            
-            // Format waktu
-            const hours = String(now.getHours()).padStart(2, '0');
-            const minutes = String(now.getMinutes()).padStart(2, '0');
-            const seconds = String(now.getSeconds()).padStart(2, '0');
-            const formattedTime = `${hours}:${minutes}:${seconds}`;
-            
-            // Update elemen
-            document.getElementById('current-date').textContent = formattedDate;
-            document.getElementById('current-time').textContent = formattedTime;
-        }
-
-        // Update waktu sinkronisasi
-        function updateLastSync() {
-            const now = new Date();
-            const hours = String(now.getHours()).padStart(2, '0');
-            const minutes = String(now.getMinutes()).padStart(2, '0');
-            const seconds = String(now.getSeconds()).padStart(2, '0');
-            document.getElementById('last-sync').textContent = `Terakhir sinkron: ${hours}.${minutes}.${seconds}`;
-        }
-
         // Setup semua event listeners
         function setupEventListeners() {
-            // Menu toggle untuk mobile
-            document.querySelector('.menu-toggle').addEventListener('click', function() {
-                document.querySelector('.sidebar').classList.toggle('active');
-            });
-
-            // Setup logout functionality
-            setupLogout();
-
-            // Navigasi sidebar
-            document.querySelectorAll('.nav-menu li:not(#logout-menu)').forEach(item => {
-                item.addEventListener('click', function() {
-                    const page = this.dataset.page;
-                    navigateToPage(page);
-                    
-                    // Update active menu
-                    document.querySelectorAll('.nav-menu li:not(#logout-menu)').forEach(li => {
-                        li.classList.remove('active');
-                    });
-                    this.classList.add('active');
-                    
-                    // Close sidebar on mobile
-                    if (window.innerWidth <= 1100) {
-                        document.querySelector('.sidebar').classList.remove('active');
-                    }
-                });
-            });
-
             // Action cards navigation
             document.querySelectorAll('.action-card[data-page]').forEach(card => {
                 card.addEventListener('click', function() {
                     const page = this.dataset.page;
                     navigateToPage(page);
-                    
-                    // Update active menu
-                    document.querySelectorAll('.nav-menu li:not(#logout-menu)').forEach(li => {
-                        li.classList.remove('active');
-                        if (li.dataset.page === page) {
-                            li.classList.add('active');
-                        }
-                    });
                 });
             });
 
@@ -1187,14 +688,6 @@ function performLogout() {
                 card.addEventListener('click', function() {
                     const page = this.dataset.page;
                     navigateToPage(page);
-                    
-                    // Update active menu
-                    document.querySelectorAll('.nav-menu li:not(#logout-menu)').forEach(li => {
-                        li.classList.remove('active');
-                        if (li.dataset.page === page) {
-                            li.classList.add('active');
-                        }
-                    });
                 });
             });
 
@@ -1203,14 +696,6 @@ function performLogout() {
                 item.addEventListener('click', function() {
                     const page = this.dataset.page;
                     navigateToPage(page);
-                    
-                    // Update active menu
-                    document.querySelectorAll('.nav-menu li:not(#logout-menu)').forEach(li => {
-                        li.classList.remove('active');
-                        if (li.dataset.page === page) {
-                            li.classList.add('active');
-                        }
-                    });
                 });
             });
 
@@ -1256,9 +741,6 @@ function performLogout() {
 
         // Initialize dashboard
         function initializeDashboard() {
-            // Set student name
-            document.getElementById('student-name').textContent = studentData.name;
-            
             // Update stats with real data
             document.querySelectorAll('.stat-card:nth-child(1) .stat-value').forEach(el => {
                 el.textContent = `${studentData.attendance}%`;
@@ -1305,8 +787,5 @@ function performLogout() {
                 this.style.boxShadow = '0 5px 15px rgba(0, 0, 0, 0.05)';
             });
         });
-
-        // Auto sync every 5 minutes
-        setInterval(updateLastSync, 300000);
     </script>
 @endpush

@@ -348,8 +348,8 @@
 
 @section('content')
                 <!-- Welcome Banner -->
-                <div class="welcome-banner" style="background: linear-gradient(135deg, #0066CC, #009B48);">
-                    <div class="welcome-text">
+                <div class="welcome-card" style="background: linear-gradient(135deg, #d6d8da, #009B48);">
+                    <div class="welcome-content">
                         <h2>Rekap Kehadiran <span class="student-name">Nama Siswa</span></h2>
                         <p>Kelas: XII IPA 1 | Semester: Genap 2023/2024</p>
                     </div>
@@ -538,12 +538,6 @@
                     </div>
                 </div>
             </div>
-
-            <!-- Footer -->
-            <footer class="main-footer">
-                <p>&copy; 2024 SIAKAD SMA Mishbahul Ulum. Sistem Informasi Akademik.</p>
-                <p>Versi 1.0.0 | <span id="lastSync">Terakhir sinkron: -</span></p>
-            </footer>
         </main>
     </div>
 
