@@ -14,42 +14,7 @@
 
         <!-- Main Content Container -->
         <div class="content-container">
-            <!-- Filter Section -->
-            <div class="filter-section">
-                <div class="filter-group">
-                    <label>Filter Status:</label>
-                    <select id="filterStatus" onchange="filterTable()">
-                        <option value="all">Semua Status</option>
-                        <option value="active">Aktif</option>
-                        <option value="inactive">Tidak Aktif</option>
-                        <option value="retired">Pensiun</option>
-                    </select>
-                </div>
-                <div class="filter-group">
-                    <label>Filter Jabatan:</label>
-                    <select id="filterPosition" onchange="filterTable()">
-                        <option value="all">Semua Jabatan</option>
-                        <option value="teacher">Guru</option>
-                        <option value="homeroom">Wali Kelas</option>
-                        <option value="coordinator">Koordinator</option>
-                        <option value="headmaster">Kepala Sekolah</option>
-                    </select>
-                </div>
-                <div class="filter-group">
-                    <label>Filter Mapel:</label>
-                    <select id="filterSubject" onchange="filterTable()">
-                        <option value="all">Semua Mapel</option>
-                        <option value="matematika">Matematika</option>
-                        <option value="fisika">Fisika</option>
-                        <option value="kimia">Kimia</option>
-                        <option value="biologi">Biologi</option>
-                        <option value="bahasa">Bahasa</option>
-                    </select>
-                </div>
-                <button class="btn btn-secondary" onclick="resetFilters()">
-                    <i class="fas fa-redo"></i> Reset Filter
-                </button>
-            </div>
+
 
             <!-- Stats Cards -->
             <div class="stats-grid compact">
@@ -124,7 +89,6 @@
                                     <th>No</th>
                                     <th>NIP</th>
                                     <th>Nama Guru</th>
-                                    <th>Jabatan</th>
                                     <th>Mata Pelajaran</th>
                                     <th>Status</th>
                                     <th>Jenis Kelamin</th>
@@ -314,32 +278,7 @@
                 </div>
             </div>
 
-            <!-- Quick Actions -->
-            <div class="card">
-                <div class="card-header">
-                    <h3><i class="fas fa-cogs"></i> Tindakan Cepat</h3>
-                </div>
-                <div class="card-body">
-                    <div class="quick-teacher-actions">
-                        <button class="action-btn" onclick="assignHomeroom()">
-                            <i class="fas fa-user-tag"></i>
-                            <span>Assign Wali Kelas</span>
-                        </button>
-                        <button class="action-btn" onclick="generateSchedule()">
-                            <i class="fas fa-calendar-alt"></i>
-                            <span>Generate Jadwal</span>
-                        </button>
-                        <button class="action-btn" onclick="exportTeacherData()">
-                            <i class="fas fa-download"></i>
-                            <span>Export Data Guru</span>
-                        </button>
-                        <button class="action-btn" onclick="sendBulkEmail()">
-                            <i class="fas fa-envelope"></i>
-                            <span>Kirim Email Massal</span>
-                        </button>
-                    </div>
-                </div>
-            </div>
+
         </div>
 
     <!-- Modal Add/Edit Teacher -->
@@ -749,12 +688,12 @@
             // Mobile menu
             const mobileMenuToggle = document.getElementById('mobileMenuToggle');
             const sidebar = document.getElementById('sidebar');
-            
+
             if (mobileMenuToggle && sidebar) {
                 mobileMenuToggle.addEventListener('click', function() {
                     sidebar.classList.toggle('active');
-                    mobileMenuToggle.innerHTML = sidebar.classList.contains('active') 
-                        ? '<i class="fas fa-times"></i>' 
+                    mobileMenuToggle.innerHTML = sidebar.classList.contains('active')
+                        ? '<i class="fas fa-times"></i>'
                         : '<i class="fas fa-bars"></i>';
                 });
             }
@@ -764,7 +703,7 @@
                 const files = e.target.files;
                 const fileList = document.getElementById('fileList');
                 fileList.innerHTML = '';
-                
+
                 for (let i = 0; i < files.length; i++) {
                     const file = files[i];
                     const fileItem = document.createElement('div');
@@ -913,7 +852,7 @@
             const positionFilter = document.getElementById('filterPosition').value;
             const subjectFilter = document.getElementById('filterSubject').value;
             const searchTerm = document.getElementById('searchTeacher').value.toLowerCase();
-            
+
             // Implement filtering logic
             console.log(`Filtering: Status=${statusFilter}, Position=${positionFilter}, Subject=${subjectFilter}, Search=${searchTerm}`);
         }
@@ -976,15 +915,15 @@
             document.querySelectorAll('.tab-content').forEach(tab => {
                 tab.classList.remove('active');
             });
-            
+
             // Remove active class from all buttons
             document.querySelectorAll('.tab-btn').forEach(btn => {
                 btn.classList.remove('active');
             });
-            
+
             // Show selected tab
             document.getElementById(tabName + 'Tab').classList.add('active');
-            
+
             // Add active class to clicked button
             event.currentTarget.classList.add('active');
         }

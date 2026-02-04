@@ -11,35 +11,37 @@
 @endphp
 
 @section('content')
-<!-- Tabs Navigation -->
-<div class="tabs-container">
-    <div class="tabs">
-        <button class="tab-btn active" onclick="switchTab('draft')">
-            <i class="fas fa-edit"></i> Draft
-            <span class="tab-badge">3</span>
-        </button>
-        <button class="tab-btn" onclick="switchTab('sent')">
-            <i class="fas fa-paper-plane"></i> Terkirim
-            <span class="tab-badge">12</span>
-        </button>
-        <button class="tab-btn" onclick="switchTab('confirmed')">
-            <i class="fas fa-check-double"></i> Dikonfirmasi
-        </button>
-        <button class="tab-btn" onclick="switchTab('archived')">
-            <i class="fas fa-archive"></i> Arsip
-        </button>
-    </div>
-</div>
+<!-- Quick Stats -->
+<div class="stats-grid">
 
-<!-- Letters List -->
+    <div class="stat-card">
+        <div class="stat-icon" style="background: #2196F3;">
+            <i class="fas fa-paper-plane"></i>
+        </div>
+        <div class="stat-info">
+            <h3>12</h3>
+            <p>Terkirim</p>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon" style="background: #4CAF50;">
+            <i class="fas fa-check-circle"></i>
+        </div>
+        <div class="stat-info">
+            <h3>8</h3>
+            <p>Dikonfirmasi</p>
+        </div>
+    </div>
+
+</div>
 <div class="card">
     <div class="card-header">
-        <h3 id="tabTitle">Surat Draft</h3>
+        <h3 id="tabTitle">Surat Pemanggilan</h3>
         <div class="card-actions">
-            <button class="btn-icon" onclick="exportLetters()">
+            <button class="btn-icon" >
                 <i class="fas fa-download"></i>
             </button>
-            <button class="btn-icon" onclick="printLetters()">
+            <button class="btn-icon" >
                 <i class="fas fa-print"></i>
             </button>
         </div>
@@ -58,13 +60,13 @@
                         </div>
                     </div>
                     <div class="letter-actions">
-                        <button class="btn-icon" onclick="editLetter(1)">
+                        <button class="btn-icon" >
                             <i class="fas fa-edit"></i>
                         </button>
-                        <button class="btn-icon btn-success" onclick="sendLetter(1)">
+                        <button class="btn-icon btn-success" >
                             <i class="fas fa-paper-plane"></i>
                         </button>
-                        <button class="btn-icon btn-danger" onclick="deleteLetter(1)">
+                        <button class="btn-icon btn-danger" >
                             <i class="fas fa-trash"></i>
                         </button>
                     </div>
@@ -73,35 +75,6 @@
                     <p><strong>Perihal:</strong> Pembahasan penurunan nilai akademik dan kehadiran</p>
                     <p><strong>Kepada:</strong> Bapak/Ibu Orang Tua/Wali dari Andi Pratama</p>
                     <p><strong>Agenda:</strong> Konseling mengenai penurunan performa belajar dan rencana perbaikan</p>
-                </div>
-            </div>
-
-            <div class="letter-card">
-                <div class="letter-header">
-                    <div class="letter-info">
-                        <h4>Pemanggilan Siswa - Siti Nurhaliza</h4>
-                        <div class="letter-meta">
-                            <span><i class="fas fa-user"></i> Siti Nurhaliza (XI IPS 2)</span>
-                            <span><i class="fas fa-calendar"></i> Dibuat: 14 Jan 2024</span>
-                            <span><i class="fas fa-clock"></i> Status: <span class="status-draft">Draft</span></span>
-                        </div>
-                    </div>
-                    <div class="letter-actions">
-                        <button class="btn-icon" onclick="editLetter(2)">
-                            <i class="fas fa-edit"></i>
-                        </button>
-                        <button class="btn-icon btn-success" onclick="sendLetter(2)">
-                            <i class="fas fa-paper-plane"></i>
-                        </button>
-                        <button class="btn-icon btn-danger" onclick="deleteLetter(2)">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </div>
-                </div>
-                <div class="letter-content">
-                    <p><strong>Perihal:</strong> Konseling pilihan jurusan perguruan tinggi</p>
-                    <p><strong>Kepada:</strong> Siti Nurhaliza dan Orang Tua/Wali</p>
-                    <p><strong>Agenda:</strong> Diskusi mengenai rencana studi lanjut dan persiapan ujian</p>
                 </div>
             </div>
         </div>
@@ -153,45 +126,7 @@
     </div>
 </div>
 
-<!-- Quick Stats -->
-<div class="stats-grid">
-    <div class="stat-card">
-        <div class="stat-icon" style="background: #FF9800;">
-            <i class="fas fa-edit"></i>
-        </div>
-        <div class="stat-info">
-            <h3>3</h3>
-            <p>Draft Surat</p>
-        </div>
-    </div>
-    <div class="stat-card">
-        <div class="stat-icon" style="background: #2196F3;">
-            <i class="fas fa-paper-plane"></i>
-        </div>
-        <div class="stat-info">
-            <h3>12</h3>
-            <p>Terkirim (Bulan Ini)</p>
-        </div>
-    </div>
-    <div class="stat-card">
-        <div class="stat-icon" style="background: #4CAF50;">
-            <i class="fas fa-check-circle"></i>
-        </div>
-        <div class="stat-info">
-            <h3>8</h3>
-            <p>Dikonfirmasi</p>
-        </div>
-    </div>
-    <div class="stat-card">
-        <div class="stat-icon" style="background: #9C27B0;">
-            <i class="fas fa-chart-line"></i>
-        </div>
-        <div class="stat-info">
-            <h3>67%</h3>
-            <p>Response Rate</p>
-        </div>
-    </div>
-</div>
+
 
 <!-- Recent Activity -->
 <div class="card">
@@ -242,19 +177,19 @@
 
     function switchTab(tabName) {
         currentTab = tabName;
-        
+
         // Update active tab button
         document.querySelectorAll('.tab-btn').forEach(btn => {
             btn.classList.remove('active');
         });
         event.currentTarget.classList.add('active');
-        
+
         // Show/hide tab content
         document.getElementById('draftTab').style.display = 'none';
         document.getElementById('sentTab').style.display = 'none';
-        
+
         document.getElementById(tabName + 'Tab').style.display = 'block';
-        
+
         // Update title
         const titles = {
             'draft': 'Surat Draft',

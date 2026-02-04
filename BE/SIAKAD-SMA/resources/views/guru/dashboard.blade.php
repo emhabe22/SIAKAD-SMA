@@ -71,7 +71,7 @@
                                 </div>
                                 <div class="schedule-details">
                                     <h4>Matematika - Kelas X MIPA 1</h4>
-                                 
+
                                 </div>
                                 <button class="btn btn-sm btn-primary" >
                                     <i class="fas fa-clipboard-check"></i> Absen

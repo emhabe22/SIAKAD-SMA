@@ -327,15 +327,7 @@
             <p>Perlu Validasi</p>
         </div>
     </div>
-    <div class="stat-card">
-        <div class="stat-icon" style="background: #9C27B0;">
-            <i class="fas fa-check-circle"></i>
-        </div>
-        <div class="stat-info">
-            <h3>87%</h3>
-            <p>Resolved Cases</p>
-        </div>
-    </div>
+
 </div>
 
 <!-- Main Content Grid -->
@@ -359,28 +351,6 @@
                             <h4>Andi Pratama</h4>
                             <p>Kelas XII IPA 1 - Masalah Belajar</p>
                             <span class="tag urgent">Urgent</span>
-                        </div>
-                    </div>
-                    <div class="schedule-item">
-                        <div class="schedule-time">
-                            <span class="time">10:00 - 11:00</span>
-                            <span class="status upcoming">Akan Datang</span>
-                        </div>
-                        <div class="schedule-details">
-                            <h4>Siti Nurhaliza</h4>
-                            <p>Kelas XI IPS 2 - Konseling Karir</p>
-                            <span class="tag regular">Regular</span>
-                        </div>
-                    </div>
-                    <div class="schedule-item">
-                        <div class="schedule-time">
-                            <span class="time">13:00 - 14:00</span>
-                            <span class="status upcoming">Akan Datang</span>
-                        </div>
-                        <div class="schedule-details">
-                            <h4>Rizki Ramadhan</h4>
-                            <p>Kelas X MIPA - Masalah Sosial</p>
-                            <span class="tag warning">Perhatian</span>
                         </div>
                     </div>
                 </div>
@@ -477,20 +447,20 @@
     // Update current date
     function updateDate() {
         const now = new Date();
-        const options = { 
-            weekday: 'long', 
-            year: 'numeric', 
-            month: 'long', 
-            day: 'numeric' 
+        const options = {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
         };
-        document.getElementById('current-date').textContent = 
+        document.getElementById('current-date').textContent =
             now.toLocaleDateString('id-ID', options);
     }
 
     // Initialize
     document.addEventListener('DOMContentLoaded', function() {
         updateDate();
-        
+
         // Add event listeners to buttons
         document.querySelectorAll('.data-table .btn-icon').forEach(btn => {
             btn.addEventListener('click', function() {

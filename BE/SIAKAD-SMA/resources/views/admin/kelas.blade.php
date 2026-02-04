@@ -14,38 +14,7 @@
 
         <!-- Main Content Container -->
         <div class="content-container">
-            <!-- Filter Section -->
-            <div class="filter-section">
-                <div class="filter-group">
-                    <label>Filter Tingkat:</label>
-                    <select id="filterLevel" onchange="filterTable()">
-                        <option value="all">Semua Tingkat</option>
-                        <option value="X">Kelas X</option>
-                        <option value="XI">Kelas XI</option>
-                        <option value="XII">Kelas XII</option>
-                    </select>
-                </div>
-                <div class="filter-group">
-                    <label>Filter Jurusan:</label>
-                    <select id="filterMajor" onchange="filterTable()">
-                        <option value="all">Semua Jurusan</option>
-                        <option value="MIPA">MIPA</option>
-                        <option value="IPS">IPS</option>
-                        <option value="BAHASA">Bahasa</option>
-                    </select>
-                </div>
-                <div class="filter-group">
-                    <label>Filter Tahun Ajaran:</label>
-                    <select id="filterYear" onchange="filterTable()">
-                        <option value="all">Semua Tahun</option>
-                        <option value="2023/2024">2023/2024</option>
-                        <option value="2024/2025">2024/2025</option>
-                    </select>
-                </div>
-                <button class="btn btn-secondary" onclick="resetFilters()">
-                    <i class="fas fa-redo"></i> Reset Filter
-                </button>
-            </div>
+
 
             <!-- Stats Cards -->
             <div class="stats-grid compact">
@@ -121,7 +90,7 @@
                                     <th>Nama Kelas</th>
                                     <th>Tingkat</th>
                                     <th>Jurusan</th>
-                                    <th>Wali Kelas</th>
+
                                     <th>Jumlah Siswa</th>
                                     <th>Ruangan</th>
                                     <th>Tahun Ajaran</th>
@@ -180,206 +149,7 @@
                                         </div>
                                     </td>
                                 </tr>
-                                <tr>
-                                    <td>2</td>
-                                    <td>
-                                        <div class="class-cell">
-                                            <div class="class-icon">
-                                                <i class="fas fa-school"></i>
-                                            </div>
-                                            <div>
-                                                <strong>X IPS 1</strong>
-                                                <small>Kelas Reguler</small>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>X</td>
-                                    <td><span class="badge badge-ips">IPS</span></td>
-                                    <td>
-                                        <div class="teacher-cell-small">
-                                            <img src="https://via.placeholder.com/30" alt="Teacher">
-                                            <span>Siti Nurhaliza, M.Pd</span>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="student-count">
-                                            <span class="count">30</span>
-                                            <span class="capacity">/32</span>
-                                            <div class="progress-bar small">
-                                                <div class="progress-fill" style="width: 93.8%"></div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>Ruang 202</td>
-                                    <td>2024/2025</td>
-                                    <td><span class="status-badge active">Aktif</span></td>
-                                    <td>
-                                        <div class="action-buttons">
-                                            <button class="btn-icon" onclick="viewClass(2)" title="Lihat Detail">
-                                                <i class="fas fa-eye"></i>
-                                            </button>
-                                            <button class="btn-icon" onclick="editClass(2)" title="Edit">
-                                                <i class="fas fa-edit"></i>
-                                            </button>
-                                            <button class="btn-icon" onclick="manageStudents(2)" title="Kelola Siswa">
-                                                <i class="fas fa-users"></i>
-                                            </button>
-                                            <button class="btn-icon btn-danger" onclick="deleteClass(2)" title="Hapus">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>3</td>
-                                    <td>
-                                        <div class="class-cell">
-                                            <div class="class-icon">
-                                                <i class="fas fa-school"></i>
-                                            </div>
-                                            <div>
-                                                <strong>XI MIPA 2</strong>
-                                                <small>Kelas Unggulan</small>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>XI</td>
-                                    <td><span class="badge badge-mipa">MIPA</span></td>
-                                    <td>
-                                        <div class="teacher-cell-small">
-                                            <img src="https://via.placeholder.com/30" alt="Teacher">
-                                            <span>Dewi Sartika, S.Pd</span>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="student-count">
-                                            <span class="count">25</span>
-                                            <span class="capacity">/32</span>
-                                            <div class="progress-bar small">
-                                                <div class="progress-fill" style="width: 78.1%"></div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>Ruang 305</td>
-                                    <td>2024/2025</td>
-                                    <td><span class="status-badge active">Aktif</span></td>
-                                    <td>
-                                        <div class="action-buttons">
-                                            <button class="btn-icon" onclick="viewClass(3)" title="Lihat Detail">
-                                                <i class="fas fa-eye"></i>
-                                            </button>
-                                            <button class="btn-icon" onclick="editClass(3)" title="Edit">
-                                                <i class="fas fa-edit"></i>
-                                            </button>
-                                            <button class="btn-icon" onclick="manageStudents(3)" title="Kelola Siswa">
-                                                <i class="fas fa-users"></i>
-                                            </button>
-                                            <button class="btn-icon btn-danger" onclick="deleteClass(3)" title="Hapus">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>4</td>
-                                    <td>
-                                        <div class="class-cell">
-                                            <div class="class-icon">
-                                                <i class="fas fa-school"></i>
-                                            </div>
-                                            <div>
-                                                <strong>XII IPS 1</strong>
-                                                <small>Kelas Reguler</small>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>XII</td>
-                                    <td><span class="badge badge-ips">IPS</span></td>
-                                    <td>
-                                        <div class="teacher-cell-small">
-                                            <img src="https://via.placeholder.com/30" alt="Teacher">
-                                            <span>Mulyadi, S.Pd</span>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="student-count">
-                                            <span class="count">32</span>
-                                            <span class="capacity">/32</span>
-                                            <div class="progress-bar small">
-                                                <div class="progress-fill" style="width: 100%"></div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>Ruang 402</td>
-                                    <td>2024/2025</td>
-                                    <td><span class="status-badge active">Aktif</span></td>
-                                    <td>
-                                        <div class="action-buttons">
-                                            <button class="btn-icon" onclick="viewClass(4)" title="Lihat Detail">
-                                                <i class="fas fa-eye"></i>
-                                            </button>
-                                            <button class="btn-icon" onclick="editClass(4)" title="Edit">
-                                                <i class="fas fa-edit"></i>
-                                            </button>
-                                            <button class="btn-icon" onclick="manageStudents(4)" title="Kelola Siswa">
-                                                <i class="fas fa-users"></i>
-                                            </button>
-                                            <button class="btn-icon btn-danger" onclick="deleteClass(4)" title="Hapus">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>5</td>
-                                    <td>
-                                        <div class="class-cell">
-                                            <div class="class-icon">
-                                                <i class="fas fa-school"></i>
-                                            </div>
-                                            <div>
-                                                <strong>X BAHASA 1</strong>
-                                                <small>Kelas Khusus</small>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>X</td>
-                                    <td><span class="badge badge-bahasa">Bahasa</span></td>
-                                    <td>
-                                        <div class="teacher-cell-small">
-                                            <img src="https://via.placeholder.com/30" alt="Teacher">
-                                            <span>Rina Amelia, S.Pd</span>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="student-count">
-                                            <span class="count">20</span>
-                                            <span class="capacity">/24</span>
-                                            <div class="progress-bar small">
-                                                <div class="progress-fill" style="width: 83.3%"></div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>Ruang 103</td>
-                                    <td>2024/2025</td>
-                                    <td><span class="status-badge active">Aktif</span></td>
-                                    <td>
-                                        <div class="action-buttons">
-                                            <button class="btn-icon" onclick="viewClass(5)" title="Lihat Detail">
-                                                <i class="fas fa-eye"></i>
-                                            </button>
-                                            <button class="btn-icon" onclick="editClass(5)" title="Edit">
-                                                <i class="fas fa-edit"></i>
-                                            </button>
-                                            <button class="btn-icon" onclick="manageStudents(5)" title="Kelola Siswa">
-                                                <i class="fas fa-users"></i>
-                                            </button>
-                                            <button class="btn-icon btn-danger" onclick="deleteClass(5)" title="Hapus">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
+
                             </tbody>
                         </table>
                     </div>
@@ -400,79 +170,9 @@
                 </div>
             </div>
 
-            <!-- Quick Actions -->
-            <div class="card">
-                <div class="card-header">
-                    <h3><i class="fas fa-cogs"></i> Tindakan Cepat</h3>
-                </div>
-                <div class="card-body">
-                    <div class="quick-class-actions">
-                        <button class="action-btn" onclick="assignHomeroomTeacher()">
-                            <i class="fas fa-user-tag"></i>
-                            <span>Assign Wali Kelas</span>
-                        </button>
-                        <button class="action-btn" onclick="generateClassSchedule()">
-                            <i class="fas fa-calendar-alt"></i>
-                            <span>Generate Jadwal</span>
-                        </button>
-                        <button class="action-btn" onclick="moveStudents()">
-                            <i class="fas fa-exchange-alt"></i>
-                            <span>Pindah Siswa</span>
-                        </button>
-                        <button class="action-btn" onclick="exportClassData()">
-                            <i class="fas fa-download"></i>
-                            <span>Export Data Kelas</span>
-                        </button>
-                    </div>
-                </div>
-            </div>
 
-            <!-- Distribution Chart -->
-            <div class="card">
-                <div class="card-header">
-                    <h3><i class="fas fa-chart-pie"></i> Distribusi Siswa per Kelas</h3>
-                </div>
-                <div class="card-body">
-                    <div class="distribution-chart">
-                        <div class="chart-row">
-                            <div class="chart-label">X MIPA 1</div>
-                            <div class="chart-bar-container">
-                                <div class="chart-bar" style="width: 87.5%">
-                                    <span class="chart-value">28/32</span>
-                                </div>
-                            </div>
-                            <div class="chart-percentage">87.5%</div>
-                        </div>
-                        <div class="chart-row">
-                            <div class="chart-label">X IPS 1</div>
-                            <div class="chart-bar-container">
-                                <div class="chart-bar" style="width: 93.8%">
-                                    <span class="chart-value">30/32</span>
-                                </div>
-                            </div>
-                            <div class="chart-percentage">93.8%</div>
-                        </div>
-                        <div class="chart-row">
-                            <div class="chart-label">XI MIPA 2</div>
-                            <div class="chart-bar-container">
-                                <div class="chart-bar" style="width: 78.1%">
-                                    <span class="chart-value">25/32</span>
-                                </div>
-                            </div>
-                            <div class="chart-percentage">78.1%</div>
-                        </div>
-                        <div class="chart-row">
-                            <div class="chart-label">XII IPS 1</div>
-                            <div class="chart-bar-container">
-                                <div class="chart-bar" style="width: 100%">
-                                    <span class="chart-value">32/32</span>
-                                </div>
-                            </div>
-                            <div class="chart-percentage">100%</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+
+
         </div>
 
     <!-- Modal Add/Edit Class -->
@@ -620,8 +320,7 @@
                         <div class="tab-buttons">
                             <button class="tab-btn active" onclick="showTab('info')">Informasi</button>
                             <button class="tab-btn" onclick="showTab('students')">Daftar Siswa</button>
-                            <button class="tab-btn" onclick="showTab('schedule')">Jadwal</button>
-                            <button class="tab-btn" onclick="showTab('subjects')">Mata Pelajaran</button>
+
                         </div>
 
                         <div class="tab-content active" id="infoTab">
@@ -634,17 +333,8 @@
                                     <label>Jurusan:</label>
                                     <span id="viewMajorInfo">MIPA</span>
                                 </div>
-                                <div class="detail-item">
-                                    <label>Wali Kelas:</label>
-                                    <div class="teacher-info" id="viewHomeroom">
-                                        <img src="https://via.placeholder.com/40" alt="Teacher">
-                                        <span>Budi Santoso, S.Pd</span>
-                                    </div>
-                                </div>
-                                <div class="detail-item">
-                                    <label>Ruangan:</label>
-                                    <span id="viewRoom">Ruang 201</span>
-                                </div>
+
+
                                 <div class="detail-item">
                                     <label>Kapasitas:</label>
                                     <span id="viewCapacity">32 siswa</span>
@@ -761,9 +451,7 @@
                 <button class="btn btn-primary" onclick="editFromView()">
                     <i class="fas fa-edit"></i> Edit Data
                 </button>
-                <button class="btn btn-success" onclick="printClassReport()">
-                    <i class="fas fa-print"></i> Cetak Rapor Kelas
-                </button>
+
             </div>
         </div>
     </div>
@@ -800,12 +488,12 @@
             // Mobile menu
             const mobileMenuToggle = document.getElementById('mobileMenuToggle');
             const sidebar = document.getElementById('sidebar');
-            
+
             if (mobileMenuToggle && sidebar) {
                 mobileMenuToggle.addEventListener('click', function() {
                     sidebar.classList.toggle('active');
-                    mobileMenuToggle.innerHTML = sidebar.classList.contains('active') 
-                        ? '<i class="fas fa-times"></i>' 
+                    mobileMenuToggle.innerHTML = sidebar.classList.contains('active')
+                        ? '<i class="fas fa-times"></i>'
                         : '<i class="fas fa-bars"></i>';
                 });
             }
@@ -934,7 +622,7 @@
             const majorFilter = document.getElementById('filterMajor').value;
             const yearFilter = document.getElementById('filterYear').value;
             const searchTerm = document.getElementById('searchClass').value.toLowerCase();
-            
+
             // Implement filtering logic
             console.log(`Filtering: Level=${levelFilter}, Major=${majorFilter}, Year=${yearFilter}, Search=${searchTerm}`);
         }
@@ -1002,15 +690,15 @@
             document.querySelectorAll('.tab-content').forEach(tab => {
                 tab.classList.remove('active');
             });
-            
+
             // Remove active class from all buttons
             document.querySelectorAll('.tab-btn').forEach(btn => {
                 btn.classList.remove('active');
             });
-            
+
             // Show selected tab
             document.getElementById(tabName + 'Tab').classList.add('active');
-            
+
             // Add active class to clicked button
             event.currentTarget.classList.add('active');
         }
@@ -1025,4 +713,4 @@
             });
         };
 </script>
-@endpush     
+@endpush

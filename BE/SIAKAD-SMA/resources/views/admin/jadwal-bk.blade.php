@@ -18,36 +18,6 @@
 
         <!-- Main Content Container -->
         <div class="content-container">
-            <!-- Filter Section -->
-            <div class="filter-section">
-                <div class="filter-group">
-                    <label>Filter Konselor:</label>
-                    <select id="filterCounselor" onchange="filterSchedule()">
-                        <option value="all">Semua Konselor</option>
-                        <option value="1">Budi Santoso, S.Pd</option>
-                        <option value="2">Siti Nurhaliza, M.Pd</option>
-                        <option value="3">Ahmad Hidayat, M.Si</option>
-                    </select>
-                </div>
-                <div class="filter-group">
-                    <label>Filter Status:</label>
-                    <select id="filterStatus" onchange="filterSchedule()">
-                        <option value="all">Semua Status</option>
-                        <option value="scheduled">Terjadwal</option>
-                        <option value="ongoing">Berlangsung</option>
-                        <option value="completed">Selesai</option>
-                        <option value="cancelled">Dibatalkan</option>
-                    </select>
-                </div>
-                <div class="filter-group">
-                    <label>Filter Tanggal:</label>
-                    <input type="date" id="filterDate" onchange="filterSchedule()">
-                </div>
-                <button class="btn btn-secondary" onclick="resetFilters()">
-                    <i class="fas fa-redo"></i> Reset Filter
-                </button>
-            </div>
-
             <!-- Stats Cards -->
             <div class="stats-grid compact">
                 <div class="stat-card">
@@ -59,15 +29,7 @@
                         <p>Jadwal Hari Ini</p>
                     </div>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-icon" style="background: #2196F3;">
-                        <i class="fas fa-user-clock"></i>
-                    </div>
-                    <div class="stat-info">
-                        <h3>8</h3>
-                        <p>Sedang Berlangsung</p>
-                    </div>
-                </div>
+                
                 <div class="stat-card">
                     <div class="stat-icon" style="background: #FF9800;">
                         <i class="fas fa-exclamation-circle"></i>
@@ -77,15 +39,7 @@
                         <p>Perlu Konfirmasi</p>
                     </div>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-icon" style="background: #9C27B0;">
-                        <i class="fas fa-user-md"></i>
-                    </div>
-                    <div class="stat-info">
-                        <h3>5</h3>
-                        <p>Konselor Aktif</p>
-                    </div>
-                </div>
+
                 <div class="stat-card">
                     <div class="stat-icon" style="background: #F44336;">
                         <i class="fas fa-times-circle"></i>
@@ -97,29 +51,7 @@
                 </div>
             </div>
 
-            <!-- Calendar View -->
-            <div class="card">
-                <div class="card-header">
-                    <h3><i class="fas fa-calendar"></i> Kalender Jadwal BK</h3>
-                    <div class="calendar-controls">
-                        <button class="btn-icon" id="prevWeek">
-                            <i class="fas fa-chevron-left"></i>
-                        </button>
-                        <span id="currentWeek">Minggu ke-3, Januari 2024</span>
-                        <button class="btn-icon" id="nextWeek">
-                            <i class="fas fa-chevron-right"></i>
-                        </button>
-                        <select id="viewMode" onchange="changeViewMode()">
-                            <option value="week">Mingguan</option>
-                            <option value="month" selected>Bulanan</option>
-                            <option value="day">Harian</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="card-body">
-                    <div id="calendar"></div>
-                </div>
-            </div>
+
 
             <!-- Upcoming Schedules -->
             <div class="card">
@@ -201,81 +133,8 @@
                     </div>
                 </div>
             </div>
-
-            <!-- Counselors Availability -->
-            <div class="card">
-                <div class="card-header">
-                    <h3><i class="fas fa-user-clock"></i> Ketersediaan Konselor</h3>
-                </div>
-                <div class="card-body">
-                    <div class="counselors-availability">
-                        <div class="counselor-card">
-                            <div class="counselor-info">
-                                <img src="https://via.placeholder.com/50" alt="Counselor">
-                                <div>
-                                    <h5>Budi Santoso, S.Pd</h5>
-                                    <p>Konselor Utama</p>
-                                </div>
-                            </div>
-                            <div class="availability-status">
-                                <span class="status-dot available"></span>
-                                <span>Tersedia</span>
-                            </div>
-                            <div class="schedule-count">
-                                <span class="count">8</span>
-                                <span>jadwal/hari</span>
-                            </div>
-                            <button class="btn btn-sm btn-outline" onclick="viewCounselorSchedule(1)">
-                                <i class="fas fa-calendar"></i> Lihat Jadwal
-                            </button>
-                        </div>
-                        <div class="counselor-card">
-                            <div class="counselor-info">
-                                <img src="https://via.placeholder.com/50" alt="Counselor">
-                                <div>
-                                    <h5>Siti Nurhaliza, M.Pd</h5>
-                                    <p>Konselor Karir</p>
-                                </div>
-                            </div>
-                            <div class="availability-status">
-                                <span class="status-dot busy"></span>
-                                <span>Sibuk</span>
-                            </div>
-                            <div class="schedule-count">
-                                <span class="count">6</span>
-                                <span>jadwal/hari</span>
-                            </div>
-                            <button class="btn btn-sm btn-outline" onclick="viewCounselorSchedule(2)">
-                                <i class="fas fa-calendar"></i> Lihat Jadwal
-                            </button>
-                        </div>
-                        <div class="counselor-card">
-                            <div class="counselor-info">
-                                <img src="https://via.placeholder.com/50" alt="Counselor">
-                                <div>
-                                    <h5>Ahmad Hidayat, M.Si</h5>
-                                    <p>Konselor Akademik</p>
-                                </div>
-                            </div>
-                            <div class="availability-status">
-                                <span class="status-dot available"></span>
-                                <span>Tersedia</span>
-                            </div>
-                            <div class="schedule-count">
-                                <span class="count">5</span>
-                                <span>jadwal/hari</span>
-                            </div>
-                            <button class="btn btn-sm btn-outline" onclick="viewCounselorSchedule(3)">
-                                <i class="fas fa-calendar"></i> Lihat Jadwal
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
         </div>
     </div>
-
     <!-- Modal Add/Edit Schedule -->
     <div id="scheduleModal" class="modal">
         <div class="modal-content wide-modal">
@@ -615,19 +474,19 @@
         document.addEventListener('DOMContentLoaded', function() {
             // Initialize calendar
             initCalendar();
-            
+
             // Initialize charts
             initCharts();
-            
+
             // Mobile menu
             const mobileMenuToggle = document.getElementById('mobileMenuToggle');
             const sidebar = document.getElementById('sidebar');
-            
+
             if (mobileMenuToggle && sidebar) {
                 mobileMenuToggle.addEventListener('click', function() {
                     sidebar.classList.toggle('active');
-                    mobileMenuToggle.innerHTML = sidebar.classList.contains('active') 
-                        ? '<i class="fas fa-times"></i>' 
+                    mobileMenuToggle.innerHTML = sidebar.classList.contains('active')
+                        ? '<i class="fas fa-times"></i>'
                         : '<i class="fas fa-bars"></i>';
                 });
             }
@@ -683,9 +542,9 @@
                     viewScheduleFromCalendar(info.event);
                 },
                 eventContent: function(info) {
-                    const typeIcon = info.event.extendedProps.type === 'academic' ? '📚' : 
+                    const typeIcon = info.event.extendedProps.type === 'academic' ? '📚' :
                                    info.event.extendedProps.type === 'career' ? '🎯' : '🤝';
-                    
+
                     return {
                         html: `
                             <div class="fc-event-content">
@@ -720,7 +579,7 @@
         function updateWeekDisplay() {
             const currentDate = calendar.getDate();
             const options = { month: 'long', year: 'numeric' };
-            document.getElementById('currentWeek').textContent = 
+            document.getElementById('currentWeek').textContent =
                 currentDate.toLocaleDateString('id-ID', options);
         }
 
@@ -803,15 +662,15 @@
             currentScheduleId = null;
             document.getElementById('modalTitle').textContent = 'Tambah Jadwal BK Baru';
             document.getElementById('scheduleForm').reset();
-            
+
             // Set default time
             const now = new Date();
             const startTime = new Date(now.getTime() + 60 * 60 * 1000); // 1 hour from now
             const endTime = new Date(startTime.getTime() + 60 * 60 * 1000); // 2 hours from now
-            
+
             document.getElementById('startTime').value = startTime.toTimeString().slice(0, 5);
             document.getElementById('endTime').value = endTime.toTimeString().slice(0, 5);
-            
+
             document.getElementById('scheduleModal').style.display = 'block';
         }
 
@@ -895,7 +754,7 @@
                 const element = document.getElementById('view' + key.charAt(0).toUpperCase() + key.slice(1));
                 if (element) {
                     element.textContent = viewData[key];
-                    
+
                     if (element.classList) {
                         if (element.classList.contains('status-badge')) {
                             element.className = 'status-badge ' + viewData[key];
@@ -982,7 +841,7 @@
             const statusFilter = document.getElementById('filterStatus').value;
             const dateFilter = document.getElementById('filterDate').value;
             const searchTerm = document.getElementById('searchSchedule').value.toLowerCase();
-            
+
             // Implement filtering logic
             console.log(`Filtering: Counselor=${counselorFilter}, Status=${statusFilter}, Date=${dateFilter}, Search=${searchTerm}`);
         }
@@ -1019,15 +878,15 @@
             document.querySelectorAll('.tab-content').forEach(tab => {
                 tab.classList.remove('active');
             });
-            
+
             // Remove active class from all buttons
             document.querySelectorAll('.tab-btn').forEach(btn => {
                 btn.classList.remove('active');
             });
-            
+
             // Show selected tab
             document.getElementById(tabName + 'Tab').classList.add('active');
-            
+
             // Add active class to clicked button
             event.currentTarget.classList.add('active');
         }

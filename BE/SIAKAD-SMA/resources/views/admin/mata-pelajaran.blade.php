@@ -14,40 +14,7 @@
 
         <!-- Main Content Container -->
         <div class="content-container">
-            <!-- Filter Section -->
-            <div class="filter-section">
-                <div class="filter-group">
-                    <label>Filter Jenjang:</label>
-                    <select id="filterLevel" onchange="filterTable()">
-                        <option value="all">Semua Jenjang</option>
-                        <option value="X">Kelas X</option>
-                        <option value="XI">Kelas XI</option>
-                        <option value="XII">Kelas XII</option>
-                    </select>
-                </div>
-                <div class="filter-group">
-                    <label>Filter Jurusan:</label>
-                    <select id="filterMajor" onchange="filterTable()">
-                        <option value="all">Semua Jurusan</option>
-                        <option value="MIPA">MIPA</option>
-                        <option value="IPS">IPS</option>
-                        <option value="BAHASA">Bahasa</option>
-                        <option value="UMUM">Umum</option>
-                    </select>
-                </div>
-                <div class="filter-group">
-                    <label>Filter Kelompok:</label>
-                    <select id="filterGroup" onchange="filterTable()">
-                        <option value="all">Semua Kelompok</option>
-                        <option value="A">Kelompok A (Wajib)</option>
-                        <option value="B">Kelompok B (Wajib)</option>
-                        <option value="C">Kelompok C (Peminatan)</option>
-                    </select>
-                </div>
-                <button class="btn btn-secondary" onclick="resetFilters()">
-                    <i class="fas fa-redo"></i> Reset Filter
-                </button>
-            </div>
+
 
             <!-- Stats Cards -->
             <div class="stats-grid compact">
@@ -60,42 +27,10 @@
                         <p>Total Mapel</p>
                     </div>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-icon" style="background: #2196F3;">
-                        <i class="fas fa-graduation-cap"></i>
-                    </div>
-                    <div class="stat-info">
-                        <h3>12</h3>
-                        <p>Mapel Wajib</p>
-                    </div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon" style="background: #FF9800;">
-                        <i class="fas fa-star"></i>
-                    </div>
-                    <div class="stat-info">
-                        <h3>18</h3>
-                        <p>Mapel Peminatan</p>
-                    </div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon" style="background: #9C27B0;">
-                        <i class="fas fa-chalkboard-teacher"></i>
-                    </div>
-                    <div class="stat-info">
-                        <h3>42</h3>
-                        <p>Guru Pengampu</p>
-                    </div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon" style="background: #F44336;">
-                        <i class="fas fa-clock"></i>
-                    </div>
-                    <div class="stat-info">
-                        <h3>48</h3>
-                        <p>Jam/Minggu</p>
-                    </div>
-                </div>
+
+
+
+
             </div>
 
             <!-- Subjects Table -->
@@ -174,174 +109,7 @@
                                         </div>
                                     </td>
                                 </tr>
-                                <tr>
-                                    <td>2</td>
-                                    <td><strong>FIS-MIPA</strong></td>
-                                    <td>
-                                        <div class="subject-cell">
-                                            <div class="subject-icon">
-                                                <i class="fas fa-atom"></i>
-                                            </div>
-                                            <div>
-                                                <strong>Fisika</strong>
-                                                <small>Fisika MIPA</small>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td><span class="badge badge-group-c">Kelompok C</span></td>
-                                    <td>X, XI, XII</td>
-                                    <td><span class="badge badge-mipa">MIPA</span></td>
-                                    <td>
-                                        <div class="teacher-cell-small">
-                                            <img src="https://via.placeholder.com/30" alt="Teacher">
-                                            <span>Dr. Ahmad Hidayat, M.Si</span>
-                                        </div>
-                                    </td>
-                                    <td>3 jam</td>
-                                    <td><span class="status-badge active">Aktif</span></td>
-                                    <td>
-                                        <div class="action-buttons">
-                                            <button class="btn-icon" onclick="viewSubject(2)" title="Lihat Detail">
-                                                <i class="fas fa-eye"></i>
-                                            </button>
-                                            <button class="btn-icon" onclick="editSubject(2)" title="Edit">
-                                                <i class="fas fa-edit"></i>
-                                            </button>
-                                            <button class="btn-icon" onclick="assignTeacher(2)" title="Assign Guru">
-                                                <i class="fas fa-user-tie"></i>
-                                            </button>
-                                            <button class="btn-icon btn-danger" onclick="deleteSubject(2)" title="Hapus">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>3</td>
-                                    <td><strong>KIM-MIPA</strong></td>
-                                    <td>
-                                        <div class="subject-cell">
-                                            <div class="subject-icon">
-                                                <i class="fas fa-flask"></i>
-                                            </div>
-                                            <div>
-                                                <strong>Kimia</strong>
-                                                <small>Kimia MIPA</small>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td><span class="badge badge-group-c">Kelompok C</span></td>
-                                    <td>X, XI, XII</td>
-                                    <td><span class="badge badge-mipa">MIPA</span></td>
-                                    <td>
-                                        <div class="teacher-cell-small">
-                                            <img src="https://via.placeholder.com/30" alt="Teacher">
-                                            <span>Dewi Sartika, S.Pd</span>
-                                        </div>
-                                    </td>
-                                    <td>3 jam</td>
-                                    <td><span class="status-badge active">Aktif</span></td>
-                                    <td>
-                                        <div class="action-buttons">
-                                            <button class="btn-icon" onclick="viewSubject(3)" title="Lihat Detail">
-                                                <i class="fas fa-eye"></i>
-                                            </button>
-                                            <button class="btn-icon" onclick="editSubject(3)" title="Edit">
-                                                <i class="fas fa-edit"></i>
-                                            </button>
-                                            <button class="btn-icon" onclick="assignTeacher(3)" title="Assign Guru">
-                                                <i class="fas fa-user-tie"></i>
-                                            </button>
-                                            <button class="btn-icon btn-danger" onclick="deleteSubject(3)" title="Hapus">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>4</td>
-                                    <td><strong>EKO-IPS</strong></td>
-                                    <td>
-                                        <div class="subject-cell">
-                                            <div class="subject-icon">
-                                                <i class="fas fa-chart-line"></i>
-                                            </div>
-                                            <div>
-                                                <strong>Ekonomi</strong>
-                                                <small>Ekonomi IPS</small>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td><span class="badge badge-group-c">Kelompok C</span></td>
-                                    <td>X, XI, XII</td>
-                                    <td><span class="badge badge-ips">IPS</span></td>
-                                    <td>
-                                        <div class="teacher-cell-small">
-                                            <img src="https://via.placeholder.com/30" alt="Teacher">
-                                            <span>Mulyadi, S.Pd</span>
-                                        </div>
-                                    </td>
-                                    <td>3 jam</td>
-                                    <td><span class="status-badge active">Aktif</span></td>
-                                    <td>
-                                        <div class="action-buttons">
-                                            <button class="btn-icon" onclick="viewSubject(4)" title="Lihat Detail">
-                                                <i class="fas fa-eye"></i>
-                                            </button>
-                                            <button class="btn-icon" onclick="editSubject(4)" title="Edit">
-                                                <i class="fas fa-edit"></i>
-                                            </button>
-                                            <button class="btn-icon" onclick="assignTeacher(4)" title="Assign Guru">
-                                                <i class="fas fa-user-tie"></i>
-                                            </button>
-                                            <button class="btn-icon btn-danger" onclick="deleteSubject(4)" title="Hapus">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>5</td>
-                                    <td><strong>BIND</strong></td>
-                                    <td>
-                                        <div class="subject-cell">
-                                            <div class="subject-icon">
-                                                <i class="fas fa-language"></i>
-                                            </div>
-                                            <div>
-                                                <strong>Bahasa Indonesia</strong>
-                                                <small>Bahasa Indonesia</small>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td><span class="badge badge-group-a">Kelompok A</span></td>
-                                    <td>X, XI, XII</td>
-                                    <td><span class="badge badge-umum">Umum</span></td>
-                                    <td>
-                                        <div class="teacher-cell-small">
-                                            <img src="https://via.placeholder.com/30" alt="Teacher">
-                                            <span>Siti Nurhaliza, M.Pd</span>
-                                        </div>
-                                    </td>
-                                    <td>4 jam</td>
-                                    <td><span class="status-badge active">Aktif</span></td>
-                                    <td>
-                                        <div class="action-buttons">
-                                            <button class="btn-icon" onclick="viewSubject(5)" title="Lihat Detail">
-                                                <i class="fas fa-eye"></i>
-                                            </button>
-                                            <button class="btn-icon" onclick="editSubject(5)" title="Edit">
-                                                <i class="fas fa-edit"></i>
-                                            </button>
-                                            <button class="btn-icon" onclick="assignTeacher(5)" title="Assign Guru">
-                                                <i class="fas fa-user-tie"></i>
-                                            </button>
-                                            <button class="btn-icon btn-danger" onclick="deleteSubject(5)" title="Hapus">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
+
                             </tbody>
                         </table>
                     </div>
@@ -363,67 +131,7 @@
                 </div>
             </div>
 
-            <!-- Quick Actions -->
-            <div class="card">
-                <div class="card-header">
-                    <h3><i class="fas fa-cogs"></i> Tindakan Cepat</h3>
-                </div>
-                <div class="card-body">
-                    <div class="quick-subject-actions">
-                        <button class="action-btn" onclick="importFromCurriculum()">
-                            <i class="fas fa-file-import"></i>
-                            <span>Import dari Kurikulum</span>
-                        </button>
-                        <button class="action-btn" onclick="assignMultipleTeachers()">
-                            <i class="fas fa-users"></i>
-                            <span>Assign Guru Massal</span>
-                        </button>
-                        <button class="action-btn" onclick="generateTeachingSchedule()">
-                            <i class="fas fa-calendar-check"></i>
-                            <span>Generate Jadwal Mengajar</span>
-                        </button>
-                        <button class="action-btn" onclick="exportSubjectData()">
-                            <i class="fas fa-download"></i>
-                            <span>Export Data Mapel</span>
-                        </button>
-                    </div>
-                </div>
-            </div>
 
-            <!-- Curriculum Structure -->
-            <div class="card">
-                <div class="card-header">
-                    <h3><i class="fas fa-sitemap"></i> Struktur Kurikulum</h3>
-                </div>
-                <div class="card-body">
-                    <div class="curriculum-structure">
-                        <div class="curriculum-level">
-                            <h4>Kelas X</h4>
-                            <div class="subject-groups">
-                                <div class="subject-group">
-                                    <h5>Kelompok A (Wajib)</h5>
-                                    <div class="subject-items">
-                                        <span class="subject-tag">Matematika</span>
-                                        <span class="subject-tag">Bahasa Indonesia</span>
-                                        <span class="subject-tag">Bahasa Inggris</span>
-                                        <span class="subject-tag">PPKn</span>
-                                        <span class="subject-tag">Agama</span>
-                                    </div>
-                                </div>
-                                <div class="subject-group">
-                                    <h5>Kelompok B (Wajib)</h5>
-                                    <div class="subject-items">
-                                        <span class="subject-tag">Sejarah</span>
-                                        <span class="subject-tag">Seni Budaya</span>
-                                        <span class="subject-tag">Penjaskes</span>
-                                        <span class="subject-tag">Prakarya</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
 
     <!-- Modal Add/Edit Subject -->
@@ -591,8 +299,6 @@
                         <div class="tab-buttons">
                             <button class="tab-btn active" onclick="showTab('info')">Informasi</button>
                             <button class="tab-btn" onclick="showTab('teachers')">Guru Pengampu</button>
-                            <button class="tab-btn" onclick="showTab('curriculum')">Kurikulum</button>
-                            <button class="tab-btn" onclick="showTab('classes')">Kelas yang Mengikuti</button>
                         </div>
 
                         <div class="tab-content active" id="infoTab">
@@ -699,9 +405,7 @@
                 <button class="btn btn-primary" onclick="editFromView()">
                     <i class="fas fa-edit"></i> Edit Data
                 </button>
-                <button class="btn btn-success" onclick="printSubjectReport()">
-                    <i class="fas fa-print"></i> Cetak Silabus
-                </button>
+
             </div>
         </div>
     </div>
@@ -738,12 +442,12 @@
             // Mobile menu
             const mobileMenuToggle = document.getElementById('mobileMenuToggle');
             const sidebar = document.getElementById('sidebar');
-            
+
             if (mobileMenuToggle && sidebar) {
                 mobileMenuToggle.addEventListener('click', function() {
                     sidebar.classList.toggle('active');
-                    mobileMenuToggle.innerHTML = sidebar.classList.contains('active') 
-                        ? '<i class="fas fa-times"></i>' 
+                    mobileMenuToggle.innerHTML = sidebar.classList.contains('active')
+                        ? '<i class="fas fa-times"></i>'
                         : '<i class="fas fa-bars"></i>';
                 });
             }
@@ -890,7 +594,7 @@
             const majorFilter = document.getElementById('filterMajor').value;
             const groupFilter = document.getElementById('filterGroup').value;
             const searchTerm = document.getElementById('searchSubject').value.toLowerCase();
-            
+
             // Implement filtering logic
             console.log(`Filtering: Level=${levelFilter}, Major=${majorFilter}, Group=${groupFilter}, Search=${searchTerm}`);
         }
@@ -953,15 +657,15 @@
             document.querySelectorAll('.tab-content').forEach(tab => {
                 tab.classList.remove('active');
             });
-            
+
             // Remove active class from all buttons
             document.querySelectorAll('.tab-btn').forEach(btn => {
                 btn.classList.remove('active');
             });
-            
+
             // Show selected tab
             document.getElementById(tabName + 'Tab').classList.add('active');
-            
+
             // Add active class to clicked button
             event.currentTarget.classList.add('active');
         }
