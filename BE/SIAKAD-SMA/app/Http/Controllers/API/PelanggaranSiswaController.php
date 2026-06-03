@@ -177,16 +177,15 @@ class PelanggaranSiswaController extends Controller
         $siswaBermasalah = DB::table('siswas')
             ->join('pelanggaran_siswas', 'siswas.id', '=', 'pelanggaran_siswas.siswa_id')
             ->join('points', 'pelanggaran_siswas.point_id', '=', 'points.id')
-            ->join('kelas', 'siswas.kelas_id', '=', 'kelas.id')
             ->select(
                 'siswas.id',
                 'siswas.nama',
                 'siswas.nisn',
-                'kelas.nama_kelas',
+                'siswas.tingkat',
                 DB::raw('SUM(points.nilai) as total_point'),
                 DB::raw('COUNT(pelanggaran_siswas.id) as jumlah_pelanggaran')
             )
-            ->groupBy('siswas.id', 'siswas.nama', 'siswas.nisn', 'kelas.nama_kelas')
+            ->groupBy('siswas.id', 'siswas.nama', 'siswas.nisn', 'siswas.tingkat')
             ->orderBy('total_point', 'desc')
             ->limit(20)
             ->get();

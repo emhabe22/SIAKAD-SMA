@@ -29,6 +29,9 @@ class GuruController extends Controller
             'nip' => 'required|unique:gurus',
             'alamat' => 'required|string',
             'no_telp' => 'required|string',
+            'jenis_kelamin' => 'required|in:L,P',
+            'jabatan' => 'required|array',
+            'jabatan.*' => 'required|in:Guru Mata Pelajaran,Kepala Sekolah,Wali Kelas,Guru BK',
             'mapel_ids' => 'array',
             'mapel_ids.*' => 'exists:mapels,id',
             'username' => 'required|unique:users',
@@ -42,11 +45,22 @@ class GuruController extends Controller
             ], 422);
         }
 
+        // Validasi: Guru BK tidak bisa memiliki jabatan lain
+        if (in_array('Guru BK', $request->jabatan) && count($request->jabatan) > 1) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Guru BK tidak dapat memiliki jabatan lain'
+            ], 422);
+        }
+
+        // Tentukan role_id berdasarkan jabatan
+        $roleId = in_array('Guru BK', $request->jabatan) ? 2 : 3;
+
         // Buat user dulu
         $user = User::create([
             'username' => $request->username,
             'password' => Hash::make($request->password),
-            'role_id' => 3, // role guru
+            'role_id' => $roleId, // role BK (2) atau guru (3)
         ]);
 
         // Buat guru
@@ -55,6 +69,8 @@ class GuruController extends Controller
             'nip' => $request->nip,
             'alamat' => $request->alamat,
             'no_telp' => $request->no_telp,
+            'jenis_kelamin' => $request->jenis_kelamin,
+            'jabatan' => $request->jabatan,
             'user_id' => $user->id,
         ]);
 
@@ -73,7 +89,7 @@ class GuruController extends Controller
     // Tampilkan satu guru
     public function show($id)
     {
-        $guru = Guru::with(['user', 'mapels', 'jadwalPelajarans.kelas'])->find($id);
+        $guru = Guru::with(['user', 'mapels', 'jadwalPelajarans'])->find($id);
 
         if (!$guru) {
             return response()->json([
@@ -105,6 +121,9 @@ class GuruController extends Controller
             'nip' => 'sometimes|required|unique:gurus,nip,' . $id,
             'alamat' => 'sometimes|required|string',
             'no_telp' => 'sometimes|required|string',
+            'jenis_kelamin' => 'sometimes|required|in:L,P',
+            'jabatan' => 'sometimes|required|array',
+            'jabatan.*' => 'sometimes|required|in:Guru Mata Pelajaran,Kepala Sekolah,Wali Kelas,Guru BK',
             'mapel_ids' => 'array',
             'mapel_ids.*' => 'exists:mapels,id',
         ]);
@@ -116,7 +135,21 @@ class GuruController extends Controller
             ], 422);
         }
 
-        $guru->update($request->only(['nama', 'nip', 'alamat', 'no_telp']));
+        // Validasi: Guru BK tidak bisa memiliki jabatan lain
+        if ($request->has('jabatan') && in_array('Guru BK', $request->jabatan) && count($request->jabatan) > 1) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Guru BK tidak dapat memiliki jabatan lain'
+            ], 422);
+        }
+
+        $guru->update($request->only(['nama', 'nip', 'alamat', 'no_telp', 'jenis_kelamin', 'jabatan']));
+
+        // Update role_id jika jabatan berubah
+        if ($request->has('jabatan')) {
+            $roleId = in_array('Guru BK', $request->jabatan) ? 2 : 3;
+            $guru->user->update(['role_id' => $roleId]);
+        }
 
         // Update mapels if provided
         if ($request->has('mapel_ids')) {

@@ -1,10 +1,9 @@
 <div class="sidebar" id="sidebar">
     <div class="sidebar-header">
         <div class="user-profile">
-            <img src="{{ asset('assets/images/user-avatar.png') }}" alt="Avatar {{ $role ?? 'User' }}">
             <div class="user-info">
-                <h4>{{ $userName ?? 'User' }}</h4>
-                <span class="role-badge">{{ $userRole ?? 'Role' }}</span>
+                <h4 id="sidebarUserName">{{ $userName ?? 'User' }}</h4>
+                <span class="role-badge" id="sidebarUserRole">{{ $userRole ?? 'Role' }}</span>
             </div>
         </div>
     </div>
@@ -30,22 +29,34 @@
                         <span>Data Guru</span>
                     </a>
                 </li>
-                <li class="{{ request()->is('admin/kelas*') ? 'active' : '' }}">
-                    <a href="/admin/kelas">
-                        <i class="fas fa-school"></i>
-                        <span>Data Kelas</span>
-                    </a>
-                </li>
                 <li class="{{ request()->is('admin/mapel*') ? 'active' : '' }}">
                     <a href="/admin/mapel">
                         <i class="fas fa-book"></i>
                         <span>Mata Pelajaran</span>
                     </a>
                 </li>
+                <li class="{{ request()->is('admin/jadwal-pelajaran*') ? 'active' : '' }}">
+                    <a href="/admin/jadwal-pelajaran">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>Atur Jadwal</span>
+                    </a>
+                </li>
+                <li class="{{ request()->is('admin/jadwal-master*') ? 'active' : '' }}">
+                    <a href="/admin/jadwal-master">
+                        <i class="fas fa-calendar-check"></i>
+                        <span>Jadwal Master</span>
+                    </a>
+                </li>
                 <li class="{{ request()->is('admin/jadwal-bk*') ? 'active' : '' }}">
                     <a href="/admin/jadwal-bk">
-                        <i class="fas fa-calendar-alt"></i>
+                        <i class="fas fa-calendar-day"></i>
                         <span>Jadwal BK</span>
+                    </a>
+                </li>
+                <li class="{{ request()->is('admin/logbook*') ? 'active' : '' }}">
+                    <a href="/admin/logbook">
+                        <i class="fas fa-book-open"></i>
+                        <span>Logbook Guru</span>
                     </a>
                 </li>
             @elseif($role === 'guru')
@@ -109,6 +120,12 @@
                     <a href="/siswa/dashboard">
                         <i class="fas fa-home"></i>
                         <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="{{ request()->is('siswa/jadwal-pelajaran*') ? 'active' : '' }}">
+                    <a href="/siswa/jadwal-pelajaran">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>Jadwal Pelajaran</span>
                     </a>
                 </li>
                 <li class="{{ request()->is('siswa/absensi*') ? 'active' : '' }}">

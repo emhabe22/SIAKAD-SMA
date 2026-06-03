@@ -6,8 +6,8 @@
 
 @php
     $role = 'siswa';
-    $userName = 'Ahmad Fauzi';
-    $userRole = 'Siswa X MIPA 1';
+    $userName = 'Memuat...';
+    $userRole = 'Memuat...';
 @endphp
 
 @push('styles')
@@ -114,6 +114,11 @@
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
             transition: transform 0.3s ease;
             cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
         }
 
         .stat-card:hover {
@@ -334,13 +339,13 @@
                 <!-- Dashboard Content (Default) -->
                 <div id="dashboard-content" class="page-content active">
                     <!-- Pengingat Penting -->
-                    <div class="reminder-card">
+                    <div class="reminder-card" id="reminderCard" style="display:none;">
                         <div class="reminder-content">
                             <h3>Pengingat Penting</h3>
-                            <p>Anda memiliki <strong>1 surat pemanggilan BK</strong> yang belum dibaca dan <strong>2 pengajuan BK</strong> menunggu konfirmasi. Harap segera tinjau untuk informasi lebih lanjut.</p>
+                            <p id="reminderText">Anda memiliki notifikasi yang perlu ditinjau.</p>
                             <div class="reminder-buttons">
-                                <button id="lihat-surat"><i class="fas fa-envelope-open-text"></i> Lihat Surat</button>
-                                <button id="status-bk"><i class="fas fa-tasks"></i> Status BK</button>
+                                <button id="lihat-surat" onclick="location.href='/siswa/surat-pemanggilan'"><i class="fas fa-envelope-open-text"></i> Lihat Surat</button>
+                                <button id="status-bk" onclick="location.href='/siswa/bk'"><i class="fas fa-tasks"></i> Status BK</button>
                             </div>
                         </div>
                         <div class="reminder-icon">
@@ -373,28 +378,19 @@
                     <!-- Statistik -->
                     <div class="stats-section">
                         <div class="stat-card" data-page="attendance">
-                            <h4>Kehadiran</h4>
-                            <div class="stat-value">92%</div>
-                            <div class="progress-bar">
-                                <div class="progress-fill" style="width: 92%; background-color: #4caf50;"></div>
-                            </div>
-                            <p><small>Rate kehadiran bulan ini</small></p>
+                            <h4>Kehadiran Bulan Ini</h4>
+                            <div class="stat-value" id="stat-hadir">-</div>
+                            <p><small>Total hari hadir</small></p>
                         </div>
                         <div class="stat-card" data-page="bk">
-                            <h4>Bimbingan Konseling</h4>
-                            <div class="stat-value">3</div>
-                            <div class="progress-bar">
-                                <div class="progress-fill" style="width: 60%; background-color: #2196f3;"></div>
-                            </div>
-                            <p><small>Sesi aktif bulan ini</small></p>
+                            <h4>Jadwal Konseling</h4>
+                            <div class="stat-value" id="stat-konseling">-</div>
+                            <p><small>Jadwal aktif</small></p>
                         </div>
                         <div class="stat-card">
-                            <h4>Progress Akademik</h4>
-                            <div class="stat-value">78%</div>
-                            <div class="progress-bar">
-                                <div class="progress-fill" style="width: 78%; background-color: #ff9800;"></div>
-                            </div>
-                            <p><small>Progress semester ini</small></p>
+                            <h4>Point Pelanggaran</h4>
+                            <div class="stat-value" id="stat-point">-</div>
+                            <p><small>Total point</small></p>
                         </div>
                     </div>
 
@@ -403,19 +399,14 @@
                         <h3>Menunggu Konfirmasi</h3>
                         <div class="confirmation-grid">
                             <div class="confirmation-item" data-page="bk">
-                                <h4>Sesi Konseling</h4>
-                                <div class="count">1</div>
-                                <p><small>Menunggu jadwal</small></p>
+                                <h4>Jadwal Konseling</h4>
+                                <div class="count" id="pending-konseling">-</div>
+                                <p><small>Menunggu konfirmasi</small></p>
                             </div>
-                            <div class="confirmation-item" data-page="bk">
-                                <h4>Pengajuan BK</h4>
-                                <div class="count">2</div>
-                                <p><small>Perlu ditinjau</small></p>
-                            </div>
-                            <div class="confirmation-item" data-page="attendance">
-                                <h4>Absensi Izin</h4>
-                                <div class="count">3</div>
-                                <p><small>Perlu konfirmasi</small></p>
+                            <div class="confirmation-item">
+                                <h4>Surat Pemanggilan</h4>
+                                <div class="count" id="pending-surat">-</div>
+                                <p><small>Belum dibaca</small></p>
                             </div>
                         </div>
                     </div>
@@ -423,15 +414,15 @@
                     <!-- Jadwal Mata Pelajaran Hari Ini -->
                     <div class="schedule-card">
                         <h3>Mata Pelajaran Hari Ini</h3>
-                        <div class="schedule-summary">
+                        <div class="schedule-summary" id="jadwalSummary">
                             <div class="schedule-item">
                                 <h4>Sudah Selesai</h4>
-                                <div class="count completed">3</div>
+                                <div class="count completed" id="jadwal-selesai">-</div>
                                 <p><small>Mapel telah diselesaikan</small></p>
                             </div>
                             <div class="schedule-item">
                                 <h4>Berikutnya</h4>
-                                <div class="count upcoming">2</div>
+                                <div class="count upcoming" id="jadwal-berikutnya">-</div>
                                 <p><small>Mapel akan datang</small></p>
                             </div>
                         </div>
@@ -443,7 +434,7 @@
                     <div class="reminder-card" style="background: linear-gradient(135deg, #009B48 0%, #00C853 100%);">
                         <div class="reminder-content">
                             <h3>Rekap Kehadiran</h3>
-                            <p>Kehadiran bulan ini: <strong>92%</strong> | Total hadir: <strong>22/24</strong> hari</p>
+                            <p>Total kehadiran bulan ini: <strong id="total-hadir">0</strong> hari</p>
                             <div class="reminder-buttons">
                                 <button id="attendance-print"><i class="fas fa-print"></i> Cetak</button>
                                 <button id="attendance-history"><i class="fas fa-history"></i> Riwayat</button>
@@ -454,63 +445,33 @@
                         </div>
                     </div>
 
-                    <div class="quick-actions">
-                        <div class="action-card" onclick="showAttendanceMonth('maret')">
-                            <i class="fas fa-calendar"></i>
-                            <h4>Maret 2024</h4>
-                            <p>Kehadiran: 92%</p>
-                            <button class="action-btn">Lihat Detail</button>
-                        </div>
-                        <div class="action-card" onclick="showAttendanceMonth('februari')">
-                            <i class="fas fa-calendar"></i>
-                            <h4>Februari 2024</h4>
-                            <p>Kehadiran: 88%</p>
-                            <button class="action-btn">Lihat Detail</button>
-                        </div>
-                        <div class="action-card" onclick="showAttendanceMonth('januari')">
-                            <i class="fas fa-calendar"></i>
-                            <h4>Januari 2024</h4>
-                            <p>Kehadiran: 95%</p>
-                            <button class="action-btn">Lihat Detail</button>
-                        </div>
-                    </div>
-
                     <div class="stats-section">
                         <div class="stat-card">
                             <h4>Hadir</h4>
-                            <div class="stat-value">22</div>
+                            <div class="stat-value" id="absen-hadir">0</div>
                             <p><small>Hari hadir bulan ini</small></p>
                         </div>
                         <div class="stat-card">
                             <h4>Izin</h4>
-                            <div class="stat-value">2</div>
+                            <div class="stat-value" id="absen-izin">0</div>
                             <p><small>Hari izin bulan ini</small></p>
                         </div>
                         <div class="stat-card">
                             <h4>Sakit</h4>
-                            <div class="stat-value">1</div>
+                            <div class="stat-value" id="absen-sakit">0</div>
                             <p><small>Hari sakit bulan ini</small></p>
+                        </div>
+                        <div class="stat-card">
+                            <h4>Alpha</h4>
+                            <div class="stat-value" id="absen-alpha">0</div>
+                            <p><small>Hari alpha bulan ini</small></p>
                         </div>
                     </div>
 
                     <div class="confirmation-section">
                         <h3>Absensi Terbaru</h3>
                         <div id="attendance-list">
-                            <div class="attendance-item">
-                                <div class="attendance-date">Senin, 25 Maret</div>
-                                <div class="attendance-status status-present">Hadir</div>
-                                <div class="attendance-subject">Matematika, Fisika, Kimia</div>
-                            </div>
-                            <div class="attendance-item">
-                                <div class="attendance-date">Jumat, 22 Maret</div>
-                                <div class="attendance-status status-sick">Sakit</div>
-                                <div class="attendance-subject">Semua Pelajaran</div>
-                            </div>
-                            <div class="attendance-item">
-                                <div class="attendance-date">Kamis, 21 Maret</div>
-                                <div class="attendance-status status-permit">Izin</div>
-                                <div class="attendance-subject">Bahasa Indonesia</div>
-                            </div>
+                            <p style="text-align: center; color: #666;">Memuat data absensi...</p>
                         </div>
                     </div>
                 </div>
@@ -655,21 +616,155 @@
 
 @push('scripts')
     <script>
-        // Data siswa
-        const studentData = {
-            name: "Ahmad Fauzi",
-            class: "XII IPA 1",
-            nis: "2024001",
-            attendance: 92,
-            bkSessions: 3,
-            academicProgress: 78
-        };
+        // Get token helper
+        function getToken() {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                alert('Anda belum login. Silakan login terlebih dahulu.');
+                window.location.href = '/login';
+                return null;
+            }
+            return token;
+        }
+
+        // Get siswa ID
+        async function getSiswaId() {
+            const token = getToken();
+            if (!token) return null;
+
+            try {
+                const response = await fetch('/api/me', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Accept': 'application/json'
+                    }
+                });
+
+                const result = await response.json();
+                
+                if (result.success && result.data.profile) {
+                    return result.data.profile.id;
+                }
+            } catch (error) {
+                console.error('Error fetching user profile:', error);
+            }
+            
+            return null;
+        }
 
         // Inisialisasi
-        document.addEventListener('DOMContentLoaded', function() {
-            initializeDashboard();
+        document.addEventListener('DOMContentLoaded', async function() {
+            await fetchDashboardData();
             setupEventListeners();
         });
+
+        // Fetch dashboard data
+        async function fetchDashboardData() {
+            const token = getToken();
+            if (!token) return;
+
+            try {
+                // ── 1. Ambil data profil user (siswa) ──
+                const meRes = await fetch('/api/me', {
+                    headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' }
+                });
+                const me = await meRes.json();
+                const siswa = me.data?.profile;
+                const siswaId = siswa?.id;
+                const tingkat = siswa?.tingkat;
+
+                if (!siswaId) return;
+
+                // Update sidebar
+                const sidebarName = document.getElementById('sidebarUserName');
+                const sidebarRole = document.getElementById('sidebarUserRole');
+                if (sidebarName && siswa) sidebarName.textContent = siswa.nama;
+                if (sidebarRole && tingkat) sidebarRole.textContent = `Siswa Tingkat ${tingkat}`;
+
+                // ── 2. Absensi saya ──
+                const absenRes = await fetch(`/api/siswa/absensi-saya/${siswaId}`, {
+                    headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' }
+                });
+                const absenResult = await absenRes.json();
+                if (absenResult.success) {
+                    const stats = absenResult.stats || {};
+                    const bulanIni = stats.hadir || 0;
+                    document.getElementById('stat-hadir').textContent = bulanIni;
+
+                    // Show reminder jika ada alpa
+                    const alpa = stats.alpa || 0;
+                    if (alpa > 0) {
+                        document.getElementById('reminderText').innerHTML =
+                            `Anda memiliki <strong>${alpa} ketidakhadiran (Alpa)</strong> bulan ini. Harap segera konfirmasi ke wali kelas.`;
+                        document.getElementById('reminderCard').style.display = 'flex';
+                    }
+                }
+
+                // ── 3. Point pelanggaran ──
+                try {
+                    const pointRes = await fetch(`/api/siswa/pelanggaran-saya/${siswaId}`, {
+                        headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' }
+                    });
+                    const pointResult = await pointRes.json();
+                    if (pointResult.success) {
+                        document.getElementById('stat-point').textContent = pointResult.data?.total_point ?? 0;
+                    }
+                } catch(e) { document.getElementById('stat-point').textContent = 0; }
+
+                // ── 4. Jadwal konseling ──
+                try {
+                    const konselingRes = await fetch(`/api/siswa/penjadwalan-saya/${siswaId}`, {
+                        headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' }
+                    });
+                    const konselingResult = await konselingRes.json();
+                    if (konselingResult.success) {
+                        const schedules = konselingResult.data || [];
+                        const pending = schedules.filter(s => s.status == '0' || s.status === 'menunggu').length;
+                        document.getElementById('stat-konseling').textContent = schedules.length;
+                        document.getElementById('pending-konseling').textContent = pending;
+
+                        if (pending > 0) {
+                            const card = document.getElementById('reminderCard');
+                            const txt = document.getElementById('reminderText');
+                            if (card) card.style.display = 'flex';
+                            if (txt) txt.innerHTML = `Anda memiliki <strong>${pending} jadwal konseling</strong> menunggu konfirmasi.`;
+                        }
+                    }
+                } catch(e) {
+                    document.getElementById('stat-konseling').textContent = 0;
+                    document.getElementById('pending-konseling').textContent = 0;
+                }
+
+                // ── 5. Jadwal pelajaran hari ini ──
+                if (tingkat) {
+                    const HARI_ID_JS = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+                    const todayHari = HARI_ID_JS[new Date().getDay()];
+                    const jadwalRes = await fetch(`/api/siswa/jadwal-tingkat/${tingkat}`, {
+                        headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' }
+                    });
+                    const jadwalResult = await jadwalRes.json();
+                    if (jadwalResult.success) {
+                        const jadwalHariIni = (jadwalResult.data || []).filter(j => j.hari === todayHari && j.tipe === 'mapel');
+                        const now = new Date();
+                        const currentMin = now.getHours() * 60 + now.getMinutes();
+                        let selesai = 0, berikutnya = 0;
+                        jadwalHariIni.forEach(j => {
+                            const [hS, mS] = (j.jam_selesai || '00:00').substring(0,5).split(':').map(Number);
+                            if ((hS * 60 + mS) < currentMin) selesai++;
+                            else berikutnya++;
+                        });
+                        document.getElementById('jadwal-selesai').textContent = selesai;
+                        document.getElementById('jadwal-berikutnya').textContent = berikutnya;
+                    }
+                }
+
+                // Surat pemanggilan (BK belum terkoneksi - set 0)
+                document.getElementById('pending-surat').textContent = 0;
+
+            } catch (error) {
+                console.error('Error fetching dashboard data:', error);
+            }
+        }
 
         // ========== FUNGSI UTAMA ==========
 
@@ -700,76 +795,67 @@
             });
 
             // Dashboard buttons
-            document.getElementById('lihat-surat').addEventListener('click', function() {
-                alert('Membuka halaman surat pemanggilan BK');
-            });
+            const lihatSuratBtn = document.getElementById('lihat-surat');
+            if (lihatSuratBtn) {
+                lihatSuratBtn.addEventListener('click', function() {
+                    alert('Membuka halaman surat pemanggilan BK');
+                });
+            }
             
-            document.getElementById('status-bk').addEventListener('click', function() {
-                navigateToPage('bk');
-            });
+            const statusBkBtn = document.getElementById('status-bk');
+            if (statusBkBtn) {
+                statusBkBtn.addEventListener('click', function() {
+                    navigateToPage('bk');
+                });
+            }
 
             // Attendance buttons
-            document.getElementById('attendance-print').addEventListener('click', function() {
-                alert('Mencetak rekap kehadiran...');
-            });
+            const printBtn = document.getElementById('attendance-print');
+            if (printBtn) {
+                printBtn.addEventListener('click', function() {
+                    alert('Mencetak rekap kehadiran...');
+                });
+            }
 
             // BK buttons
-            document.getElementById('bk-request').addEventListener('click', function() {
-                alert('Membuka form pengajuan BK');
-            });
+            const bkRequestBtn = document.getElementById('bk-request');
+            if (bkRequestBtn) {
+                bkRequestBtn.addEventListener('click', function() {
+                    window.location.href = '/siswa/bk';
+                });
+            }
         }
 
         // Navigasi antar halaman
         function navigateToPage(page) {
-            // Hide all pages
-            document.querySelectorAll('.page-content').forEach(content => {
-                content.style.display = 'none';
-            });
-            
-            // Show selected page
-            document.getElementById(`${page}-content`).style.display = 'block';
-            
-            // Update page title
-            const titles = {
-                'dashboard': 'Dashboard Siswa',
-                'attendance': 'Kehadiran',
-                'bk': 'Bimbingan Konseling',
-                'schedule': 'Jadwal Pelajaran'
+            // Redirect to actual pages
+            const pageUrls = {
+                'attendance': '/siswa/absensi',
+                'bk': '/siswa/bk',
+                'schedule': '/siswa/jadwal'
             };
-            document.getElementById('page-title').textContent = titles[page] || 'Dashboard Siswa';
-        }
-
-        // Initialize dashboard
-        function initializeDashboard() {
-            // Update stats with real data
-            document.querySelectorAll('.stat-card:nth-child(1) .stat-value').forEach(el => {
-                el.textContent = `${studentData.attendance}%`;
-            });
-            document.querySelectorAll('.stat-card:nth-child(2) .stat-value').forEach(el => {
-                el.textContent = studentData.bkSessions;
-            });
-            document.querySelectorAll('.stat-card:nth-child(3) .stat-value').forEach(el => {
-                el.textContent = `${studentData.academicProgress}%`;
-            });
+            
+            if (pageUrls[page]) {
+                window.location.href = pageUrls[page];
+            }
         }
 
         // Fungsi untuk halaman absensi
         function showAttendanceMonth(month) {
             alert(`Menampilkan kehadiran bulan ${month}`);
-            // Di sini bisa diisi dengan logika untuk menampilkan data kehadiran bulan tertentu
         }
 
         // Fungsi untuk halaman BK
         function openBKRequest() {
-            alert('Membuka form pengajuan BK');
+            window.location.href = '/siswa/bk';
         }
 
         function openBKSchedule() {
-            alert('Membuka jadwal BK');
+            window.location.href = '/siswa/bk';
         }
 
         function openBKHistory() {
-            alert('Membuka riwayat BK');
+            window.location.href = '/siswa/bk';
         }
 
         // Fungsi untuk halaman jadwal

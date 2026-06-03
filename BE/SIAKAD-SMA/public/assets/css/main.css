@@ -404,6 +404,18 @@ a:hover {
     padding: var(--spacing-lg);
     border-bottom: 1px solid var(--gray-200);
     background: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--spacing-md);
+}
+
+.card-actions {
+    display: inline-flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+    flex-wrap: wrap;
 }
 
 .card-title {

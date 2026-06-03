@@ -3,12 +3,11 @@
 @section('title', 'Dashboard Guru - SIAKAD SMA Mishbahul Ulum')
 @section('page-title', 'Dashboard Guru')
 @section('breadcrumb', 'Home / Dashboard')
-@section('notification-count', '5')
 
 @php
     $role = 'guru';
-    $userName = 'Budi Santoso, S.Pd';
-    $userRole = 'Guru Matematika';
+    $userName = 'Memuat...';
+    $userRole = 'Memuat...';
 @endphp
 
 @section('content')
@@ -16,14 +15,14 @@
         <!-- Welcome Message -->
         <div class="welcome-card">
             <div class="welcome-content">
-                <h2>Selamat Pagi, Bapak Budi Santoso!</h2>
-                <p>Anda memiliki <strong>3 kelas</strong> untuk hari ini. Sesi pertama dimulai pukul <strong>08:00 WIB</strong></p>
+                <h2>Selamat <span id="greetingTime">Pagi</span>, <span id="greetingHonorific">Bapak/Ibu</span> <span id="greetingName">Guru</span>!</h2>
+                <p id="greetingDate" style="font-size:14px; color:#888;"></p>
             </div>
             <div class="welcome-actions">
-                <button class="btn btn-primary" onclick="location.href='jadwal-mengajar.html'">
+                <button class="btn btn-primary" onclick="location.href='/guru/jadwal-mengajar'">
                     <i class="fas fa-calendar"></i> Lihat Jadwal
                 </button>
-                <button class="btn btn-success" onclick="location.href='absensi.html'">
+                <button class="btn btn-success" onclick="location.href='/guru/absensi'">
                     <i class="fas fa-clipboard-check"></i> Input Absen
                 </button>
             </div>
@@ -36,7 +35,7 @@
                     <i class="fas fa-chalkboard-teacher"></i>
                 </div>
                 <div class="stat-info">
-                    <h3>18</h3>
+                    <h3 id="statJamMengajar">-</h3>
                     <p>Jam Mengajar/Minggu</p>
                 </div>
             </div>
@@ -45,11 +44,10 @@
                     <i class="fas fa-users"></i>
                 </div>
                 <div class="stat-info">
-                    <h3>105</h3>
+                    <h3 id="statTotalSiswa">-</h3>
                     <p>Siswa Diajar</p>
                 </div>
             </div>
-
         </div>
 
         <!-- Main Content Grid -->
@@ -63,21 +61,10 @@
                         <a href="/guru/jadwal-mengajar" class="btn-link">Lihat Semua</a>
                     </div>
                     <div class="card-body">
-                        <div class="today-schedule">
-                            <div class="schedule-item current">
-                                <div class="schedule-time">
-                                    <span class="time">08:00 - 09:30</span>
-                                    <span class="status-badge ongoing">Sedang Berlangsung</span>
-                                </div>
-                                <div class="schedule-details">
-                                    <h4>Matematika - Kelas X MIPA 1</h4>
-
-                                </div>
-                                <button class="btn btn-sm btn-primary" >
-                                    <i class="fas fa-clipboard-check"></i> Absen
-                                </button>
+                        <div class="today-schedule" id="todayScheduleList">
+                            <div class="empty-state" style="text-align:center; padding:24px; color:#aaa;">
+                                <i class="fas fa-spinner fa-spin"></i> Memuat jadwal...
                             </div>
-
                         </div>
                     </div>
                 </div>
@@ -101,136 +88,159 @@
                                 </div>
                                 <span>Isi Logbook</span>
                             </button>
-                            <button class="quick-action-btn">
-                                <div class="action-icon">
-                                    <i class="fas fa-bullhorn"></i>
-                                </div>
-                                <span>Buat Pengumuman</span>
-                            </button>
-                            <button class="quick-action-btn" >
-                                <div class="action-icon">
-                                    <i class="fas fa-tasks"></i>
-                                </div>
-                                <span>Buat Tugas</span>
-                            </button>
-                            <button class="quick-action-btn" >
-                                <div class="action-icon">
-                                    <i class="fas fa-chart-line"></i>
-                                </div>
-                                <span>Progress Siswa</span>
-                            </button>
-                            <button class="quick-action-btn" >
-                                <div class="action-icon">
-                                    <i class="fas fa-users"></i>
-                                </div>
-                                <span>Jadwal Pertemuan</span>
-                            </button>
                         </div>
                     </div>
                 </div>
             </div>
-
-            <!-- Right Column -->
         </div>
-
-        <!-- Recent Activities & Tasks -->
-        <div class="content-grid">
-            <!-- Aktivitas Terbaru -->
-            <div class="card">
-                <div class="card-header">
-                    <h3><i class="fas fa-history"></i> Aktivitas Terbaru</h3>
-                </div>
-                <div class="card-body">
-                    <div class="activity-timeline">
-                        <div class="activity-item">
-                            <div class="activity-icon">
-                                <i class="fas fa-clipboard-check"></i>
-                            </div>
-                            <div class="activity-content">
-                                <h5>Input Absensi Kelas X MIPA 1</h5>
-                                <p>Absensi untuk pelajaran Matematika tanggal 15 Januari 2024</p>
-                                <span class="activity-time">Kemarin, 15:30</span>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 
 @endsection
 
-@push('styles')
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/5.11.3/main.min.css">
-@endpush
-
 @push('scripts')
-<script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/5.11.3/main.min.js"></script>
 <script>
-    // Initialize mini calendar
-    document.addEventListener('DOMContentLoaded', function() {
-        // Initialize mini calendar
-        initMiniCalendar();
+    const HARI_ID = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+    const BULAN_ID = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
 
-        // Calendar navigation
-        document.getElementById('prevMonth')?.addEventListener('click', function() {
-            alert('Previous month');
-        });
-
-        document.getElementById('nextMonth')?.addEventListener('click', function() {
-            alert('Next month');
-        });
+    document.addEventListener('DOMContentLoaded', () => {
+        setGreeting();
+        initDashboard();
     });
 
-    function initMiniCalendar() {
-        const calendarEl = document.getElementById('miniCalendar');
-        if (!calendarEl) return;
+    function setGreeting() {
+        const now = new Date();
+        const hour = now.getHours();
+        let time = 'Pagi';
+        if (hour >= 11 && hour < 15) time = 'Siang';
+        else if (hour >= 15 && hour < 19) time = 'Sore';
+        else if (hour >= 19) time = 'Malam';
+        document.getElementById('greetingTime').textContent = time;
 
-        const calendar = new FullCalendar.Calendar(calendarEl, {
-            initialView: 'dayGridMonth',
-            headerToolbar: false,
-            height: 250,
-            events: [
-                {
-                    title: 'UTS',
-                    start: '2024-01-18',
-                    color: '#FF9800'
-                },
-                {
-                    title: 'Rapat Guru',
-                    start: '2024-01-22',
-                    color: '#2196F3'
-                },
-                {
-                    title: 'Deadline Logbook',
-                    start: '2024-01-25',
-                    color: '#9C27B0'
-                }
-            ]
-        });
-        calendar.render();
+        const hari = HARI_ID[now.getDay()];
+        const tgl = now.getDate();
+        const bln = BULAN_ID[now.getMonth()];
+        const thn = now.getFullYear();
+        document.getElementById('greetingDate').textContent = `${hari}, ${tgl} ${bln} ${thn}`;
     }
 
-    function takeAttendance(classId) {
-        alert(`Membuka form absensi untuk kelas ID: ${classId}`);
-        window.location.href = `absensi.html?class=${classId}`;
+    function getToken() {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            window.location.href = '/login';
+            return null;
+        }
+        return token;
     }
 
-    function createAnnouncement() {
-        alert('Membuat pengumuman baru...');
+    async function initDashboard() {
+        const token = getToken();
+        if (!token) return;
+
+        try {
+            // Load guru info & mapel
+            const meRes = await fetch('/api/me', { headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' } });
+            const me = await meRes.json();
+            const guru = me.data?.profile;
+            if (guru) {
+                const honorific = guru.jenis_kelamin === 'Perempuan' ? 'Ibu' : 'Bapak';
+                document.getElementById('greetingHonorific').textContent = honorific;
+                document.getElementById('greetingName').textContent = guru.nama;
+            }
+
+            // Update sidebar name
+            const sidebarName = document.getElementById('sidebarUserName');
+            const sidebarRole = document.getElementById('sidebarUserRole');
+            if (sidebarName && guru) sidebarName.textContent = guru.nama;
+            if (sidebarRole && guru) {
+                const mapelName = (guru.mapels && guru.mapels.length > 0) ? guru.mapels[0].nama_mapel : '';
+                sidebarRole.textContent = mapelName ? `Guru ${mapelName}` : 'Guru';
+            }
+
+            // Load jadwal today
+            const today = HARI_ID[new Date().getDay()];
+            const jadwalRes = await fetch(`/api/guru/jadwal-pelajaran?hari=${today}`, {
+                headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' }
+            });
+            const jadwalResult = await jadwalRes.json();
+            const allJadwal = jadwalResult.success ? (jadwalResult.data || []) : [];
+
+            // Filter by guru_id
+            const guruId = guru?.id;
+            const jadwalGuru = guruId ? allJadwal.filter(j => j.guru_id == guruId && j.tipe === 'mapel') : [];
+
+            renderTodaySchedule(jadwalGuru);
+
+            // Load stats
+            const statsRes = await fetch('/api/guru/jadwal-pelajaran', {
+                headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' }
+            });
+            const statsResult = await statsRes.json();
+            const allWeekJadwal = statsResult.success ? (statsResult.data || []) : [];
+            const myWeekJadwal = guruId ? allWeekJadwal.filter(j => j.guru_id == guruId && j.tipe === 'mapel') : [];
+            document.getElementById('statJamMengajar').textContent = myWeekJadwal.length;
+
+            // Count unique students (based on tingkat)
+            const tingkats = [...new Set(myWeekJadwal.map(j => j.tingkat))];
+            let totalSiswa = 0;
+            for (const t of tingkats) {
+                const sRes = await fetch(`/api/guru/siswa-tingkat/${t}`, {
+                    headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' }
+                });
+                const sResult = await sRes.json();
+                if (sResult.success) totalSiswa += (sResult.data || []).length;
+            }
+            document.getElementById('statTotalSiswa').textContent = totalSiswa;
+
+        } catch (err) {
+            console.error(err);
+        }
     }
 
-    function createAssignment() {
-        alert('Membuat tugas baru...');
-    }
+    function renderTodaySchedule(jadwalList) {
+        const container = document.getElementById('todayScheduleList');
+        if (!jadwalList.length) {
+            container.innerHTML = `<div style="text-align:center; padding:24px; color:#aaa;"><i class="fas fa-calendar-times" style="font-size:32px; margin-bottom:8px; display:block;"></i>Tidak ada jadwal mengajar hari ini.</div>`;
+            return;
+        }
 
-    function viewStudentProgress() {
-        alert('Melihat progress siswa...');
-    }
+        const now = new Date();
+        const currentTime = now.getHours() * 60 + now.getMinutes();
 
-    function scheduleMeeting() {
-        alert('Menjadwalkan pertemuan...');
+        const html = jadwalList.sort((a, b) => (a.jam_mulai || '').localeCompare(b.jam_mulai || '')).map(j => {
+            const mulai = j.jam_mulai ? j.jam_mulai.substring(0, 5) : '';
+            const selesai = j.jam_selesai ? j.jam_selesai.substring(0, 5) : '';
+            const [hM, mM] = mulai.split(':').map(Number);
+            const [hS, mS] = selesai.split(':').map(Number);
+            const startMin = hM * 60 + mM;
+            const endMin = hS * 60 + mS;
+
+            let badge = '';
+            if (currentTime >= startMin && currentTime <= endMin) {
+                badge = `<span class="status-badge ongoing">Sedang Berlangsung</span>`;
+            } else if (currentTime < startMin) {
+                badge = `<span class="status-badge upcoming">Akan Datang</span>`;
+            } else {
+                badge = `<span class="status-badge completed">Selesai</span>`;
+            }
+
+            const mapelNama = j.mapel?.nama_mapel || 'Mapel';
+            const tingkat = j.tingkat ? `Kelas ${j.tingkat}` : '';
+            const isOngoing = currentTime >= startMin && currentTime <= endMin;
+
+            return `
+                <div class="schedule-item ${isOngoing ? 'current' : ''}">
+                    <div class="schedule-time">
+                        <span class="time">${mulai} - ${selesai}</span>
+                        ${badge}
+                    </div>
+                    <div class="schedule-details">
+                        <h4>${mapelNama} - ${tingkat}</h4>
+                    </div>
+                    <button class="btn btn-sm btn-primary" onclick="location.href='/guru/absensi'">
+                        <i class="fas fa-clipboard-check"></i> Absen
+                    </button>
+                </div>`;
+        }).join('');
+        container.innerHTML = html;
     }
 </script>
 @endpush

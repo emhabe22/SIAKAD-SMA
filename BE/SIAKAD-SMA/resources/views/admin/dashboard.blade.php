@@ -55,20 +55,6 @@
                 </div>
 
                 <div class="stat-card">
-                    <div class="stat-icon" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
-                        <i class="fas fa-school"></i>
-                    </div>
-                    <div class="stat-info">
-                        <h3 id="kelas-count">0</h3>
-                        <p>Total Kelas</p>
-                        <div class="stat-trend stable">
-
-
-                        </div>
-                    </div>
-                </div>
-
-                <div class="stat-card">
                     <div class="stat-icon" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">
                         <i class="fas fa-book-open"></i>
                     </div>
@@ -106,12 +92,6 @@
                                     </div>
                                     <span>Tambah Guru</span>
                                 </button>
-                                <button class="quick-action-btn" onclick="location.href='/admin/kelas'">
-                                    <div class="action-icon">
-                                        <i class="fas fa-plus-circle"></i>
-                                    </div>
-                                    <span>Buat Kelas</span>
-                                </button>
                                 <button class="quick-action-btn" onclick="showReportModal()">
                                     <div class="action-icon">
                                         <i class="fas fa-chart-bar"></i>
@@ -120,58 +100,6 @@
                                 </button>
 
 
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Recent Activities -->
-                    <div class="card">
-                        <div class="card-header">
-                            <h3><i class="fas fa-history"></i> Aktivitas Terbaru</h3>
-                            <a href="#" class="btn-link">Lihat Semua</a>
-                        </div>
-                        <div class="card-body">
-                            <div class="activity-list">
-                                <div class="activity-item">
-                                    <div class="activity-icon success">
-                                        <i class="fas fa-user-plus"></i>
-                                    </div>
-                                    <div class="activity-content">
-                                        <h5>Siswa Baru Ditambahkan</h5>
-                                        <p>Ahmad Fauzi (X MIPA 1) telah ditambahkan ke sistem</p>
-                                        <span class="activity-time">10 menit yang lalu</span>
-                                    </div>
-                                </div>
-                                <div class="activity-item">
-                                    <div class="activity-icon warning">
-                                        <i class="fas fa-exclamation-triangle"></i>
-                                    </div>
-                                    <div class="activity-content">
-                                        <h5>Peringatan Sistem</h5>
-                                        <p>Backup otomatis akan dilakukan malam ini pukul 00:00</p>
-                                        <span class="activity-time">1 jam yang lalu</span>
-                                    </div>
-                                </div>
-                                <div class="activity-item">
-                                    <div class="activity-icon info">
-                                        <i class="fas fa-chalkboard-teacher"></i>
-                                    </div>
-                                    <div class="activity-content">
-                                        <h5>Update Data Guru</h5>
-                                        <p>Data guru matematika telah diperbarui</p>
-                                        <span class="activity-time">3 jam yang lalu</span>
-                                    </div>
-                                </div>
-                                <div class="activity-item">
-                                    <div class="activity-icon primary">
-                                        <i class="fas fa-file-export"></i>
-                                    </div>
-                                    <div class="activity-content">
-                                        <h5>Report Generated</h5>
-                                        <p>Laporan bulanan Desember 2023 telah diexport</p>
-                                        <span class="activity-time">5 jam yang lalu</span>
-                                    </div>
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -186,21 +114,49 @@
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
+    // Get token helper
+    function getToken() {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            alert('Anda belum login. Silakan login terlebih dahulu.');
+            window.location.href = '/login';
+            return null;
+        }
+        return token;
+    }
+
     // Fetch dashboard data
     document.addEventListener('DOMContentLoaded', () => {
-        fetch('/api/admin/dashboardAdmin', {
+        const token = getToken();
+        if (!token) return;
+
+        fetch('/api/admin/dashboard', {
             headers: {
-                'Authorization': 'Bearer ' + localStorage.getItem('token'),
+                'Authorization': `Bearer ${token}`,
                 'Accept': 'application/json'
             }
         })
-        .then(res => res.json())
         .then(res => {
-            const data = res.data;
-            document.getElementById('gurus-count').innerText  = data.gurus.length;
-            document.getElementById('siswas-count').innerText = data.siswas.length;
-            document.getElementById('kelas-count').innerText  = data.kelas.length;
-            document.getElementById('mapel-count').innerText  = data.mapel.length;
+            if (res.status === 401) {
+                alert('Sesi Anda telah berakhir. Silakan login kembali.');
+                localStorage.removeItem('token');
+                window.location.href = '/login';
+                return;
+            }
+            return res.json();
+        })
+        .then(res => {
+            if (res && res.success) {
+                const data = res.data;
+                document.getElementById('gurus-count').innerText  = data.gurus.length;
+                document.getElementById('siswas-count').innerText = data.siswas.length;
+                document.getElementById('mapel-count').innerText  = data.mapel.length;
+            } else {
+                console.error('Gagal memuat data dashboard');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
         });
     });
 

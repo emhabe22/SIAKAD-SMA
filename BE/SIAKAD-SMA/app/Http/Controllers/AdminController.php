@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Admin;
 use App\Models\Guru;
-use App\Models\Kelas;
 use App\Models\Mapel;
 use App\Models\Siswa;
 use App\Models\User;
@@ -35,13 +34,6 @@ class AdminController extends Controller
     }
 
     /**
-     * Display data kelas page
-     */
-    public function kelas() {
-        return view('admin.kelas');
-    }
-
-    /**
      * Display mata pelajaran page
      */
     public function mapel() {
@@ -53,5 +45,24 @@ class AdminController extends Controller
      */
     public function jadwalBk() {
         return view('admin.jadwal-bk');
+    }
+
+    /**
+     * Display jadwal pelajaran page
+     */
+    public function jadwalPelajaran() {
+        return view('admin.jadwal-pelajaran');
+    }
+
+    public function jadwalMaster()
+    {
+        return view('admin.jadwal-master');
+    }
+
+    /**
+     * Display halaman logbook guru (laporan)
+     */
+    public function logbook() {
+        return view('admin.logbook');
     }
 }

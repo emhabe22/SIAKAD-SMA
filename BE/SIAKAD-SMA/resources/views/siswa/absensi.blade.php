@@ -1,875 +1,261 @@
 @extends('layouts.app')
 
 @section('title', 'Absensi Saya - SIAKAD SMA Mishbahul Ulum')
-@section('page-title', 'Absensi Saya')
+@section('page-title', 'Riwayat Absensi Saya')
 @section('breadcrumb', 'Siswa / Absensi')
 
 @php
     $role = 'siswa';
-    $userName = 'Ahmad Fauzi';
-    $userRole = 'Siswa X MIPA 1';
+    $userName = 'Memuat...';
+    $userRole = 'Memuat...';
 @endphp
 
 @push('styles')
-    <style>
-        /* Styles khusus untuk halaman absensi */
-        .attendance-container {
-            display: flex;
-            gap: 24px;
-            margin-top: 24px;
-        }
+<style>
+    .status-badge { padding:4px 12px; border-radius:20px; font-size:12px; font-weight:600; }
+    .badge-hadir  { background:#e8f5e9; color:#2e7d32; }
+    .badge-izin   { background:#fff3e0; color:#ef6c00; }
+    .badge-sakit  { background:#e8eaf6; color:#283593; }
+    .badge-alpa   { background:#ffebee; color:#c62828; }
 
-        .attendance-summary {
-            flex: 1;
-            max-width: 320px;
-        }
+    .mapel-card {
+        background:#fff; border:1px solid #e2e8f0; border-radius:12px;
+        overflow:hidden; margin-bottom:16px; transition:box-shadow 0.2s;
+    }
+    .mapel-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.08); }
+    .mapel-header {
+        display:flex; align-items:center; justify-content:space-between;
+        padding:16px 20px; background:#f8fafc; border-bottom:1px solid #e2e8f0;
+        cursor:pointer;
+    }
+    .mapel-title { font-weight:600; color:#1e293b; font-size:15px; }
+    .mapel-stats { display:flex; gap:8px; align-items:center; }
+    .persen-badge {
+        padding:4px 12px; border-radius:20px; font-size:13px; font-weight:700;
+    }
+    .persen-ok   { background:#e8f5e9; color:#2e7d32; }
+    .persen-warn { background:#fff3e0; color:#ef6c00; }
+    .persen-bad  { background:#ffebee; color:#c62828; }
 
-        .attendance-content {
-            flex: 2;
-        }
+    .mapel-body { padding:16px 20px; display:none; }
+    .mapel-body.open { display:block; }
 
-        .summary-card {
-            background: white;
-            border-radius: 12px;
-            padding: 24px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            margin-bottom: 20px;
-        }
+    .progress-wrap { margin:12px 0; }
+    .progress-label { display:flex; justify-content:space-between; font-size:13px; color:#475569; margin-bottom:4px; }
+    .progress-bar { height:8px; background:#e2e8f0; border-radius:4px; overflow:hidden; }
+    .progress-fill { height:100%; border-radius:4px; transition:width 0.4s; }
 
-        .summary-card h3 {
-            color: #333;
-            margin-bottom: 20px;
-            font-size: 18px;
-        }
+    .detail-table { width:100%; border-collapse:collapse; margin-top:12px; }
+    .detail-table th { background:#f8fafc; padding:10px 14px; text-align:left; font-size:12px; font-weight:600; color:#64748b; }
+    .detail-table td { padding:10px 14px; border-bottom:1px solid #f8fafc; font-size:13px; }
+    .detail-table tbody tr:hover { background:#f8fafc; }
 
-        .stats-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px;
-            margin-bottom: 20px;
-        }
+    .global-stats { display:flex; gap:12px; flex-wrap:wrap; margin-bottom:20px; }
+    .gstat { background:#fff; border:1px solid #e2e8f0; border-radius:10px; padding:14px 20px; flex:1; min-width:120px; text-align:center; }
+    .gstat .num { font-size:24px; font-weight:700; }
+    .gstat .lbl { font-size:12px; color:#64748b; margin-top:2px; }
 
-        .stat-item {
-            text-align: center;
-            padding: 16px;
-            border-radius: 8px;
-            background: #f8f9fa;
-        }
-
-        .stat-value {
-            font-size: 28px;
-            font-weight: bold;
-            display: block;
-            margin-bottom: 4px;
-        }
-
-        .stat-label {
-            font-size: 14px;
-            color: #666;
-        }
-
-        .attendance-types {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-        }
-
-        .type-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 8px;
-            border-radius: 6px;
-            background: #f8f9fa;
-        }
-
-        .type-color {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-        }
-
-        .type-name {
-            font-size: 14px;
-        }
-
-        .type-count {
-            margin-left: auto;
-            font-weight: bold;
-        }
-
-        /* Progress bars */
-        .progress-container {
-            margin-top: 16px;
-        }
-
-        .progress-label {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 6px;
-            font-size: 14px;
-        }
-
-        .progress-bar-container {
-            height: 8px;
-            background: #e9ecef;
-            border-radius: 4px;
-            overflow: hidden;
-        }
-
-        .progress-bar-fill {
-            height: 100%;
-            transition: width 0.3s ease;
-        }
-
-        /* Filter section */
-        .attendance-filter {
-            background: white;
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 24px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .filter-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 16px;
-            align-items: end;
-        }
-
-        .filter-group {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .filter-group label {
-            font-size: 14px;
-            color: #555;
-            font-weight: 500;
-        }
-
-        .filter-select, .filter-input {
-            padding: 10px 12px;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            font-size: 14px;
-            background: white;
-        }
-
-        .filter-buttons {
-            display: flex;
-            gap: 12px;
-            justify-content: flex-end;
-            margin-top: 20px;
-        }
-
-        /* Attendance table */
-        .attendance-table-container {
-            background: white;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .table-header {
-            padding: 20px;
-            border-bottom: 1px solid #eee;
-        }
-
-        .table-header h3 {
-            margin: 0;
-            color: #333;
-        }
-
-        .table-responsive {
-            overflow-x: auto;
-        }
-
-        .attendance-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .attendance-table th {
-            background: #f8f9fa;
-            padding: 16px;
-            text-align: left;
-            font-weight: 600;
-            color: #555;
-            border-bottom: 1px solid #eee;
-        }
-
-        .attendance-table td {
-            padding: 16px;
-            border-bottom: 1px solid #eee;
-        }
-
-        .attendance-table tbody tr:hover {
-            background: #f8f9fa;
-        }
-
-        .status-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-        }
-
-        .status-present {
-            background: #d4edda;
-            color: #155724;
-        }
-
-        .status-sick {
-            background: #fff3cd;
-            color: #856404;
-        }
-
-        .status-permit {
-            background: #cce5ff;
-            color: #004085;
-        }
-
-        .status-absent {
-            background: #f8d7da;
-            color: #721c24;
-        }
-
-        .status-late {
-            background: #fff3cd;
-            color: #856404;
-        }
-
-        .day-header {
-            background: #007bff;
-            color: white;
-            padding: 8px 16px;
-            border-radius: 6px;
-            margin: 20px 0 12px 0;
-            font-weight: 600;
-        }
-
-        .month-summary {
-            margin-top: 24px;
-            padding: 20px;
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .month-summary h4 {
-            margin: 0 0 16px 0;
-            color: #333;
-        }
-
-        .summary-chart {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-        }
-
-        .chart-container {
-            padding: 16px;
-            background: #f8f9fa;
-            border-radius: 8px;
-        }
-
-        .chart-container h5 {
-            margin: 0 0 12px 0;
-            font-size: 14px;
-            color: #555;
-        }
-
-        /* Export buttons */
-        .export-actions {
-            display: flex;
-            gap: 12px;
-            margin-top: 24px;
-            justify-content: flex-end;
-        }
-
-        .btn-export {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 10px 20px;
-            background: #28a745;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 500;
-            transition: background 0.3s;
-        }
-
-        .btn-export:hover {
-            background: #218838;
-        }
-
-        .btn-export.print {
-            background: #007bff;
-        }
-
-        .btn-export.print:hover {
-            background: #0056b3;
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .attendance-container {
-                flex-direction: column;
-            }
-
-            .attendance-summary {
-                max-width: 100%;
-            }
-
-            .filter-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .export-actions {
-                justify-content: stretch;
-            }
-
-            .btn-export {
-                flex: 1;
-                justify-content: center;
-            }
-        }
-    </style>
+    .toggle-icon { transition:transform 0.3s; }
+    .toggle-icon.open { transform:rotate(180deg); }
+</style>
 @endpush
 
 @section('content')
-                <!-- Welcome Banner -->
-                <div class="welcome-card" style="background: linear-gradient(135deg, #d6d8da, #009B48);">
-                    <div class="welcome-content">
-                        <h2>Rekap Kehadiran <span class="student-name">Nama Siswa</span></h2>
-                        <p>Kelas: XII IPA 1 | Semester: Genap 2023/2024</p>
-                    </div>
-                    <div class="welcome-icon">
-                        <i class="fas fa-chart-line"></i>
-                    </div>
-                </div>
+<div class="content-container">
 
-                <div class="attendance-container">
-                    <!-- Summary Sidebar -->
-                    <div class="attendance-summary">
-                        <div class="summary-card">
-                            <h3>Statistik Kehadiran</h3>
-                            <div class="stats-grid">
-                                <div class="stat-item" style="background: #d4edda;">
-                                    <span class="stat-value">92%</span>
-                                    <span class="stat-label">Kehadiran</span>
-                                </div>
-                                <div class="stat-item" style="background: #f8f9fa;">
-                                    <span class="stat-value">88</span>
-                                    <span class="stat-label">Hadir</span>
-                                </div>
-                                <div class="stat-item" style="background: #f8f9fa;">
-                                    <span class="stat-value">4</span>
-                                    <span class="stat-label">Izin</span>
-                                </div>
-                                <div class="stat-item" style="background: #f8f9fa;">
-                                    <span class="stat-value">2</span>
-                                    <span class="stat-label">Sakit</span>
-                                </div>
-                            </div>
-
-                            <div class="progress-container">
-                                <div class="progress-label">
-                                    <span>Target: 95%</span>
-                                    <span>92%</span>
-                                </div>
-                                <div class="progress-bar-container">
-                                    <div class="progress-bar-fill" style="width: 92%; background: #28a745;"></div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="summary-card">
-                            <h3>Keterangan Absensi</h3>
-                            <div class="attendance-types">
-                                <div class="type-item">
-                                    <div class="type-color" style="background: #28a745;"></div>
-                                    <span class="type-name">Hadir</span>
-                                    <span class="type-count">88</span>
-                                </div>
-                                <div class="type-item">
-                                    <div class="type-color" style="background: #ffc107;"></div>
-                                    <span class="type-name">Sakit</span>
-                                    <span class="type-count">2</span>
-                                </div>
-                                <div class="type-item">
-                                    <div class="type-color" style="background: #17a2b8;"></div>
-                                    <span class="type-name">Izin</span>
-                                    <span class="type-count">4</span>
-                                </div>
-                                <div class="type-item">
-                                    <div class="type-color" style="background: #dc3545;"></div>
-                                    <span class="type-name">Alpa</span>
-                                    <span class="type-count">0</span>
-                                </div>
-                                <div class="type-item">
-                                    <div class="type-color" style="background: #fd7e14;"></div>
-                                    <span class="type-name">Terlambat</span>
-                                    <span class="type-count">1</span>
-                                </div>
-                                <div class="type-item">
-                                    <div class="type-color" style="background: #6f42c1;"></div>
-                                    <span class="type-name">Izin Pulang</span>
-                                    <span class="type-count">3</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Main Content -->
-                    <div class="attendance-content">
-                        <!-- Filter Section -->
-                        <div class="attendance-filter">
-                            <div class="filter-grid">
-                                <div class="filter-group">
-                                    <label>Periode</label>
-                                    <select class="filter-select" id="periodSelect">
-                                        <option value="month">Bulan Ini</option>
-                                        <option value="week">Minggu Ini</option>
-                                        <option value="all">Semua Data</option>
-                                        <option value="custom">Custom</option>
-                                    </select>
-                                </div>
-                                <div class="filter-group" id="monthGroup">
-                                    <label>Bulan</label>
-                                    <select class="filter-select" id="monthSelect">
-                                        <option value="1">Januari</option>
-                                        <option value="2">Februari</option>
-                                        <option value="3" selected>Maret</option>
-                                        <option value="4">April</option>
-                                        <option value="5">Mei</option>
-                                        <option value="6">Juni</option>
-                                    </select>
-                                </div>
-                                <div class="filter-group" id="yearGroup">
-                                    <label>Tahun</label>
-                                    <select class="filter-select" id="yearSelect">
-                                        <option value="2023">2023</option>
-                                        <option value="2024" selected>2024</option>
-                                    </select>
-                                </div>
-                                <div class="filter-group">
-                                    <label>Status</label>
-                                    <select class="filter-select" id="statusSelect">
-                                        <option value="all">Semua Status</option>
-                                        <option value="present">Hadir</option>
-                                        <option value="sick">Sakit</option>
-                                        <option value="permit">Izin</option>
-                                        <option value="absent">Alpa</option>
-                                        <option value="late">Terlambat</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="filter-buttons">
-                                <button class="btn btn-secondary" id="resetFilter">
-                                    <i class="fas fa-redo"></i> Reset
-                                </button>
-                                <button class="btn btn-primary" id="applyFilter">
-                                    <i class="fas fa-filter"></i> Filter
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- Attendance Table -->
-                        <div class="attendance-table-container">
-                            <div class="table-header">
-                                <h3><i class="fas fa-calendar-alt"></i> Rekap Absensi Harian</h3>
-                            </div>
-                            <div class="table-responsive">
-                                <table class="attendance-table" id="attendanceTable">
-                                    <thead>
-                                        <tr>
-                                            <th>Tanggal</th>
-                                            <th>Hari</th>
-                                            <th>Mata Pelajaran</th>
-                                            <th>Jam</th>
-                                            <th>Status</th>
-                                            <th>Keterangan</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="attendanceData">
-                                        <!-- Data akan diisi oleh JavaScript -->
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-
-                        <!-- Monthly Summary -->
-                        <div class="month-summary">
-                            <h4><i class="fas fa-chart-pie"></i> Ringkasan Bulan Maret 2024</h4>
-                            <div class="summary-chart">
-                                <div class="chart-container">
-                                    <h5>Distribusi Kehadiran</h5>
-                                    <canvas id="attendanceChart" width="200" height="150"></canvas>
-                                </div>
-                                <div class="chart-container">
-                                    <h5>Perbandingan Per Mata Pelajaran</h5>
-                                    <canvas id="subjectChart" width="200" height="150"></canvas>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Export Options -->
-                        <div class="export-actions">
-                            <button class="btn-export print" onclick="printAttendance()">
-                                <i class="fas fa-print"></i> Cetak Rekap
-                            </button>
-                            <button class="btn-export" onclick="exportToPDF()">
-                                <i class="fas fa-file-pdf"></i> Export PDF
-                            </button>
-                            <button class="btn-export" onclick="exportToExcel()">
-                                <i class="fas fa-file-excel"></i> Export Excel
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </main>
+    <!-- Banner -->
+    <div class="welcome-card" style="background: linear-gradient(135deg, #1565C0, #42A5F5);">
+        <div class="welcome-content">
+            <h2>Riwayat Absensi <span id="namaDisplay" style="color:#ffe082;">Saya</span></h2>
+            <p id="infoDisplay">Memuat data...</p>
+        </div>
+        <div class="welcome-icon"><i class="fas fa-clipboard-list"></i></div>
     </div>
 
-    <!-- Modals -->
-    <div id="notificationModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Notifikasi</h3>
-                <button class="close-modal">&times;</button>
-            </div>
-            <div class="modal-body">
-                <div class="notifications-list" id="notificationsList">
-                    <!-- Notifikasi akan diisi oleh JavaScript -->
-                </div>
-            </div>
+    <!-- Global Stats -->
+    <div class="global-stats" id="globalStats">
+        <div class="gstat"><div class="num" style="color:#4CAF50;" id="gHadir">-</div><div class="lbl">Total Hadir</div></div>
+        <div class="gstat"><div class="num" style="color:#FF9800;" id="gIzin">-</div><div class="lbl">Total Izin</div></div>
+        <div class="gstat"><div class="num" style="color:#3F51B5;" id="gSakit">-</div><div class="lbl">Total Sakit</div></div>
+        <div class="gstat"><div class="num" style="color:#F44336;" id="gAlpa">-</div><div class="lbl">Total Alpa</div></div>
+        <div class="gstat"><div class="num" style="color:#475569;" id="gTotal">-</div><div class="lbl">Total Pertemuan</div></div>
+    </div>
+
+    <!-- Riwayat per Mapel -->
+    <div id="absensiContainer">
+        <div style="text-align:center; padding:40px; color:#94a3b8;">
+            <i class="fas fa-spinner fa-spin" style="font-size:32px; display:block; margin-bottom:12px;"></i>
+            Memuat riwayat absensi...
         </div>
     </div>
+</div>
 @endsection
 
 @push('scripts')
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="/assets/js/auth.js"></script>
-    <script src="/assets/js/api.js"></script>
-    <script>
-        class AttendancePage {
-            constructor() {
-                this.currentData = [];
-                this.init();
-            }
+<script>
+let siswaId = null;
 
-            init() {
-                this.updateDateDisplay();
-                this.loadAttendanceData();
-                this.setupEventListeners();
-                this.setupCharts();
-            }
+document.addEventListener('DOMContentLoaded', function () {
+    loadProfile();
+});
 
-            updateDateDisplay() {
-                const dateElement = document.getElementById('currentDate');
-                const now = new Date();
-                const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
-                const months = [
-                    'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
-                    'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
-                ];
-                
-                const dayName = days[now.getDay()];
-                const date = now.getDate();
-                const monthName = months[now.getMonth()];
-                const year = now.getFullYear();
-                
-                dateElement.textContent = `${dayName}, ${date} ${monthName} ${year}`;
-            }
+function getToken() {
+    const t = localStorage.getItem('token');
+    if (!t) { window.location.href = '/login'; return null; }
+    return t;
+}
 
-            async loadAttendanceData() {
-                try {
-                    // Simulasi data dari API
-                    const data = await this.getMockAttendanceData();
-                    this.currentData = data;
-                    this.renderAttendanceTable(data);
-                } catch (error) {
-                    console.error('Error loading attendance data:', error);
-                    this.showError('Gagal memuat data absensi');
-                }
-            }
-
-            renderAttendanceTable(data) {
-                const tbody = document.getElementById('attendanceData');
-                tbody.innerHTML = '';
-
-                if (data.length === 0) {
-                    tbody.innerHTML = `
-                        <tr>
-                            <td colspan="6" class="text-center">
-                                <div class="empty-state">
-                                    <i class="fas fa-calendar-times fa-2x"></i>
-                                    <p>Tidak ada data absensi untuk periode ini</p>
-                                </div>
-                            </td>
-                        </tr>
-                    `;
-                    return;
-                }
-
-                // Kelompokkan data berdasarkan tanggal
-                const groupedData = this.groupByDate(data);
-                
-                for (const [date, entries] of Object.entries(groupedData)) {
-                    // Tambahkan header hari
-                    const dateObj = new Date(date);
-                    const dayName = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'][dateObj.getDay()];
-                    
-                    // Header row
-                    const headerRow = document.createElement('tr');
-                    headerRow.className = 'day-header-row';
-                    headerRow.innerHTML = `
-                        <td colspan="6" style="padding: 0;">
-                            <div class="day-header">
-                                ${dayName}, ${this.formatDate(dateObj)}
-                            </div>
-                        </td>
-                    `;
-                    tbody.appendChild(headerRow);
-                    
-                    // Data rows
-                    entries.forEach(entry => {
-                        const row = document.createElement('tr');
-                        row.innerHTML = `
-                            <td>${this.formatDate(new Date(entry.date))}</td>
-                            <td>${dayName}</td>
-                            <td>${entry.subject}</td>
-                            <td>${entry.time}</td>
-                            <td>
-                                <span class="status-badge ${this.getStatusClass(entry.status)}">
-                                    <i class="fas fa-${this.getStatusIcon(entry.status)}"></i>
-                                    ${entry.status}
-                                </span>
-                            </td>
-                            <td>${entry.notes || '-'}</td>
-                        `;
-                        tbody.appendChild(row);
-                    });
-                }
-            }
-
-            groupByDate(data) {
-                return data.reduce((groups, item) => {
-                    const date = item.date.split('T')[0];
-                    if (!groups[date]) {
-                        groups[date] = [];
-                    }
-                    groups[date].push(item);
-                    return groups;
-                }, {});
-            }
-
-            formatDate(date) {
-                return date.toLocaleDateString('id-ID', {
-                    day: 'numeric',
-                    month: 'long',
-                    year: 'numeric'
-                });
-            }
-
-            getStatusClass(status) {
-                const classes = {
-                    'Hadir': 'status-present',
-                    'Sakit': 'status-sick',
-                    'Izin': 'status-permit',
-                    'Alpa': 'status-absent',
-                    'Terlambat': 'status-late'
-                };
-                return classes[status] || 'status-absent';
-            }
-
-            getStatusIcon(status) {
-                const icons = {
-                    'Hadir': 'check-circle',
-                    'Sakit': 'thermometer',
-                    'Izin': 'file-alt',
-                    'Alpa': 'times-circle',
-                    'Terlambat': 'clock'
-                };
-                return icons[status] || 'question-circle';
-            }
-
-            setupCharts() {
-                // Chart distribusi kehadiran
-                const attendanceCtx = document.getElementById('attendanceChart').getContext('2d');
-                this.attendanceChart = new Chart(attendanceCtx, {
-                    type: 'doughnut',
-                    data: {
-                        labels: ['Hadir', 'Izin', 'Sakit', 'Alpa'],
-                        datasets: [{
-                            data: [88, 4, 2, 0],
-                            backgroundColor: [
-                                '#28a745',
-                                '#17a2b8',
-                                '#ffc107',
-                                '#dc3545'
-                            ]
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        plugins: {
-                            legend: {
-                                position: 'bottom'
-                            }
-                        }
-                    }
-                });
-
-                // Chart perbandingan mata pelajaran
-                const subjectCtx = document.getElementById('subjectChart').getContext('2d');
-                this.subjectChart = new Chart(subjectCtx, {
-                    type: 'bar',
-                    data: {
-                        labels: ['Matematika', 'Fisika', 'Kimia', 'Biologi', 'Bahasa'],
-                        datasets: [{
-                            label: 'Kehadiran (%)',
-                            data: [95, 92, 90, 88, 96],
-                            backgroundColor: '#007bff'
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        scales: {
-                            y: {
-                                beginAtZero: true,
-                                max: 100
-                            }
-                        }
-                    }
-                });
-            }
-
-            setupEventListeners() {
-                // Menu toggle
-                document.querySelector('.menu-toggle').addEventListener('click', () => {
-                    document.querySelector('.sidebar').classList.toggle('active');
-                });
-
-                // Notification button
-                document.querySelector('.notification-btn').addEventListener('click', () => {
-                    document.getElementById('notificationModal').classList.add('active');
-                });
-
-                // Close modal buttons
-                document.querySelectorAll('.close-modal').forEach(button => {
-                    button.addEventListener('click', () => {
-                        document.getElementById('notificationModal').classList.remove('active');
-                    });
-                });
-
-                // Filter period change
-                document.getElementById('periodSelect').addEventListener('change', (e) => {
-                    const isCustom = e.target.value === 'custom';
-                    document.getElementById('monthGroup').style.display = 
-                        (e.target.value === 'month' || isCustom) ? 'block' : 'none';
-                    document.getElementById('yearGroup').style.display = 
-                        isCustom ? 'block' : 'none';
-                });
-
-                // Apply filter
-                document.getElementById('applyFilter').addEventListener('click', () => {
-                    this.applyFilters();
-                });
-
-                // Reset filter
-                document.getElementById('resetFilter').addEventListener('click', () => {
-                    this.resetFilters();
-                });
-
-                // Logout button
-                document.getElementById('logoutBtn').addEventListener('click', (e) => {
-                    e.preventDefault();
-                    auth.logout();
-                });
-            }
-
-            applyFilters() {
-                const period = document.getElementById('periodSelect').value;
-                const month = document.getElementById('monthSelect').value;
-                const year = document.getElementById('yearSelect').value;
-                const status = document.getElementById('statusSelect').value;
-
-                console.log('Applying filters:', { period, month, year, status });
-                // Implementasi filter sebenarnya
-                this.loadAttendanceData(); // Reload dengan filter
-            }
-
-            resetFilters() {
-                document.getElementById('periodSelect').value = 'month';
-                document.getElementById('monthSelect').value = '3';
-                document.getElementById('yearSelect').value = '2024';
-                document.getElementById('statusSelect').value = 'all';
-                document.getElementById('monthGroup').style.display = 'block';
-                document.getElementById('yearGroup').style.display = 'none';
-                
-                this.loadAttendanceData();
-            }
-
-            showError(message) {
-                const tbody = document.getElementById('attendanceData');
-                tbody.innerHTML = `
-                    <tr>
-                        <td colspan="6" class="text-center text-danger">
-                            <i class="fas fa-exclamation-triangle"></i> ${message}
-                        </td>
-                    </tr>
-                `;
-            }
-
-            getMockAttendanceData() {
-                return new Promise((resolve) => {
-                    setTimeout(() => {
-                        resolve([
-                            { date: '2024-03-15T07:30:00', subject: 'Matematika', status: 'Hadir', time: '07:30 - 09:00', notes: '' },
-                            { date: '2024-03-15T09:00:00', subject: 'Fisika', status: 'Hadir', time: '09:00 - 10:30', notes: '' },
-                            { date: '2024-03-15T10:30:00', subject: 'Kimia', status: 'Hadir', time: '10:30 - 12:00', notes: '' },
-                            { date: '2024-03-14T07:30:00', subject: 'Biologi', status: 'Terlambat', time: '07:30 - 09:00', notes: 'Terlambat 15 menit' },
-                            { date: '2024-03-14T09:00:00', subject: 'Bahasa Indonesia', status: 'Sakit', time: '09:00 - 10:30', notes: 'Surat dokter terlampir' },
-                            { date: '2024-03-13T07:30:00', subject: 'Matematika', status: 'Hadir', time: '07:30 - 09:00', notes: '' },
-                            { date: '2024-03-13T09:00:00', subject: 'Fisika', status: 'Izin', time: '09:00 - 10:30', notes: 'Izin keluarga' },
-                            { date: '2024-03-12T07:30:00', subject: 'Kimia', status: 'Hadir', time: '07:30 - 09:00', notes: '' },
-                            { date: '2024-03-12T09:00:00', subject: 'Biologi', status: 'Hadir', time: '09:00 - 10:30', notes: '' },
-                            { date: '2024-03-11T07:30:00', subject: 'Bahasa Inggris', status: 'Hadir', time: '07:30 - 09:00', notes: '' }
-                        ]);
-                    }, 1000);
-                });
-            }
-        }
-
-        // Export functions
-        function printAttendance() {
-            window.print();
-        }
-
-        function exportToPDF() {
-            alert('Fitur export PDF akan segera tersedia!');
-            // Implementasi export PDF menggunakan jsPDF
-        }
-
-        function exportToExcel() {
-            alert('Fitur export Excel akan segera tersedia!');
-            // Implementasi export Excel menggunakan SheetJS
-        }
-
-        // Initialize page when loaded
-        document.addEventListener('DOMContentLoaded', () => {
-            new AttendancePage();
+async function loadProfile() {
+    const token = getToken(); if (!token) return;
+    try {
+        const res  = await fetch('/api/me', {
+            headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' }
         });
-    </script>
+        const data = await res.json();
+        if (data.success && data.data.profile) {
+            const siswa = data.data.profile;
+            siswaId = siswa.id;
+            document.getElementById('namaDisplay').textContent = siswa.nama;
+            document.getElementById('infoDisplay').textContent = `NISN: ${siswa.nisn} | Tingkat: ${siswa.tingkat}`;
+            loadAbsensiSaya(siswa.id);
+        }
+    } catch (e) { console.error('loadProfile:', e); }
+}
+
+async function loadAbsensiSaya(id) {
+    const token = getToken(); if (!token) return;
+    try {
+        const res  = await fetch(`/api/siswa/absensi-saya/${id}`, {
+            headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' }
+        });
+        const data = await res.json();
+        if (data.success) renderAbsensi(data.data);
+    } catch (e) {
+        document.getElementById('absensiContainer').innerHTML =
+            '<div style="text-align:center; color:#ef4444; padding:32px;">Gagal memuat data absensi</div>';
+    }
+}
+
+function renderAbsensi(list) {
+    const container = document.getElementById('absensiContainer');
+
+    if (!list || !list.length) {
+        container.innerHTML = `
+            <div style="text-align:center; padding:48px; color:#94a3b8;">
+                <i class="fas fa-clipboard" style="font-size:40px; display:block; margin-bottom:12px;"></i>
+                Belum ada riwayat absensi
+            </div>`;
+        return;
+    }
+
+    // Hitung global stats
+    let totalH = 0, totalI = 0, totalS = 0, totalA = 0, totalAll = 0;
+    list.forEach(m => {
+        totalH += m.hadir; totalI += m.izin;
+        totalS += m.sakit; totalA += m.alpa; totalAll += m.total;
+    });
+    document.getElementById('gHadir').textContent  = totalH;
+    document.getElementById('gIzin').textContent   = totalI;
+    document.getElementById('gSakit').textContent  = totalS;
+    document.getElementById('gAlpa').textContent   = totalA;
+    document.getElementById('gTotal').textContent  = totalAll;
+
+    container.innerHTML = list.map((m, idx) => {
+        const persen    = m.persentase;
+        const pClass    = persen >= 80 ? 'persen-ok' : (persen >= 60 ? 'persen-warn' : 'persen-bad');
+        const fillColor = persen >= 80 ? '#4CAF50' : (persen >= 60 ? '#FF9800' : '#F44336');
+        const mapelName = m.mapel ? m.mapel.nama_mapel : 'Mata Pelajaran';
+
+        const detailRows = m.detail.map((d, di) => `
+            <tr>
+                <td>${di + 1}</td>
+                <td>${formatDate(d.tanggal)}</td>
+                <td>${d.pertemuan}</td>
+                <td style="font-size:12px; color:#64748b;">${d.jam_mulai} – ${d.jam_selesai}</td>
+                <td><span class="status-badge badge-${d.status}">${d.status.charAt(0).toUpperCase()+d.status.slice(1)}</span></td>
+                <td style="font-size:12px; color:#64748b;">${d.guru ? d.guru.nama : '-'}</td>
+                <td style="font-size:12px; color:#64748b;">${d.keterangan || '-'}</td>
+            </tr>`).join('');
+
+        return `
+        <div class="mapel-card">
+            <div class="mapel-header" onclick="toggleMapel(${idx})">
+                <div class="mapel-title">
+                    <i class="fas fa-book-open" style="color:#3B82F6; margin-right:8px;"></i>
+                    ${mapelName}
+                </div>
+                <div class="mapel-stats">
+                    <span style="font-size:13px; color:#64748b;">${m.total} Pertemuan</span>
+                    <span class="persen-badge ${pClass}">${persen}% Hadir</span>
+                    <i class="fas fa-chevron-down toggle-icon" id="toggle_${idx}"></i>
+                </div>
+            </div>
+            <div class="mapel-body" id="body_${idx}">
+                <!-- Mini stats -->
+                <div style="display:flex; gap:16px; flex-wrap:wrap; margin-bottom:16px;">
+                    <div style="display:flex; align-items:center; gap:6px; font-size:13px;">
+                        <span style="width:10px; height:10px; border-radius:50%; background:#4CAF50; display:inline-block;"></span>
+                        Hadir: <strong>${m.hadir}</strong>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:6px; font-size:13px;">
+                        <span style="width:10px; height:10px; border-radius:50%; background:#FF9800; display:inline-block;"></span>
+                        Izin: <strong>${m.izin}</strong>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:6px; font-size:13px;">
+                        <span style="width:10px; height:10px; border-radius:50%; background:#3F51B5; display:inline-block;"></span>
+                        Sakit: <strong>${m.sakit}</strong>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:6px; font-size:13px;">
+                        <span style="width:10px; height:10px; border-radius:50%; background:#F44336; display:inline-block;"></span>
+                        Alpa: <strong>${m.alpa}</strong>
+                    </div>
+                </div>
+
+                <!-- Progress bar kehadiran -->
+                <div class="progress-wrap">
+                    <div class="progress-label">
+                        <span>Persentase Kehadiran</span>
+                        <strong style="color:${fillColor};">${persen}%</strong>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width:${persen}%; background:${fillColor};"></div>
+                    </div>
+                    ${persen < 75 ? `<small style="color:#ef4444; margin-top:4px; display:block;"><i class="fas fa-exclamation-triangle"></i> Kehadiran di bawah batas minimum 75%</small>` : ''}
+                </div>
+
+                <!-- Detail pertemuan -->
+                <div class="table-responsive">
+                    <table class="detail-table">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Tanggal</th>
+                                <th>Pertemuan</th>
+                                <th>Jam</th>
+                                <th>Status</th>
+                                <th>Guru</th>
+                                <th>Keterangan</th>
+                            </tr>
+                        </thead>
+                        <tbody>${detailRows}</tbody>
+                    </table>
+                </div>
+            </div>
+        </div>`;
+    }).join('');
+}
+
+function toggleMapel(idx) {
+    const body   = document.getElementById(`body_${idx}`);
+    const icon   = document.getElementById(`toggle_${idx}`);
+    const isOpen = body.classList.contains('open');
+    body.classList.toggle('open', !isOpen);
+    icon.classList.toggle('open', !isOpen);
+}
+
+function formatDate(d) {
+    if (!d) return '-';
+    return new Date(d).toLocaleDateString('id-ID', { day:'2-digit', month:'long', year:'numeric' });
+}
+</script>
 @endpush

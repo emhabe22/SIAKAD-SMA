@@ -10,21 +10,23 @@ class JadwalPelajaran extends Model
     use HasFactory;
 
     protected $fillable = [
+        'slot_id',
+        'tipe',
         'hari',
         'jam_mulai',
         'jam_selesai',
-        'kelas_id',
+        'tingkat',
         'mapel_id',
         'guru_id',
-        'ruangan',
+        'keterangan',
     ];
 
     /**
-     * Relasi ke Kelas
+     * Relasi ke Jadwal Slot
      */
-    public function kelas()
+    public function slot()
     {
-        return $this->belongsTo(Kelas::class);
+        return $this->belongsTo(JadwalSlot::class, 'slot_id');
     }
 
     /**

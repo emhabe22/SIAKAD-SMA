@@ -70,13 +70,10 @@
     <div class="card-body">
         <div class="quick-actions">
             <button class="btn btn-primary" onclick="showRequestBKModal()">
-                <i class="fas fa-plus"></i> Ajukan Sesi BK
+                <i class="fas fa-plus"></i> Ajukan Jadwal Konseling
             </button>
-            <button class="btn btn-info" onclick="viewBKSchedule()">
-                <i class="fas fa-calendar-alt"></i> Lihat Jadwal
-            </button>
-            <button class="btn btn-success" onclick="viewBKHistory()">
-                <i class="fas fa-history"></i> Riwayat BK
+            <button class="btn btn-success" onclick="refreshSessions()">
+                <i class="fas fa-sync-alt"></i> Refresh Jadwal
             </button>
         </div>
     </div>
@@ -85,7 +82,7 @@
 <!-- Active Sessions -->
 <div class="card">
     <div class="card-header">
-        <h3><i class="fas fa-list"></i> Sesi BK Aktif</h3>
+        <h3><i class="fas fa-list"></i> Jadwal Konseling Saya</h3>
         <button class="btn btn-sm btn-outline-primary" onclick="refreshSessions()">
             <i class="fas fa-sync-alt"></i> Refresh
         </button>
@@ -97,105 +94,331 @@
                     <th>Tanggal</th>
                     <th>Waktu</th>
                     <th>Guru BK</th>
-                    <th>Topik</th>
+                    <th>Keterangan</th>
                     <th>Status</th>
                     <th>Aksi</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody id="scheduleTableBody">
                 <tr>
-                    <td>05 Feb 2026</td>
-                    <td>10:00 - 11:00</td>
-                    <td>Bu Siti Aminah, S.Pd</td>
-                    <td>Konsultasi Akademik</td>
-                    <td><span class="badge badge-success">Disetujui</span></td>
-                    <td>
-                        <button class="btn btn-sm btn-info" onclick="viewDetail(1)">Detail</button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>08 Feb 2026</td>
-                    <td>13:00 - 14:00</td>
-                    <td>Pak Ahmad Rizki, M.Pd</td>
-                    <td>Konseling Pribadi</td>
-                    <td><span class="badge badge-warning">Menunggu</span></td>
-                    <td>
-                        <button class="btn btn-sm btn-info" onclick="viewDetail(2)">Detail</button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>10 Feb 2026</td>
-                    <td>09:00 - 10:00</td>
-                    <td>Bu Siti Aminah, S.Pd</td>
-                    <td>Bimbingan Karir</td>
-                    <td><span class="badge badge-warning">Menunggu</span></td>
-                    <td>
-                        <button class="btn btn-sm btn-info" onclick="viewDetail(3)">Detail</button>
-                    </td>
+                    <td colspan="6" style="text-align: center;">Loading...</td>
                 </tr>
             </tbody>
         </table>
     </div>
 </div>
 
-<!-- History -->
-<div class="card">
-    <div class="card-header">
-        <h3><i class="fas fa-history"></i> Riwayat Sesi BK</h3>
-    </div>
-    <div class="card-body">
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Tanggal</th>
-                    <th>Guru BK</th>
-                    <th>Topik</th>
-                    <th>Catatan</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>01 Feb 2026</td>
-                    <td>Bu Siti Aminah, S.Pd</td>
-                    <td>Konseling Akademik</td>
-                    <td>Sesi berjalan dengan baik</td>
-                    <td><span class="badge badge-success">Selesai</span></td>
-                </tr>
-                <tr>
-                    <td>25 Jan 2026</td>
-                    <td>Pak Ahmad Rizki, M.Pd</td>
-                    <td>Konseling Sosial</td>
-                    <td>Perlu tindak lanjut</td>
-                    <td><span class="badge badge-success">Selesai</span></td>
-                </tr>
-            </tbody>
-        </table>
+<!-- Modal Request BK -->
+<div id="requestBKModal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Ajukan Jadwal Konseling</h3>
+            <span class="close" onclick="closeRequestBKModal()">&times;</span>
+        </div>
+        <div class="modal-body">
+            <form id="requestBKForm">
+                <div class="form-group">
+                    <label for="bkSelect">Pilih Guru BK *</label>
+                    <select id="bkSelect" required>
+                        <option value="">-- Pilih Guru BK --</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="requestTanggal">Tanggal Konseling *</label>
+                    <input type="date" id="requestTanggal" required>
+                </div>
+                <div class="form-group">
+                    <label for="requestWaktu">Waktu Konseling *</label>
+                    <input type="time" id="requestWaktu" required>
+                </div>
+                <div class="form-group">
+                    <label for="requestKeterangan">Keterangan *</label>
+                    <textarea id="requestKeterangan" rows="3" placeholder="Jelaskan keperluan konseling Anda..." required></textarea>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="closeRequestBKModal()">Batal</button>
+            <button class="btn btn-primary" onclick="submitRequestBK()">
+                <i class="fas fa-paper-plane"></i> Ajukan
+            </button>
+        </div>
     </div>
 </div>
 @endsection
 
 @push('scripts')
 <script>
+    // Get token helper
+    function getToken() {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            alert('Anda belum login. Silakan login terlebih dahulu.');
+            window.location.href = '/login';
+            return null;
+        }
+        return token;
+    }
+
+    // Get siswa ID from localStorage or session
+    async function getSiswaId() {
+        const token = getToken();
+        if (!token) return null;
+
+        try {
+            const response = await fetch('/api/me', {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Accept': 'application/json'
+                }
+            });
+
+            const result = await response.json();
+            
+            if (result.success && result.data.profile) {
+                return result.data.profile.id;
+            }
+        } catch (error) {
+            console.error('Error fetching user profile:', error);
+        }
+        
+        return null;
+    }
+
+    // Load on page ready
+    document.addEventListener('DOMContentLoaded', function() {
+        fetchSchedules();
+        fetchBKList();
+    });
+
+    // Fetch BK list for dropdown
+    async function fetchBKList() {
+        const token = getToken();
+        if (!token) return;
+
+        try {
+            const response = await fetch('/api/siswa/bk', {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Accept': 'application/json'
+                }
+            });
+
+            const result = await response.json();
+
+            if (result.success && result.data) {
+                const select = document.getElementById('bkSelect');
+                select.innerHTML = '<option value="">-- Pilih Guru BK --</option>';
+                result.data.forEach(bk => {
+                    select.innerHTML += `<option value="${bk.id}">${bk.nama}</option>`;
+                });
+            }
+        } catch (error) {
+            console.error('Error fetching BK list:', error);
+        }
+    }
+
+    // Fetch schedules
+    async function fetchSchedules() {
+        const token = getToken();
+        if (!token) return;
+
+        const siswaId = await getSiswaId();
+        if (!siswaId) {
+            document.getElementById('scheduleTableBody').innerHTML = `
+                <tr><td colspan="5" style="text-align: center;">Gagal mendapatkan data siswa</td></tr>
+            `;
+            return;
+        }
+
+        try {
+            const response = await fetch(`/api/siswa/penjadwalan-saya/${siswaId}`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Accept': 'application/json'
+                }
+            });
+
+            if (response.status === 401) {
+                alert('Sesi Anda telah berakhir. Silakan login kembali.');
+                localStorage.removeItem('token');
+                window.location.href = '/login';
+                return;
+            }
+
+            const result = await response.json();
+
+            if (result.success && result.data) {
+                renderScheduleTable(result.data);
+            } else {
+                document.getElementById('scheduleTableBody').innerHTML = `
+                    <tr><td colspan="6" style="text-align: center;">Gagal memuat data</td></tr>
+                `;
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            document.getElementById('scheduleTableBody').innerHTML = `
+                <tr><td colspan="6" style="text-align: center;">Terjadi kesalahan saat memuat data</td></tr>
+            `;
+        }
+    }
+
+    // Render schedule table
+    function renderScheduleTable(data) {
+        const tbody = document.getElementById('scheduleTableBody');
+        
+        if (data.length === 0) {
+            tbody.innerHTML = `
+                <tr><td colspan="6" style="text-align: center;">Belum ada jadwal konseling</td></tr>
+            `;
+            return;
+        }
+
+        // Update stats
+        const menunggu = data.filter(s => s.status == '0').length;
+        const dikonfirmasi = data.filter(s => s.status == '1').length;
+        
+        // Update stat cards
+        document.querySelectorAll('.stat-card')[0].querySelector('h3').textContent = dikonfirmasi;
+        document.querySelectorAll('.stat-card')[1].querySelector('h3').textContent = menunggu;
+
+        tbody.innerHTML = data.map(schedule => {
+            const statusBadge = schedule.status == '1' 
+                ? '<span class="badge badge-success">Dikonfirmasi</span>' 
+                : '<span class="badge badge-warning">Menunggu</span>';
+            
+            const keteranganPreview = schedule.keterangan 
+                ? (schedule.keterangan.length > 50 ? schedule.keterangan.substring(0, 50) + '...' : schedule.keterangan)
+                : '-';
+            
+            return `
+                <tr>
+                    <td>${schedule.tanggal}</td>
+                    <td>${schedule.waktu}</td>
+                    <td>${schedule.bk ? schedule.bk.nama : 'N/A'}</td>
+                    <td>${keteranganPreview}</td>
+                    <td>${statusBadge}</td>
+                    <td>
+                        ${schedule.status == '0' ? `
+                            <button class="btn btn-sm btn-danger" onclick="cancelSchedule(${schedule.id})">
+                                <i class="fas fa-times"></i> Batalkan
+                            </button>
+                        ` : `
+                            <span class="text-muted">-</span>
+                        `}
+                    </td>
+                </tr>
+            `;
+        }).join('');
+    }
+
+    // Show request BK modal
     function showRequestBKModal() {
-        alert('Fitur ajukan BK akan segera tersedia');
+        document.getElementById('requestBKModal').style.display = 'block';
     }
     
-    function viewBKSchedule() {
-        alert('Menampilkan jadwal BK');
+    // Close request BK modal
+    function closeRequestBKModal() {
+        document.getElementById('requestBKModal').style.display = 'none';
+        document.getElementById('requestBKForm').reset();
     }
-    
-    function viewBKHistory() {
-        alert('Menampilkan riwayat BK lengkap');
+
+    // Submit request BK
+    async function submitRequestBK() {
+        const token = getToken();
+        if (!token) return;
+
+        const bkId = document.getElementById('bkSelect').value;
+        const tanggal = document.getElementById('requestTanggal').value;
+        const waktu = document.getElementById('requestWaktu').value;
+        const keterangan = document.getElementById('requestKeterangan').value;
+
+        if (!bkId || !tanggal || !waktu || !keterangan) {
+            alert('Harap lengkapi semua field yang wajib diisi!');
+            return;
+        }
+
+        const siswaId = await getSiswaId();
+        if (!siswaId) {
+            alert('Gagal mendapatkan data siswa. Silakan refresh halaman.');
+            return;
+        }
+
+        try {
+            const response = await fetch('/api/siswa/penjadwalan', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({
+                    siswa_id: siswaId,
+                    bk_id: bkId,
+                    tanggal: tanggal,
+                    waktu: waktu,
+                    keterangan: keterangan,
+                    status: '0' // Menunggu konfirmasi
+                })
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                alert('Jadwal konseling berhasil diajukan! Menunggu konfirmasi dari Guru BK.');
+                closeRequestBKModal();
+                fetchSchedules(); // Refresh table
+            } else {
+                alert('Gagal mengajukan jadwal: ' + (result.message || 'Unknown error'));
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Terjadi kesalahan saat mengajukan jadwal');
+        }
+    }
+
+    // Cancel schedule
+    async function cancelSchedule(id) {
+        if (!confirm('Apakah Anda yakin ingin membatalkan jadwal ini?')) {
+            return;
+        }
+
+        const token = getToken();
+        if (!token) return;
+
+        try {
+            const response = await fetch(`/api/siswa/penjadwalan/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Accept': 'application/json'
+                }
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                alert('Jadwal berhasil dibatalkan!');
+                fetchSchedules(); // Refresh table
+            } else {
+                alert('Gagal membatalkan jadwal: ' + (result.message || 'Unknown error'));
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Terjadi kesalahan saat membatalkan jadwal');
+        }
     }
     
     function refreshSessions() {
-        alert('Memperbarui data sesi...');
-        location.reload();
+        fetchSchedules();
     }
-    
-    function viewDetail(id) {
-        alert('Menampilkan detail sesi BK #' + id);
+
+    // Close modal when clicking outside
+    window.onclick = function(event) {
+        const modal = document.getElementById('requestBKModal');
+        if (event.target === modal) {
+            closeRequestBKModal();
+        }
     }
 </script>
 @endpush

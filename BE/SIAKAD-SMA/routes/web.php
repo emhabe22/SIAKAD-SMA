@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Route;
 // ========================================
 // PUBLIC ROUTES
 // ========================================
-Route::get('/', [IndexController::class, 'index'])->name('home');
+Route::redirect('/', '/login');
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 
@@ -22,9 +22,11 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
     Route::get('/siswa', [AdminController::class, 'siswa'])->name('siswa');
     Route::get('/guru', [AdminController::class, 'guru'])->name('guru');
-    Route::get('/kelas', [AdminController::class, 'kelas'])->name('kelas');
     Route::get('/mapel', [AdminController::class, 'mapel'])->name('mapel');
+    Route::get('/jadwal-pelajaran', [AdminController::class, 'jadwalPelajaran'])->name('jadwal-pelajaran');
+    Route::get('/jadwal-master', [AdminController::class, 'jadwalMaster'])->name('jadwal-master'); // 🆕
     Route::get('/jadwal-bk', [AdminController::class, 'jadwalBk'])->name('jadwal-bk');
+    Route::get('/logbook', [AdminController::class, 'logbook'])->name('logbook');   // 🆕
 });
 
 // ========================================
@@ -53,6 +55,9 @@ Route::prefix('bk')->name('bk.')->group(function () {
 // ========================================
 Route::prefix('siswa')->name('siswa.')->group(function () {
     Route::get('/dashboard', [SiswaController::class, 'dashboard'])->name('dashboard');
+    Route::get('/jadwal-pelajaran', function () {
+        return view('siswa.jadwal-pelajaran');
+    })->name('jadwal-pelajaran');
     Route::get('/absensi', [SiswaController::class, 'absensi'])->name('absensi');
     Route::get('/bk', [SiswaController::class, 'bk'])->name('bk');
     Route::get('/surat-pemanggilan', [SiswaController::class, 'suratPemanggilan'])->name('surat-pemanggilan');

@@ -6,16 +6,30 @@ use Illuminate\Database\Eloquent\Model;
 
 class Siswa extends Model
 {
-    protected $fillable = ['nama', 'nisn', 'alamat', 'no_telp', 'user_id', 'kelas_id', 'nama_wali'];
+    protected $fillable = [
+        'nama',
+        'nisn',
+        'tingkat',
+        'tempat_lahir',
+        'tanggal_lahir',
+        'jenis_kelamin',
+        'agama',
+        'email',
+        'alamat',
+        'no_telp',
+        'user_id',
+        'tahun_masuk',
+        'nama_wali',
+        'nama_ibu',
+        'pekerjaan_ayah',
+        'pekerjaan_ibu',
+        'telp_ortu',
+        'foto'
+    ];
 
     public function user()
     {
         return $this->belongsTo(User::class);
-    }
-
-    public function kelas()
-    {
-        return $this->belongsTo(Kelas::class);
     }
 
     public function absensis()

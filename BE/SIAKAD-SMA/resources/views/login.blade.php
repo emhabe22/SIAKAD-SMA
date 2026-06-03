@@ -35,14 +35,14 @@
 
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            min-height: 100vh;
+            height: 100vh;
             background: linear-gradient(135deg, #F8FDFF 0%, #E8F5E9 50%, #C8E6C9 100%);
             display: flex;
             justify-content: center;
             align-items: center;
             padding: 20px;
             position: relative;
-            overflow-x: hidden;
+            overflow: hidden;
         }
 
         /* Decorative Background Elements */
@@ -773,13 +773,13 @@
                     <!-- Username/Email Field -->
                     <div class="form-group">
                         <label class="input-label" for="username">
-                            Username / Email
+                            Username / NISN / Email
                         </label>
                         <div class="input-wrapper">
                             <input type="text"
                                    id="username"
                                    name="username"
-                                   placeholder="s\a01"
+                                   placeholder="Masukkan username, NISN, atau email"
                                    required>
                         </div>
                     </div>
@@ -793,7 +793,7 @@
                             <input type="password"
                                    id="password"
                                    name="password"
-                                   placeholder="Masukkan password Anda"
+                                   placeholder="Masukkan password"
                                    required>
                         </div>
                     </div>
@@ -838,7 +838,11 @@
                 const res = await response.json();
 
                 if (res.success) {
+                    // Simpan token dan data user
                     localStorage.setItem('token', res.data.token);
+                    localStorage.setItem('user', JSON.stringify(res.data.user));
+                    localStorage.setItem('userRole', res.data.user.role.name);
+                    
                     window.location.href = res.data.redirect_url;
                     return;
                 }

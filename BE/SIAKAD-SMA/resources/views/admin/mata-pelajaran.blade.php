@@ -15,7 +15,6 @@
         <!-- Main Content Container -->
         <div class="content-container">
 
-
             <!-- Stats Cards -->
             <div class="stats-grid compact">
                 <div class="stat-card">
@@ -23,14 +22,10 @@
                         <i class="fas fa-book"></i>
                     </div>
                     <div class="stat-info">
-                        <h3>36</h3>
+                        <h3 id="statTotalMapel">0</h3>
                         <p>Total Mapel</p>
                     </div>
                 </div>
-
-
-
-
             </div>
 
             <!-- Subjects Table -->
@@ -38,6 +33,12 @@
                 <div class="card-header">
                     <h3><i class="fas fa-list"></i> Daftar Mata Pelajaran</h3>
                     <div class="card-actions">
+                        <button class="btn btn-primary" onclick="openAddModal()" style="margin-right: 10px">
+                            <i class="fas fa-plus"></i> Tambah Mata Pelajaran
+                        </button>
+                        <button class="btn btn-secondary" onclick="location.href='/admin/jadwal-pelajaran'" style="margin-right: 10px">
+                            <i class="fas fa-calendar-alt"></i> Atur Jadwal
+                        </button>
                         <button class="btn-icon" onclick="exportToExcel()" title="Export ke Excel">
                             <i class="fas fa-file-excel"></i>
                         </button>
@@ -57,59 +58,15 @@
                                     <th>No</th>
                                     <th>Kode Mapel</th>
                                     <th>Nama Mata Pelajaran</th>
-                                    <th>Kelompok</th>
-                                    <th>Jenjang</th>
-                                    <th>Jurusan</th>
+                                    <th>Tingkat</th>
                                     <th>Guru Pengampu</th>
-                                    <th>Jam/Minggu</th>
-                                    <th>Status</th>
                                     <th>Aksi</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody id="mapelTableBody">
                                 <tr>
-                                    <td>1</td>
-                                    <td><strong>MAT-X</strong></td>
-                                    <td>
-                                        <div class="subject-cell">
-                                            <div class="subject-icon">
-                                                <i class="fas fa-calculator"></i>
-                                            </div>
-                                            <div>
-                                                <strong>Matematika</strong>
-                                                <small>Matematika Umum</small>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td><span class="badge badge-group-a">Kelompok A</span></td>
-                                    <td>X, XI, XII</td>
-                                    <td><span class="badge badge-umum">Umum</span></td>
-                                    <td>
-                                        <div class="teacher-cell-small">
-                                            <img src="https://via.placeholder.com/30" alt="Teacher">
-                                            <span>Budi Santoso, S.Pd</span>
-                                        </div>
-                                    </td>
-                                    <td>4 jam</td>
-                                    <td><span class="status-badge active">Aktif</span></td>
-                                    <td>
-                                        <div class="action-buttons">
-                                            <button class="btn-icon" onclick="viewSubject(1)" title="Lihat Detail">
-                                                <i class="fas fa-eye"></i>
-                                            </button>
-                                            <button class="btn-icon" onclick="editSubject(1)" title="Edit">
-                                                <i class="fas fa-edit"></i>
-                                            </button>
-                                            <button class="btn-icon" onclick="assignTeacher(1)" title="Assign Guru">
-                                                <i class="fas fa-user-tie"></i>
-                                            </button>
-                                            <button class="btn-icon btn-danger" onclick="deleteSubject(1)" title="Hapus">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                                        </div>
-                                    </td>
+                                    <td colspan="6" style="text-align: center;">Memuat data...</td>
                                 </tr>
-
                             </tbody>
                         </table>
                     </div>
@@ -122,290 +79,52 @@
                         <button class="page-btn active">1</button>
                         <button class="page-btn">2</button>
                         <button class="page-btn">3</button>
-                        <button class="page-btn">4</button>
-                        <button class="page-btn">5</button>
                         <button class="page-btn">
                             <i class="fas fa-chevron-right"></i>
                         </button>
                     </div>
                 </div>
             </div>
-
-
         </div>
 
     <!-- Modal Add/Edit Subject -->
-    <div id="subjectModal" class="modal">
-        <div class="modal-content wide-modal">
+    <div id="mapelModal" class="modal">
+        <div class="modal-content">
             <div class="modal-header">
                 <h3 id="modalTitle">Tambah Mata Pelajaran Baru</h3>
                 <span class="close" onclick="closeModal()">&times;</span>
             </div>
             <div class="modal-body">
-                <form id="subjectForm">
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="subjectCode">Kode Mata Pelajaran *</label>
-                            <input type="text" id="subjectCode" required placeholder="Contoh: MAT-X">
-                        </div>
-                        <div class="form-group">
-                            <label for="subjectName">Nama Mata Pelajaran *</label>
-                            <input type="text" id="subjectName" required placeholder="Contoh: Matematika">
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="shortName">Nama Singkat</label>
-                            <input type="text" id="shortName" placeholder="Contoh: MTK">
-                        </div>
-                        <div class="form-group">
-                            <label for="subjectGroup">Kelompok Mapel *</label>
-                            <select id="subjectGroup" required>
-                                <option value="">-- Pilih Kelompok --</option>
-                                <option value="A">Kelompok A (Wajib)</option>
-                                <option value="B">Kelompok B (Wajib)</option>
-                                <option value="C">Kelompok C (Peminatan)</option>
-                            </select>
-                        </div>
+                <form id="mapelForm">
+                    <input type="hidden" id="mapelId">
+                    
+                    <div class="form-group">
+                        <label for="namaMapel">Nama Mata Pelajaran *</label>
+                        <input type="text" id="namaMapel" required placeholder="Contoh: Matematika">
                     </div>
 
                     <div class="form-group">
-                        <label>Jenjang Kelas *</label>
-                        <div class="checkbox-group">
-                            <label class="checkbox-label">
-                                <input type="checkbox" name="levels" value="X">
-                                <span>Kelas X</span>
-                            </label>
-                            <label class="checkbox-label">
-                                <input type="checkbox" name="levels" value="XI">
-                                <span>Kelas XI</span>
-                            </label>
-                            <label class="checkbox-label">
-                                <input type="checkbox" name="levels" value="XII">
-                                <span>Kelas XII</span>
-                            </label>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Jurusan *</label>
-                        <div class="checkbox-group">
-                            <label class="checkbox-label">
-                                <input type="radio" name="major" value="UMUM" checked>
-                                <span>Umum (Semua Jurusan)</span>
-                            </label>
-                            <label class="checkbox-label">
-                                <input type="radio" name="major" value="MIPA">
-                                <span>MIPA</span>
-                            </label>
-                            <label class="checkbox-label">
-                                <input type="radio" name="major" value="IPS">
-                                <span>IPS</span>
-                            </label>
-                            <label class="checkbox-label">
-                                <input type="radio" name="major" value="BAHASA">
-                                <span>Bahasa</span>
-                            </label>
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="hoursPerWeek">Jam/Minggu *</label>
-                            <input type="number" id="hoursPerWeek" required min="1" max="10" value="4">
-                        </div>
-                        <div class="form-group">
-                            <label for="totalHours">Total Jam Per Tahun</label>
-                            <input type="number" id="totalHours" readonly>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="teachers">Guru Pengampu</label>
-                        <select id="teachers" multiple>
-                            <option value="1">Budi Santoso, S.Pd</option>
-                            <option value="2">Siti Nurhaliza, M.Pd</option>
-                            <option value="3">Dr. Ahmad Hidayat, M.Si</option>
-                            <option value="4">Dewi Sartika, S.Pd</option>
-                            <option value="5">Mulyadi, S.Pd</option>
+                        <label for="tingkat">Tingkat Kelas *</label>
+                        <select id="tingkat" required>
+                            <option value="">-- Pilih Tingkat --</option>
+                            <option value="X">Kelas X</option>
+                            <option value="XI">Kelas XI</option>
+                            <option value="XII">Kelas XII</option>
                         </select>
-                        <small class="form-text">Tahan Ctrl/Cmd untuk memilih multiple guru</small>
                     </div>
 
                     <div class="form-group">
-                        <label for="description">Deskripsi Mata Pelajaran</label>
-                        <textarea id="description" rows="3" placeholder="Deskripsi tentang mata pelajaran..."></textarea>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="learningObjectives">Tujuan Pembelajaran</label>
-                        <textarea id="learningObjectives" rows="3" placeholder="Tujuan pembelajaran yang ingin dicapai..."></textarea>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Status Mata Pelajaran *</label>
-                        <div class="radio-group">
-                            <label class="radio-label">
-                                <input type="radio" name="status" value="active" checked>
-                                <span>Aktif</span>
-                            </label>
-                            <label class="radio-label">
-                                <input type="radio" name="status" value="inactive">
-                                <span>Tidak Aktif</span>
-                            </label>
-                            <label class="radio-label">
-                                <input type="radio" name="status" value="development">
-                                <span>Dalam Pengembangan</span>
-                            </label>
-                        </div>
+                        <label for="kodeMapel">Kode Mata Pelajaran *</label>
+                        <input type="text" id="kodeMapel" required placeholder="Contoh: X-MAT">
+                        <small style="color: #666;">Format: TINGKAT-SINGKATAN (Contoh: X-MAT, XI-FIS, XII-BIO)</small>
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
                 <button class="btn btn-secondary" onclick="closeModal()">Batal</button>
-                <button class="btn btn-primary" onclick="saveSubject()">
+                <button class="btn btn-primary" onclick="saveMapel()">
                     <i class="fas fa-save"></i> Simpan
                 </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal View Subject -->
-    <div id="viewModal" class="modal">
-        <div class="modal-content wide-modal">
-            <div class="modal-header">
-                <h3>Detail Mata Pelajaran</h3>
-                <span class="close" onclick="closeViewModal()">&times;</span>
-            </div>
-            <div class="modal-body">
-                <div class="subject-detail-view">
-                    <div class="subject-header">
-                        <div class="subject-icon-large">
-                            <i class="fas fa-calculator"></i>
-                        </div>
-                        <div class="subject-info-large">
-                            <h2 id="viewSubjectName">Matematika</h2>
-                            <p class="subject-code" id="viewSubjectCode">Kode: MAT-X</p>
-                            <div class="subject-tags">
-                                <span class="badge badge-group-a" id="viewGroup">Kelompok A</span>
-                                <span class="badge badge-umum" id="viewMajor">Umum</span>
-                                <span class="status-badge active" id="viewStatus">Aktif</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="detail-tabs">
-                        <div class="tab-buttons">
-                            <button class="tab-btn active" onclick="showTab('info')">Informasi</button>
-                            <button class="tab-btn" onclick="showTab('teachers')">Guru Pengampu</button>
-                        </div>
-
-                        <div class="tab-content active" id="infoTab">
-                            <div class="detail-grid">
-                                <div class="detail-item">
-                                    <label>Nama Singkat:</label>
-                                    <span id="viewShortName">MTK</span>
-                                </div>
-                                <div class="detail-item">
-                                    <label>Jenjang:</label>
-                                    <span id="viewLevels">X, XI, XII</span>
-                                </div>
-                                <div class="detail-item">
-                                    <label>Jam/Minggu:</label>
-                                    <span id="viewHours">4 jam</span>
-                                </div>
-                                <div class="detail-item">
-                                    <label>Total Jam/Tahun:</label>
-                                    <span id="viewTotalHours">144 jam</span>
-                                </div>
-                                <div class="detail-item full-width">
-                                    <label>Deskripsi:</label>
-                                    <p id="viewDescription">Mata pelajaran matematika membahas konsep-konsep dasar dan terapan matematika untuk pengembangan logika dan pemecahan masalah.</p>
-                                </div>
-                                <div class="detail-item full-width">
-                                    <label>Tujuan Pembelajaran:</label>
-                                    <p id="viewObjectives">Mengembangkan kemampuan berpikir logis, kritis, dan kreatif dalam memecahkan masalah matematika serta penerapannya dalam kehidupan sehari-hari.</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="tab-content" id="teachersTab">
-                            <div class="teachers-list">
-                                <h4>Guru Pengampu</h4>
-                                <div class="teacher-cards">
-                                    <div class="teacher-card">
-                                        <img src="https://via.placeholder.com/60" alt="Teacher">
-                                        <div class="teacher-info">
-                                            <h5>Budi Santoso, S.Pd</h5>
-                                            <p>Guru Matematika</p>
-                                            <span class="teacher-status">Pengampu Utama</span>
-                                        </div>
-                                        <button class="btn-icon">
-                                            <i class="fas fa-envelope"></i>
-                                        </button>
-                                    </div>
-                                    <!-- Add more teachers as needed -->
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="tab-content" id="curriculumTab">
-                            <div class="curriculum-details">
-                                <h4>Detail Kurikulum</h4>
-                                <div class="curriculum-sections">
-                                    <div class="curriculum-section">
-                                        <h5>Kompetensi Inti</h5>
-                                        <ul>
-                                            <li>Memahami konsep matematika dasar</li>
-                                            <li>Menerapkan matematika dalam pemecahan masalah</li>
-                                            <li>Mengembangkan pola pikir logis dan sistematis</li>
-                                        </ul>
-                                    </div>
-                                    <div class="curriculum-section">
-                                        <h5>Materi Pokok</h5>
-                                        <ul>
-                                            <li>Aljabar dan Fungsi</li>
-                                            <li>Geometri dan Pengukuran</li>
-                                            <li>Statistika dan Peluang</li>
-                                            <li>Trigonometri</li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="tab-content" id="classesTab">
-                            <div class="classes-list">
-                                <h4>Kelas yang Mengikuti</h4>
-                                <div class="class-cards">
-                                    <div class="class-card">
-                                        <div class="class-info">
-                                            <h5>X MIPA 1</h5>
-                                            <p>28 siswa • Ruang 201</p>
-                                        </div>
-                                        <span class="class-hours">4 jam/minggu</span>
-                                    </div>
-                                    <div class="class-card">
-                                        <div class="class-info">
-                                            <h5>X IPS 1</h5>
-                                            <p>30 siswa • Ruang 202</p>
-                                        </div>
-                                        <span class="class-hours">4 jam/minggu</span>
-                                    </div>
-                                    <!-- Add more classes as needed -->
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" onclick="closeViewModal()">Tutup</button>
-                <button class="btn btn-primary" onclick="editFromView()">
-                    <i class="fas fa-edit"></i> Edit Data
-                </button>
-
             </div>
         </div>
     </div>
@@ -413,261 +132,270 @@
 @endsection
 
 @push('scripts')
-<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
-<script src="../assets/js/main.js"></script>
-<script src="../assets/js/admin-subjects.js"></script>
 <script>
-        let currentSubjectId = null;
+        let currentMapelId = null;
         let isEditMode = false;
 
         document.addEventListener('DOMContentLoaded', function() {
-            // Initialize DataTable
-            $('#subjectsTable').DataTable({
-                pageLength: 10,
-                language: {
-                    search: "Cari:",
-                    lengthMenu: "Tampilkan _MENU_ data per halaman",
-                    info: "Menampilkan _START_ sampai _END_ dari _TOTAL_ data",
-                    paginate: {
-                        first: "Pertama",
-                        last: "Terakhir",
-                        next: "Selanjutnya",
-                        previous: "Sebelumnya"
-                    }
-                }
-            });
-
-            // Mobile menu
-            const mobileMenuToggle = document.getElementById('mobileMenuToggle');
-            const sidebar = document.getElementById('sidebar');
-
-            if (mobileMenuToggle && sidebar) {
-                mobileMenuToggle.addEventListener('click', function() {
-                    sidebar.classList.toggle('active');
-                    mobileMenuToggle.innerHTML = sidebar.classList.contains('active')
-                        ? '<i class="fas fa-times"></i>'
-                        : '<i class="fas fa-bars"></i>';
-                });
-            }
-
-            // Calculate total hours
-            document.getElementById('hoursPerWeek').addEventListener('input', function() {
-                const hoursPerWeek = parseInt(this.value) || 0;
-                const totalHours = hoursPerWeek * 36; // Assuming 36 weeks per year
-                document.getElementById('totalHours').value = totalHours;
-            });
+            fetchMapels();
         });
 
-        function showAddModal() {
-            isEditMode = false;
-            currentSubjectId = null;
-            document.getElementById('modalTitle').textContent = 'Tambah Mata Pelajaran Baru';
-            document.getElementById('subjectForm').reset();
-            document.getElementById('totalHours').value = 144; // Default 4 hours/week * 36 weeks
-            document.getElementById('subjectModal').style.display = 'block';
+        // Get token helper
+        function getToken() {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                alert('Anda belum login. Silakan login terlebih dahulu.');
+                window.location.href = '/login';
+                return null;
+            }
+            return token;
         }
 
-        function editSubject(id) {
-            isEditMode = true;
-            currentSubjectId = id;
-            document.getElementById('modalTitle').textContent = 'Edit Data Mata Pelajaran';
-            // Load subject data into form
-            loadSubjectData(id);
-            document.getElementById('subjectModal').style.display = 'block';
-        }
+        // Fetch all mapels
+        async function fetchMapels() {
+            const token = getToken();
+            if (!token) return;
 
-        function viewSubject(id) {
-            currentSubjectId = id;
-            // Load subject data for view
-            loadViewData(id);
-            document.getElementById('viewModal').style.display = 'block';
-        }
-
-        function assignTeacher(id) {
-            alert(`Assign guru untuk mata pelajaran #${id}`);
-            // Implement assign teacher functionality
-        }
-
-        function loadSubjectData(id) {
-            // Simulate loading data
-            const subjectData = {
-                subjectCode: 'MAT-X',
-                subjectName: 'Matematika',
-                shortName: 'MTK',
-                subjectGroup: 'A',
-                levels: ['X', 'XI', 'XII'],
-                major: 'UMUM',
-                hoursPerWeek: '4',
-                totalHours: '144',
-                teachers: ['1', '2'],
-                description: 'Mata pelajaran matematika membahas konsep-konsep dasar dan terapan matematika untuk pengembangan logika dan pemecahan masalah.',
-                learningObjectives: 'Mengembangkan kemampuan berpikir logis, kritis, dan kreatif dalam memecahkan masalah matematika serta penerapannya dalam kehidupan sehari-hari.',
-                status: 'active'
-            };
-
-            // Populate form
-            Object.keys(subjectData).forEach(key => {
-                const element = document.getElementById(key);
-                if (element) {
-                    if (key === 'levels') {
-                        // Check checkboxes for levels
-                        subjectData[key].forEach(level => {
-                            document.querySelector(`input[name="levels"][value="${level}"]`).checked = true;
-                        });
-                    } else if (key === 'major') {
-                        // Check radio button for major
-                        document.querySelector(`input[name="major"][value="${subjectData[key]}"]`).checked = true;
-                    } else if (key === 'teachers') {
-                        // Select multiple teachers
-                        subjectData[key].forEach(teacherId => {
-                            $(`#teachers option[value="${teacherId}"]`).prop('selected', true);
-                        });
-                    } else if (key === 'status') {
-                        // Check radio button for status
-                        document.querySelector(`input[name="status"][value="${subjectData[key]}"]`).checked = true;
-                    } else {
-                        element.value = subjectData[key];
+            try {
+                const response = await fetch('/api/admin/mapel', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Accept': 'application/json'
                     }
+                });
+
+                if (response.status === 401) {
+                    alert('Sesi Anda telah berakhir. Silakan login kembali.');
+                    localStorage.removeItem('token');
+                    window.location.href = '/login';
+                    return;
                 }
-            });
-        }
 
-        function loadViewData(id) {
-            // Simulate loading view data
-            const viewData = {
-                subjectName: 'Matematika',
-                subjectCode: 'MAT-X',
-                group: 'Kelompok A',
-                major: 'Umum',
-                status: 'active',
-                shortName: 'MTK',
-                levels: 'X, XI, XII',
-                hours: '4 jam',
-                totalHours: '144 jam',
-                description: 'Mata pelajaran matematika membahas konsep-konsep dasar dan terapan matematika untuk pengembangan logika dan pemecahan masalah.',
-                objectives: 'Mengembangkan kemampuan berpikir logis, kritis, dan kreatif dalam memecahkan masalah matematika serta penerapannya dalam kehidupan sehari-hari.'
-            };
+                const result = await response.json();
 
-            // Populate view
-            Object.keys(viewData).forEach(key => {
-                const element = document.getElementById('view' + key.charAt(0).toUpperCase() + key.slice(1));
-                if (element) {
-                    element.textContent = viewData[key];
-                    if (element.classList && element.classList.contains('status-badge')) {
-                        element.className = 'status-badge ' + viewData[key];
-                    } else if (element.classList && element.classList.contains('badge')) {
-                        if (viewData[key].includes('Kelompok A')) {
-                            element.className = 'badge badge-group-a';
-                        } else if (viewData[key].includes('Umum')) {
-                            element.className = 'badge badge-umum';
-                        }
-                    }
-                }
-            });
-        }
-
-        function saveSubject() {
-            const form = document.getElementById('subjectForm');
-            if (form.checkValidity()) {
-                if (isEditMode) {
-                    alert(`Data mata pelajaran #${currentSubjectId} berhasil diperbarui!`);
+                if (result.success && result.data) {
+                    renderTable(result.data);
+                    updateStats(result.data);
                 } else {
-                    alert('Mata pelajaran baru berhasil ditambahkan!');
+                    document.getElementById('mapelTableBody').innerHTML = `
+                        <tr><td colspan="6" style="text-align: center;">Gagal memuat data</td></tr>
+                    `;
                 }
-                closeModal();
-            } else {
-                alert('Harap lengkapi semua field yang wajib diisi!');
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('mapelTableBody').innerHTML = `
+                    <tr><td colspan="6" style="text-align: center;">Terjadi kesalahan saat memuat data</td></tr>
+                `;
             }
         }
 
-        function deleteSubject(id) {
-            if (confirm('Apakah Anda yakin ingin menghapus mata pelajaran ini?')) {
-                alert(`Mata pelajaran #${id} berhasil dihapus!`);
-                // Implement delete functionality
+        // Render table
+        function renderTable(data) {
+            const tbody = document.getElementById('mapelTableBody');
+            
+            if (data.length === 0) {
+                tbody.innerHTML = `
+                    <tr><td colspan="6" style="text-align: center;">Tidak ada data mata pelajaran</td></tr>
+                `;
+                return;
+            }
+
+            tbody.innerHTML = data.map((mapel, index) => {
+                const guruNames = mapel.gurus && mapel.gurus.length > 0 
+                    ? mapel.gurus.map(g => g.nama).join(', ') 
+                    : '-';
+                
+                // Badge for tingkat
+                let tingkatBadge = '';
+                switch(mapel.tingkat) {
+                    case 'X':
+                        tingkatBadge = '<span class="badge" style="background: #2196F3; color: white; padding: 6px 12px; border-radius: 12px; font-size: 12px;">Kelas X</span>';
+                        break;
+                    case 'XI':
+                        tingkatBadge = '<span class="badge" style="background: #4CAF50; color: white; padding: 6px 12px; border-radius: 12px; font-size: 12px;">Kelas XI</span>';
+                        break;
+                    case 'XII':
+                        tingkatBadge = '<span class="badge" style="background: #FF9800; color: white; padding: 6px 12px; border-radius: 12px; font-size: 12px;">Kelas XII</span>';
+                        break;
+                }
+                
+                return `
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td><strong>${mapel.kode_mapel}</strong></td>
+                        <td>${mapel.nama_mapel}</td>
+                        <td>${tingkatBadge}</td>
+                        <td>${guruNames}</td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn-icon" onclick="editMapel(${mapel.id})" title="Edit">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="btn-icon btn-danger" onclick="deleteMapel(${mapel.id})" title="Hapus">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // Update stats
+        function updateStats(data) {
+            document.getElementById('statTotalMapel').textContent = data.length;
+        }
+
+        // Open add modal
+        function openAddModal() {
+            isEditMode = false;
+            currentMapelId = null;
+            document.getElementById('modalTitle').textContent = 'Tambah Mata Pelajaran Baru';
+            document.getElementById('mapelForm').reset();
+            document.getElementById('mapelId').value = '';
+            document.getElementById('mapelModal').style.display = 'block';
+        }
+
+        // Edit mapel
+        async function editMapel(id) {
+            const token = getToken();
+            if (!token) return;
+
+            try {
+                const response = await fetch(`/api/admin/mapel/${id}`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Accept': 'application/json'
+                    }
+                });
+
+                const result = await response.json();
+
+                if (result.success && result.data) {
+                    const mapel = result.data;
+                    isEditMode = true;
+                    currentMapelId = id;
+                    
+                    document.getElementById('modalTitle').textContent = 'Edit Data Mata Pelajaran';
+                    document.getElementById('mapelId').value = mapel.id;
+                    document.getElementById('namaMapel').value = mapel.nama_mapel;
+                    document.getElementById('tingkat').value = mapel.tingkat;
+                    document.getElementById('kodeMapel').value = mapel.kode_mapel;
+                    
+                    document.getElementById('mapelModal').style.display = 'block';
+                } else {
+                    alert('Gagal memuat data mata pelajaran');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Terjadi kesalahan saat memuat data');
             }
         }
 
-        function filterTable() {
-            const levelFilter = document.getElementById('filterLevel').value;
-            const majorFilter = document.getElementById('filterMajor').value;
-            const groupFilter = document.getElementById('filterGroup').value;
-            const searchTerm = document.getElementById('searchSubject').value.toLowerCase();
+        // Save mapel
+        async function saveMapel() {
+            const token = getToken();
+            if (!token) return;
 
-            // Implement filtering logic
-            console.log(`Filtering: Level=${levelFilter}, Major=${majorFilter}, Group=${groupFilter}, Search=${searchTerm}`);
+            const namaMapel = document.getElementById('namaMapel').value.trim();
+            const tingkat = document.getElementById('tingkat').value;
+            const kodeMapel = document.getElementById('kodeMapel').value.trim();
+
+            // Validasi: saat add mode, semua field required. Saat edit mode, field opsional
+            if (!isEditMode) {
+                if (!namaMapel || !tingkat || !kodeMapel) {
+                    alert('Harap lengkapi semua field yang wajib diisi!');
+                    return;
+                }
+            }
+
+            // Build data object - only include fields with values
+            const data = {};
+            if (namaMapel) data.nama_mapel = namaMapel;
+            if (tingkat) data.tingkat = tingkat;
+            if (kodeMapel) data.kode_mapel = kodeMapel;
+
+            try {
+                const mapelId = document.getElementById('mapelId').value;
+                const url = mapelId ? `/api/admin/mapel/${mapelId}` : '/api/admin/mapel';
+                const method = mapelId ? 'PUT' : 'POST';
+
+                const response = await fetch(url, {
+                    method: method,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`,
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+
+                if (response.ok && result.success) {
+                    alert(result.message || 'Data mata pelajaran berhasil disimpan!');
+                    closeModal();
+                    fetchMapels(); // Reload data
+                } else {
+                    if (result.errors) {
+                        const errors = Object.values(result.errors).flat().join('\n');
+                        alert('Validasi gagal:\n' + errors);
+                    } else {
+                        alert(result.message || 'Gagal menyimpan data mata pelajaran');
+                    }
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Terjadi kesalahan saat menyimpan data');
+            }
         }
 
-        function resetFilters() {
-            document.getElementById('filterLevel').value = 'all';
-            document.getElementById('filterMajor').value = 'all';
-            document.getElementById('filterGroup').value = 'all';
-            document.getElementById('searchSubject').value = '';
-            filterTable();
+        // Delete mapel
+        async function deleteMapel(id) {
+            if (!confirm('Apakah Anda yakin ingin menghapus mata pelajaran ini?')) {
+                return;
+            }
+
+            const token = getToken();
+            if (!token) return;
+
+            try {
+                const response = await fetch(`/api/admin/mapel/${id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Accept': 'application/json'
+                    }
+                });
+
+                const result = await response.json();
+
+                if (response.ok && result.success) {
+                    alert(result.message || 'Mata pelajaran berhasil dihapus!');
+                    fetchMapels(); // Reload data
+                } else {
+                    alert(result.message || 'Gagal menghapus mata pelajaran');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Terjadi kesalahan saat menghapus data');
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('mapelModal').style.display = 'none';
+        }
+
+        function refreshTable() {
+            fetchMapels();
         }
 
         function exportToExcel() {
-            alert('Data mata pelajaran berhasil diexport ke Excel!');
+            alert('Fitur export ke Excel akan segera tersedia!');
         }
 
         function printTable() {
             window.print();
-        }
-
-        function refreshTable() {
-            alert('Tabel mata pelajaran diperbarui!');
-        }
-
-        function importFromCurriculum() {
-            alert('Import dari kurikulum nasional...');
-        }
-
-        function assignMultipleTeachers() {
-            alert('Assign guru secara massal...');
-        }
-
-        function generateTeachingSchedule() {
-            alert('Generate jadwal mengajar...');
-        }
-
-        function exportSubjectData() {
-            alert('Export data mata pelajaran...');
-        }
-
-        function closeModal() {
-            document.getElementById('subjectModal').style.display = 'none';
-        }
-
-        function closeViewModal() {
-            document.getElementById('viewModal').style.display = 'none';
-        }
-
-        function editFromView() {
-            closeViewModal();
-            editSubject(currentSubjectId);
-        }
-
-        function printSubjectReport() {
-            alert('Mencetak silabus mata pelajaran...');
-        }
-
-        function showTab(tabName) {
-            // Hide all tabs
-            document.querySelectorAll('.tab-content').forEach(tab => {
-                tab.classList.remove('active');
-            });
-
-            // Remove active class from all buttons
-            document.querySelectorAll('.tab-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-
-            // Show selected tab
-            document.getElementById(tabName + 'Tab').classList.add('active');
-
-            // Add active class to clicked button
-            event.currentTarget.classList.add('active');
         }
 
         // Close modals when clicking outside

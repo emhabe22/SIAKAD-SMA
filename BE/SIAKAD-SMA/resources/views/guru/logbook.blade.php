@@ -1,1228 +1,454 @@
 @extends('layouts.app')
 
-@section('title', 'Logbook Mengajar - SIAKAD SMA Mishbahul Ulum')
+@section('title', 'Logbook Mengajar - SIAKAD SMA')
 @section('page-title', 'Logbook Mengajar')
 @section('breadcrumb', 'Guru / Logbook')
 
-@php
-    $role = 'guru';
-    $userName = 'Budi Santoso, S.Pd';
-    $userRole = 'Guru Matematika';
-@endphp
+@php $role = 'guru'; @endphp
 
 @push('styles')
 <style>
-        /* Styling khusus untuk logbook */
-        .logbook-entries {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            margin-top: 20px;
-        }
-        
-        .logbook-entry {
-            background: white;
-            border-radius: 12px;
-            overflow: hidden;
-            border: 1px solid #e9ecef;
-            transition: all 0.3s ease;
-        }
-        
-        .logbook-entry:hover {
-            border-color: #2196F3;
-            box-shadow: 0 4px 12px rgba(33, 150, 243, 0.1);
-        }
-        
-        .logbook-entry.submitted {
-            border-left: 5px solid #2196F3;
-        }
-        
-        .logbook-entry.draft {
-            border-left: 5px solid #FF9800;
-        }
-        
-        .logbook-entry.approved {
-            border-left: 5px solid #4CAF50;
-        }
-        
-        .entry-header {
-            display: flex;
-            align-items: center;
-            padding: 20px;
-            background: #f8f9fa;
-            border-bottom: 1px solid #e9ecef;
-        }
-        
-        .entry-date {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 10px 15px;
-            background: white;
-            border-radius: 8px;
-            min-width: 70px;
-            margin-right: 20px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        
-        .entry-date .day {
-            font-size: 24px;
-            font-weight: 700;
-            color: #2196F3;
-            line-height: 1;
-        }
-        
-        .entry-date .month {
-            font-size: 14px;
-            color: #666;
-            text-transform: uppercase;
-            margin: 5px 0;
-        }
-        
-        .entry-date .year {
-            font-size: 12px;
-            color: #999;
-        }
-        
-        .entry-info {
-            flex: 1;
-        }
-        
-        .entry-info h4 {
-            margin: 0 0 8px 0;
-            color: #333;
-            font-size: 18px;
-        }
-        
-        .entry-meta {
-            display: flex;
-            gap: 20px;
-            color: #666;
-            font-size: 14px;
-        }
-        
-        .entry-meta span {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-        
-        .entry-status {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-end;
-            gap: 10px;
-        }
-        
-        .status-badge {
-            padding: 6px 15px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-        }
-        
-        .status-badge.submitted {
-            background: #e3f2fd;
-            color: #2196F3;
-        }
-        
-        .status-badge.draft {
-            background: #fff3e0;
-            color: #FF9800;
-        }
-        
-        .status-badge.approved {
-            background: #e8f5e9;
-            color: #4CAF50;
-        }
-        
-        .entry-actions {
-            display: flex;
-            gap: 8px;
-        }
-        
-        .entry-content {
-            padding: 20px;
-        }
-        
-        .content-row {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-            margin-bottom: 20px;
-        }
-        
-        .content-col h5 {
-            margin: 0 0 12px 0;
-            color: #555;
-            font-size: 16px;
-        }
-        
-        .content-col p {
-            margin: 0;
-            color: #666;
-            line-height: 1.6;
-        }
-        
-        .achievement-meter {
-            margin-bottom: 15px;
-        }
-        
-        .meter-label {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 6px;
-            font-size: 14px;
-            color: #555;
-        }
-        
-        .meter-bar {
-            height: 8px;
-            background: #e9ecef;
-            border-radius: 4px;
-            overflow: hidden;
-        }
-        
-        .meter-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #2196F3, #4CAF50);
-            border-radius: 4px;
-            transition: width 0.3s ease;
-        }
-        
-        .feedback-box {
-            display: flex;
-            gap: 12px;
-            padding: 15px;
-            background: #f8f9fa;
-            border-radius: 8px;
-            border-left: 4px solid #4CAF50;
-        }
-        
-        .feedback-box.positive {
-            border-color: #4CAF50;
-        }
-        
-        .feedback-box i {
-            color: #4CAF50;
-            font-size: 18px;
-            margin-top: 2px;
-        }
-        
-        .feedback-box p {
-            margin: 0;
-            color: #555;
-            font-style: italic;
-        }
-        
-        .rating-stars {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .rating-stars i {
-            color: #FFC107;
-            font-size: 18px;
-        }
-        
-        .rating-text {
-            font-weight: 600;
-            color: #555;
-            margin-left: 10px;
-        }
-        
-        .pagination {
-            display: flex;
-            justify-content: center;
-            gap: 8px;
-            margin-top: 30px;
-        }
-        
-        .page-btn {
-            width: 40px;
-            height: 40px;
-            border: 1px solid #ddd;
-            background: white;
-            border-radius: 6px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s;
-        }
-        
-        .page-btn:hover:not(:disabled) {
-            border-color: #2196F3;
-            color: #2196F3;
-        }
-        
-        .page-btn.active {
-            background: #2196F3;
-            border-color: #2196F3;
-            color: white;
-        }
-        
-        .page-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-        
-        .summary-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-        }
-        
-        .chart-container {
-            display: flex;
-            align-items: center;
-            gap: 30px;
-        }
-        
-        .pie-chart {
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            background: conic-gradient(
-                var(--color) 0% calc(var(--percentage) * 1%),
-                transparent calc(var(--percentage) * 1%) 100%
-            );
-            position: relative;
-        }
-        
-        .chart-legend {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-        
-        .legend-item {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .legend-color {
-            width: 15px;
-            height: 15px;
-            border-radius: 3px;
-        }
-        
-        .achievement-summary {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-        
-        .achievement-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px;
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        
-        .achievement-label {
-            font-weight: 500;
-            color: #555;
-        }
-        
-        .achievement-value {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .achievement-value .value {
-            font-weight: 700;
-            color: #2196F3;
-            font-size: 18px;
-        }
-        
-        .achievement-value .trend {
-            font-size: 12px;
-            font-weight: 600;
-            padding: 2px 8px;
-            border-radius: 10px;
-        }
-        
-        .trend.up {
-            background: #e8f5e9;
-            color: #4CAF50;
-        }
-        
-        .trend.down {
-            background: #ffebee;
-            color: #F44336;
-        }
-        
-        .trend.stable {
-            background: #fff3e0;
-            color: #FF9800;
-        }
-        
-        .wide-modal {
-            max-width: 800px;
-        }
-        
-        .tools-selector {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-            gap: 10px;
-            margin-top: 10px;
-        }
-        
-        .tool-option {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        
-        .tool-option:hover {
-            border-color: #2196F3;
-        }
-        
-        .tool-option input:checked + span {
-            color: #2196F3;
-            font-weight: 500;
-        }
-        
-        .attendance-input {
-            display: flex;
-            gap: 20px;
-            margin-top: 10px;
-        }
-        
-        .input-group {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .input-group span {
-            min-width: 100px;
-            color: #555;
-        }
-        
-        .input-group input {
-            width: 80px;
-            padding: 8px 12px;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-        }
-        
-        .achievement-inputs {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            margin-top: 10px;
-        }
-        
-        .achievement-input {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-        
-        .achievement-input span {
-            min-width: 180px;
-            color: #555;
-        }
-        
-        .achievement-input input[type="range"] {
-            flex: 1;
-            height: 6px;
-            border-radius: 3px;
-            background: #e9ecef;
-            outline: none;
-            -webkit-appearance: none;
-        }
-        
-        .achievement-input input[type="range"]::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            width: 18px;
-            height: 18px;
-            border-radius: 50%;
-            background: #2196F3;
-            cursor: pointer;
-        }
-        
-        .achievement-input span:last-child {
-            min-width: 50px;
-            text-align: right;
-            font-weight: 600;
-            color: #2196F3;
-        }
-        
-        .file-upload {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin-top: 10px;
-        }
-        
-        .upload-btn {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 10px 20px;
-            background: #f8f9fa;
-            border: 2px dashed #ddd;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        
-        .upload-btn:hover {
-            border-color: #2196F3;
-            color: #2196F3;
-        }
-        
-        .file-name {
-            color: #666;
-            font-size: 14px;
-        }
-        
-        /* Responsive */
-        @media (max-width: 768px) {
-            .entry-header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 15px;
-            }
-            
-            .entry-date {
-                flex-direction: row;
-                gap: 10px;
-                width: 100%;
-                margin-right: 0;
-            }
-            
-            .entry-date .day,
-            .entry-date .month,
-            .entry-date .year {
-                font-size: 14px;
-            }
-            
-            .entry-status {
-                width: 100%;
-                flex-direction: row;
-                justify-content: space-between;
-            }
-            
-            .content-row {
-                grid-template-columns: 1fr;
-            }
-            
-            .chart-container {
-                flex-direction: column;
-                text-align: center;
-            }
-            
-            .attendance-input {
-                flex-direction: column;
-                gap: 10px;
-            }
-            
-            .achievement-input {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 8px;
-            }
-            
-            .file-upload {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 10px;
-            }
-        }
-    </style>
+    .logbook-stats {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+        margin-bottom: 28px;
+    }
+    .lb-stat-card {
+        background: white;
+        border-radius: 14px;
+        padding: 22px 28px;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+        display: flex;
+        align-items: center;
+        gap: 18px;
+    }
+    .lb-stat-icon {
+        width: 56px; height: 56px;
+        border-radius: 14px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 22px; color: white; flex-shrink: 0;
+    }
+    .lb-stat-info h3 { font-size: 32px; font-weight: 800; margin: 0; color: #1e293b; }
+    .lb-stat-info p  { font-size: 13px; color: #64748b; margin: 2px 0 0; }
+
+    /* Logbook List */
+    .logbook-card { background: white; border-radius: 14px; box-shadow: 0 2px 12px rgba(0,0,0,0.07); overflow: hidden; }
+    .logbook-card-header {
+        display: flex; align-items: center; justify-content: space-between;
+        padding: 18px 24px; border-bottom: 1px solid #f1f5f9;
+    }
+    .logbook-card-header h3 { margin: 0; font-size: 16px; color: #1e293b; display: flex; align-items: center; gap: 8px; }
+
+    .logbook-entry {
+        border-left: 4px solid #e2e8f0;
+        padding: 20px 24px;
+        display: grid;
+        grid-template-columns: 80px 1fr auto;
+        gap: 20px;
+        align-items: start;
+        transition: background 0.15s;
+        cursor: pointer;
+    }
+    .logbook-entry:hover { background: #f8fafc; }
+    .logbook-entry + .logbook-entry { border-top: 1px solid #f1f5f9; }
+    .logbook-entry.diserahkan { border-left-color: #22c55e; }
+    .logbook-entry.draft-lengkap { border-left-color: #f59e0b; }
+    .logbook-entry.draft-kosong { border-left-color: #ef4444; }
+
+    .entry-date {
+        text-align: center;
+        background: #f1f5f9;
+        border-radius: 10px;
+        padding: 10px 8px;
+        line-height: 1.2;
+    }
+    .entry-date .day  { font-size: 26px; font-weight: 800; color: #1e40af; display: block; }
+    .entry-date .month{ font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; }
+    .entry-date .year { font-size: 11px; color: #94a3b8; }
+
+    .entry-info h4 { margin: 0 0 6px; font-size: 15px; color: #1e293b; font-weight: 700; }
+    .entry-info .meta { display: flex; flex-wrap: wrap; gap: 12px; font-size: 13px; color: #64748b; }
+    .entry-info .meta span { display: flex; align-items: center; gap: 4px; }
+
+    .entry-preview { margin-top: 10px; font-size: 13px; color: #475569; line-height: 1.5; }
+    .entry-preview strong { color: #1e293b; }
+
+    .entry-actions { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; flex-shrink: 0; }
+
+    .badge-status {
+        padding: 5px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; white-space: nowrap;
+    }
+    .badge-diserahkan { background: #dcfce7; color: #15803d; }
+    .badge-draft-lengkap { background: #fef9c3; color: #a16207; }
+    .badge-draft-kosong  { background: #fee2e2; color: #b91c1c; }
+
+    /* Detail / Edit Panel */
+    .logbook-detail-panel {
+        display: none;
+        padding: 24px;
+        border-top: 2px solid #e2e8f0;
+        background: #f8fafc;
+    }
+    .logbook-detail-panel.open { display: block; }
+
+    .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .detail-info-box {
+        background: white; border-radius: 10px; padding: 18px;
+        border: 1px solid #e2e8f0;
+    }
+    .detail-info-box h5 { margin: 0 0 12px; font-size: 13px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; }
+    .info-row { display: flex; justify-content: space-between; font-size: 13px; padding: 5px 0; border-bottom: 1px solid #f1f5f9; }
+    .info-row:last-child { border-bottom: none; }
+    .info-row .label { color: #64748b; }
+    .info-row .val   { font-weight: 600; color: #1e293b; }
+
+    .form-group-lb { margin-bottom: 16px; }
+    .form-group-lb label { font-size: 13px; font-weight: 600; color: #374151; display: block; margin-bottom: 6px; }
+    .form-group-lb textarea {
+        width: 100%; padding: 12px; border: 1.5px solid #e2e8f0; border-radius: 8px;
+        font-size: 14px; resize: vertical; min-height: 90px; outline: none; font-family: inherit;
+        transition: border-color 0.2s;
+    }
+    .form-group-lb textarea:focus { border-color: #3b82f6; }
+    .form-group-lb textarea:disabled { background: #f8fafc; color: #64748b; cursor: not-allowed; }
+
+    .detail-actions {
+        display: flex; justify-content: flex-end; gap: 10px; margin-top: 18px;
+        padding-top: 16px; border-top: 1px solid #e2e8f0;
+    }
+
+    .btn-serahkan {
+        background: #22c55e; color: white; border: none; padding: 10px 22px;
+        border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 14px;
+        transition: background 0.2s;
+    }
+    .btn-serahkan:hover { background: #16a34a; }
+    .btn-serahkan:disabled { background: #86efac; cursor: not-allowed; }
+
+    .empty-logbook { text-align: center; padding: 60px 24px; color: #94a3b8; }
+    .empty-logbook i { font-size: 48px; display: block; margin-bottom: 12px; }
+
+    .alert-info {
+        background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 8px;
+        padding: 12px 16px; font-size: 13px; color: #1d4ed8; margin-bottom: 16px;
+        display: flex; align-items: center; gap: 8px;
+    }
+</style>
 @endpush
 
 @section('content')
-        <div class="filter-section">
-            <div class="filter-group">
-                <label>Filter Bulan:</label>
-                <select id="filterMonth" onchange="filterLogbook()">
-                    <option value="01" selected>Januari</option>
-                    <option value="02">Februari</option>
-                    <option value="03">Maret</option>
-                    <option value="04">April</option>
-                </select>
-            </div>
-            <div class="filter-group">
-                <label>Filter Tahun:</label>
-                <select id="filterYear" onchange="filterLogbook()">
-                    <option value="2024" selected>2024</option>
-                    <option value="2023">2023</option>
-                </select>
-            </div>
-            <div class="filter-group">
-                <label>Filter Kelas:</label>
-                <select id="filterClass" onchange="filterLogbook()">
-                    <option value="all">Semua Kelas</option>
-                    <option value="x-mipa-1">X MIPA 1</option>
-                    <option value="xi-ipa-2">XI IPA 2</option>
-                    <option value="xii-ips-1">XII IPS 1</option>
-                </select>
-            </div>
-            <div class="filter-group">
-                <label>Filter Status:</label>
-                <select id="filterStatus" onchange="filterLogbook()">
-                    <option value="all">Semua Status</option>
-                    <option value="draft">Draft</option>
-                    <option value="submitted">Diserahkan</option>
-                    <option value="approved">Disetujui</option>
-                </select>
+<div class="content-container">
+
+    <!-- Stats Cards -->
+    <div class="logbook-stats">
+        <div class="lb-stat-card">
+            <div class="lb-stat-icon" style="background: #3b82f6;"><i class="fas fa-book-open"></i></div>
+            <div class="lb-stat-info">
+                <h3 id="statEntriBulanIni">-</h3>
+                <p>Entri Bulan Ini</p>
             </div>
         </div>
-
-        <!-- Stats Cards -->
-        <div class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-icon" style="background: #4CAF50;">
-                    <i class="fas fa-check-circle"></i>
-                </div>
-                <div class="stat-info">
-                    <h3>18</h3>
-                    <p>Entri Bulan Ini</p>
-                </div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon" style="background: #2196F3;">
-                    <i class="fas fa-clock"></i>
-                </div>
-                <div class="stat-info">
-                    <h3>3</h3>
-                    <p>Perlu Diserahkan</p>
-                </div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon" style="background: #FF9800;">
-                    <i class="fas fa-chart-line"></i>
-                </div>
-                <div class="stat-info">
-                    <h3>94%</h3>
-                    <p>Kelengkapan</p>
-                </div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon" style="background: #9C27B0;">
-                    <i class="fas fa-award"></i>
-                </div>
-                <div class="stat-info">
-                    <h3>A</h3>
-                    <p>Rating Rata-rata</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Logbook Entries -->
-        <div class="card">
-            <div class="card-header">
-                <h3><i class="fas fa-book-open"></i> Daftar Entri Logbook</h3>
-                <div class="card-actions">
-                    <button class="btn-icon" onclick="printLogbook()">
-                        <i class="fas fa-print"></i>
-                    </button>
-                    <button class="btn-icon" onclick="showStatistics()">
-                        <i class="fas fa-chart-bar"></i>
-                    </button>
-                </div>
-            </div>
-            <div class="card-body">
-                <div class="logbook-entries">
-                    <!-- Entry 1 -->
-                    <div class="logbook-entry submitted">
-                        <div class="entry-header">
-                            <div class="entry-date">
-                                <span class="day">15</span>
-                                <span class="month">Jan</span>
-                                <span class="year">2024</span>
-                            </div>
-                            <div class="entry-info">
-                                <h4>Pembelajaran Trigonometri - Kelas X MIPA 1</h4>
-                                <div class="entry-meta">
-                                    <span><i class="fas fa-clock"></i> 08:00 - 09:30</span>
-                                    <span><i class="fas fa-map-marker-alt"></i> Ruang 201</span>
-                                    <span><i class="fas fa-users"></i> 28 siswa hadir</span>
-                                </div>
-                            </div>
-                            <div class="entry-status">
-                                <span class="status-badge submitted">Diserahkan</span>
-                                <div class="entry-actions">
-                                    <button class="btn-icon" onclick="viewEntry(1)">
-                                        <i class="fas fa-eye"></i>
-                                    </button>
-                                    <button class="btn-icon" onclick="editEntry(1)">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button class="btn-icon" onclick="deleteEntry(1)">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="entry-content">
-                            <div class="content-row">
-                                <div class="content-col">
-                                    <h5>Materi Pembelajaran</h5>
-                                    <p>Konsep dasar trigonometri, perbandingan trigonometri pada segitiga siku-siku, dan penerapannya dalam soal cerita.</p>
-                                </div>
-                                <div class="content-col">
-                                    <h5>Metode Pembelajaran</h5>
-                                    <p>Ceramah interaktif, diskusi kelompok, dan latihan soal. Menggunakan media presentasi dan alat peraga.</p>
-                                </div>
-                            </div>
-                            <div class="content-row">
-                                <div class="content-col">
-                                    <h5>Pencapaian Pembelajaran</h5>
-                                    <div class="achievement-meter">
-                                        <div class="meter-label">
-                                            <span>Pemahaman Konsep</span>
-                                            <span>85%</span>
-                                        </div>
-                                        <div class="meter-bar">
-                                            <div class="meter-fill" style="width: 85%"></div>
-                                        </div>
-                                    </div>
-                                    <div class="achievement-meter">
-                                        <div class="meter-label">
-                                            <span>Keterampilan Penyelesaian</span>
-                                            <span>78%</span>
-                                        </div>
-                                        <div class="meter-bar">
-                                            <div class="meter-fill" style="width: 78%"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="content-col">
-                                    <h5>Tugas & Evaluasi</h5>
-                                    <p>Latihan soal halaman 45-47, dikumpulkan minggu depan. Quiz singkat di akhir sesi menunjukkan peningkatan pemahaman.</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Entry 2 -->
-                    <div class="logbook-entry draft">
-                        <div class="entry-header">
-                            <div class="entry-date">
-                                <span class="day">16</span>
-                                <span class="month">Jan</span>
-                                <span class="year">2024</span>
-                            </div>
-                            <div class="entry-info">
-                                <h4>Integral Tak Tentu - Kelas XI IPA 2</h4>
-                                <div class="entry-meta">
-                                    <span><i class="fas fa-clock"></i> 10:00 - 11:30</span>
-                                    <span><i class="fas fa-map-marker-alt"></i> Ruang 305</span>
-                                    <span><i class="fas fa-users"></i> 25 siswa hadir</span>
-                                </div>
-                            </div>
-                            <div class="entry-status">
-                                <span class="status-badge draft">Draft</span>
-                                <div class="entry-actions">
-                                    <button class="btn-icon" onclick="viewEntry(2)">
-                                        <i class="fas fa-eye"></i>
-                                    </button>
-                                    <button class="btn-icon" onclick="editEntry(2)">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button class="btn-icon btn-success" onclick="submitEntry(2)">
-                                        <i class="fas fa-paper-plane"></i>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="entry-content">
-                            <div class="content-row">
-                                <div class="content-col">
-                                    <h5>Materi Pembelajaran</h5>
-                                    <p>Pengertian integral tak tentu, rumus dasar integral, dan teknik integrasi sederhana.</p>
-                                </div>
-                                <div class="content-col">
-                                    <h5>Catatan Khusus</h5>
-                                    <p>Beberapa siswa mengalami kesulitan dalam memahami konsep anti-turunan. Perlu pendekatan individual untuk siswa tersebut.</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Entry 3 -->
-                    <div class="logbook-entry approved">
-                        <div class="entry-header">
-                            <div class="entry-date">
-                                <span class="day">14</span>
-                                <span class="month">Jan</span>
-                                <span class="year">2024</span>
-                            </div>
-                            <div class="entry-info">
-                                <h4>Statistika Deskriptif - Kelas XII IPS 1</h4>
-                                <div class="entry-meta">
-                                    <span><i class="fas fa-clock"></i> 13:00 - 14:30</span>
-                                    <span><i class="fas fa-map-marker-alt"></i> Ruang 402</span>
-                                    <span><i class="fas fa-users"></i> 30 siswa hadir</span>
-                                </div>
-                            </div>
-                            <div class="entry-status">
-                                <span class="status-badge approved">Disetujui</span>
-                                <div class="entry-actions">
-                                    <button class="btn-icon" onclick="viewEntry(3)">
-                                        <i class="fas fa-eye"></i>
-                                    </button>
-                                    <button class="btn-icon" onclick="printEntry(3)">
-                                        <i class="fas fa-print"></i>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="entry-content">
-                            <div class="content-row">
-                                <div class="content-col">
-                                    <h5>Materi Pembelajaran</h5>
-                                    <p>Pengertian data statistik, ukuran pemusatan data (mean, median, modus), dan ukuran penyebaran data.</p>
-                                </div>
-                                <div class="content-col">
-                                    <h5>Metode Pembelajaran</h5>
-                                    <p>Project-based learning dengan data nyata. Siswa mengumpulkan data sederhana dan menganalisisnya.</p>
-                                </div>
-                            </div>
-                            <div class="content-row">
-                                <div class="content-col">
-                                    <h5>Feedback Kepala Sekolah</h5>
-                                    <div class="feedback-box positive">
-                                        <i class="fas fa-thumbs-up"></i>
-                                        <p>"Pembelajaran yang inovatif dengan pendekatan kontekstual. Sangat baik!"</p>
-                                    </div>
-                                </div>
-                                <div class="content-col">
-                                    <h5>Rating</h5>
-                                    <div class="rating-stars">
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star-half-alt"></i>
-                                        <span class="rating-text">4.5/5.0</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Pagination -->
-                <div class="pagination">
-                    <button class="page-btn" disabled>
-                        <i class="fas fa-chevron-left"></i>
-                    </button>
-                    <button class="page-btn active">1</button>
-                    <button class="page-btn">2</button>
-                    <button class="page-btn">3</button>
-                    <button class="page-btn">
-                        <i class="fas fa-chevron-right"></i>
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Logbook Summary -->
-        <div class="card">
-            <div class="card-header">
-                <h3><i class="fas fa-chart-pie"></i> Ringkasan Logbook Bulanan</h3>
-            </div>
-            <div class="card-body">
-                <div class="summary-grid">
-                    <div class="summary-chart">
-                        <h5>Distribusi Status Entri</h5>
-                        <div class="chart-container">
-                            <div class="pie-chart">
-                                <div class="pie-segment" style="--percentage: 70; --color: #4CAF50;"></div>
-                                <div class="pie-segment" style="--percentage: 20; --color: #2196F3;"></div>
-                                <div class="pie-segment" style="--percentage: 10; --color: #FF9800;"></div>
-                            </div>
-                            <div class="chart-legend">
-                                <div class="legend-item">
-                                    <span class="legend-color" style="background: #4CAF50;"></span>
-                                    <span>Disetujui (70%)</span>
-                                </div>
-                                <div class="legend-item">
-                                    <span class="legend-color" style="background: #2196F3;"></span>
-                                    <span>Diserahkan (20%)</span>
-                                </div>
-                                <div class="legend-item">
-                                    <span class="legend-color" style="background: #FF9800;"></span>
-                                    <span>Draft (10%)</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="summary-details">
-                        <h5>Pencapaian Pembelajaran</h5>
-                        <div class="achievement-summary">
-                            <div class="achievement-item">
-                                <span class="achievement-label">Rata-rata Pemahaman:</span>
-                                <div class="achievement-value">
-                                    <span class="value">82%</span>
-                                    <span class="trend up">+5%</span>
-                                </div>
-                            </div>
-                            <div class="achievement-item">
-                                <span class="achievement-label">Keterlibatan Siswa:</span>
-                                <div class="achievement-value">
-                                    <span class="value">88%</span>
-                                    <span class="trend up">+3%</span>
-                                </div>
-                            </div>
-                            <div class="achievement-item">
-                                <span class="achievement-label">Penyelesaian Tugas:</span>
-                                <div class="achievement-value">
-                                    <span class="value">91%</span>
-                                    <span class="trend stable">±0%</span>
-                                </div>
-                            </div>
-                            <div class="achievement-item">
-                                <span class="achievement-label">Nilai Rata-rata:</span>
-                                <div class="achievement-value">
-                                    <span class="value">85.5</span>
-                                    <span class="trend up">+2.5</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+        <div class="lb-stat-card">
+            <div class="lb-stat-icon" style="background: #f59e0b;"><i class="fas fa-paper-plane"></i></div>
+            <div class="lb-stat-info">
+                <h3 id="statPerluDiserahkan">-</h3>
+                <p>Perlu Diserahkan</p>
             </div>
         </div>
     </div>
 
-    <!-- Modal New/Edit Entry -->
-    <div id="entryModal" class="modal">
-        <div class="modal-content wide-modal">
-            <div class="modal-header">
-                <h3 id="modalTitle">Entri Logbook Baru</h3>
-                <span class="close" onclick="closeEntryModal()">&times;</span>
-            </div>
-            <div class="modal-body">
-                <form id="entryForm">
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="entryDate">Tanggal *</label>
-                            <input type="date" id="entryDate" required value="2024-01-16">
-                        </div>
-                        <div class="form-group">
-                            <label for="entryClass">Kelas *</label>
-                            <select id="entryClass" required>
-                                <option value="">-- Pilih Kelas --</option>
-                                <option value="x-mipa-1" selected>X MIPA 1</option>
-                                <option value="xi-ipa-2">XI IPA 2</option>
-                                <option value="xii-ips-1">XII IPS 1</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="entrySession">Sesi *</label>
-                            <select id="entrySession" required>
-                                <option value="">-- Pilih Sesi --</option>
-                                <option value="1" selected>Sesi 1 (08:00-09:30)</option>
-                                <option value="2">Sesi 2 (10:00-11:30)</option>
-                                <option value="3">Sesi 3 (13:00-14:30)</option>
-                            </select>
-                        </div>
-                    </div>
+    <!-- Logbook List -->
+    <div class="logbook-card">
+        <div class="logbook-card-header">
+            <h3><i class="fas fa-list-alt" style="color:#3b82f6;"></i> Daftar Entri Logbook</h3>
+            <span id="loadingIndicator" style="font-size:13px; color:#94a3b8;"><i class="fas fa-spinner fa-spin"></i> Memuat...</span>
+        </div>
+        <div id="logbookList"></div>
+    </div>
 
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="entryTopic">Topik Pembelajaran *</label>
-                            <input type="text" id="entryTopic" placeholder="Masukkan topik pembelajaran..." required>
-                        </div>
-                        <div class="form-group">
-                            <label for="entryRoom">Ruangan</label>
-                            <input type="text" id="entryRoom" value="Ruang 201">
-                        </div>
-                    </div>
+</div>
 
-                    <div class="form-group">
-                        <label for="entryAttendance">Kehadiran Siswa</label>
-                        <div class="attendance-input">
-                            <div class="input-group">
-                                <span>Hadir:</span>
-                                <input type="number" id="presentCount" value="28" min="0" max="50">
-                            </div>
-                            <div class="input-group">
-                                <span>Tidak Hadir:</span>
-                                <input type="number" id="absentCount" value="1" min="0" max="50">
-                            </div>
-                            <div class="input-group">
-                                <span>Izin:</span>
-                                <input type="number" id="permitCount" value="0" min="0" max="50">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="entryMaterial">Materi Pembelajaran *</label>
-                        <textarea id="entryMaterial" rows="3" placeholder="Deskripsikan materi yang diajarkan..." required></textarea>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="entryMethod">Metode Pembelajaran</label>
-                        <textarea id="entryMethod" rows="2" placeholder="Jelaskan metode pembelajaran yang digunakan..."></textarea>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="entryTools">Media/Alat Bantu</label>
-                        <div class="tools-selector">
-                            <label class="tool-option">
-                                <input type="checkbox" name="tools" value="presentation">
-                                <span>Presentasi</span>
-                            </label>
-                            <label class="tool-option">
-                                <input type="checkbox" name="tools" value="whiteboard" checked>
-                                <span>Whiteboard</span>
-                            </label>
-                            <label class="tool-option">
-                                <input type="checkbox" name="tools" value="props">
-                                <span>Alat Peraga</span>
-                            </label>
-                            <label class="tool-option">
-                                <input type="checkbox" name="tools" value="laptop">
-                                <span>Laptop/Proyektor</span>
-                            </label>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Pencapaian Pembelajaran</label>
-                        <div class="achievement-inputs">
-                            <div class="achievement-input">
-                                <span>Pemahaman Konsep:</span>
-                                <input type="range" min="0" max="100" value="85" class="slider" id="conceptSlider">
-                                <span id="conceptValue">85%</span>
-                            </div>
-                            <div class="achievement-input">
-                                <span>Keterampilan Penyelesaian:</span>
-                                <input type="range" min="0" max="100" value="78" class="slider" id="skillSlider">
-                                <span id="skillValue">78%</span>
-                            </div>
-                            <div class="achievement-input">
-                                <span>Keterlibatan Aktif:</span>
-                                <input type="range" min="0" max="100" value="90" class="slider" id="engagementSlider">
-                                <span id="engagementValue">90%</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="entryAssignment">Tugas & Evaluasi</label>
-                        <textarea id="entryAssignment" rows="2" placeholder="Jelaskan tugas yang diberikan dan evaluasi..."></textarea>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="entryNotes">Catatan Khusus</label>
-                        <textarea id="entryNotes" rows="3" placeholder="Masukkan catatan khusus, kendala, atau saran perbaikan..."></textarea>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Lampiran</label>
-                        <div class="file-upload">
-                            <input type="file" id="entryAttachment" accept=".pdf,.jpg,.png,.doc,.docx">
-                            <label for="entryAttachment" class="upload-btn">
-                                <i class="fas fa-cloud-upload-alt"></i>
-                                Tambah Lampiran
-                            </label>
-                            <span class="file-name">Belum ada file dipilih</span>
-                        </div>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" onclick="closeEntryModal()">Batal</button>
-                <button class="btn btn-primary" onclick="saveAsDraft()">
-                    <i class="fas fa-save"></i> Simpan Draft
-                </button>
-                <button class="btn btn-success" onclick="submitEntry()">
-                    <i class="fas fa-paper-plane"></i> Serahkan
-                </button>
-            </div>
+<!-- Modal Detail / Edit Logbook -->
+<div id="logbookModal" class="modal" style="display:none;">
+    <div class="modal-content" style="max-width:700px;">
+        <div class="modal-header">
+            <h3><i class="fas fa-book"></i> <span id="modalTitle">Detail Logbook</span></h3>
+            <span class="close" onclick="closeModal()">&times;</span>
+        </div>
+        <div class="modal-body" id="modalBody">
+            <p style="text-align:center;"><i class="fas fa-spinner fa-spin"></i> Memuat...</p>
+        </div>
+        <div class="modal-footer" id="modalFooter" style="display:none;">
+            <button class="btn btn-secondary" onclick="closeModal()">Tutup</button>
+            <button class="btn btn-primary" id="btnSimpanLogbook" onclick="simpanLogbook()">
+                <i class="fas fa-save"></i> Simpan
+            </button>
+            <button class="btn btn-serahkan" id="btnSerahkan" onclick="serahkanLogbook()">
+                <i class="fas fa-paper-plane"></i> Serahkan ke Admin
+            </button>
         </div>
     </div>
+</div>
 @endsection
 
 @push('scripts')
 <script>
-        let currentEntryId = null;
-        let isEditMode = false;
+    const BULAN = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
+    let allLogbooks = [];
+    let activeLogbookId = null;
 
-        document.addEventListener('DOMContentLoaded', function() {
-            // Initialize sliders
-            initSliders();
-        });
+    document.addEventListener('DOMContentLoaded', initLogbook);
 
-        function initSliders() {
-            const sliders = document.querySelectorAll('.slider');
-            sliders.forEach(slider => {
-                const valueId = slider.id.replace('Slider', 'Value');
-                const valueSpan = document.getElementById(valueId);
-                
-                slider.addEventListener('input', function() {
-                    valueSpan.textContent = this.value + '%';
-                });
-            });
-        }
+    function getToken() {
+        const t = localStorage.getItem('token');
+        if (!t) { window.location.href = '/login'; return null; }
+        return t;
+    }
 
-        function showNewEntryModal() {
-            isEditMode = false;
-            currentEntryId = null;
-            document.getElementById('modalTitle').textContent = 'Entri Logbook Baru';
-            document.getElementById('entryForm').reset();
-            initSliders();
-            document.getElementById('entryModal').style.display = 'block';
-        }
+    async function initLogbook() {
+        const token = getToken(); if (!token) return;
 
-        function viewEntry(entryId) {
-            currentEntryId = entryId;
-            alert(`Melihat entri logbook #${entryId}`);
-            // Load and display entry details
-        }
-
-        function editEntry(entryId) {
-            isEditMode = true;
-            currentEntryId = entryId;
-            document.getElementById('modalTitle').textContent = 'Edit Entri Logbook';
-            // Load existing entry data into form
-            document.getElementById('entryModal').style.display = 'block';
-        }
-
-        function deleteEntry(entryId) {
-            if (confirm('Hapus entri logbook ini?')) {
-                alert(`Entri #${entryId} berhasil dihapus!`);
-                // Delete entry from database
-            }
-        }
-
-        function submitEntry(entryId) {
-            if (entryId) {
-                if (confirm('Serahkan entri logbook ini?')) {
-                    alert(`Entri #${entryId} berhasil diserahkan!`);
-                    // Update entry status to submitted
+        try {
+            // Update sidebar name
+            const meRes = await fetch('/api/me', { headers: { Authorization: `Bearer ${token}`, Accept: 'application/json' } });
+            const me = await meRes.json();
+            const guru = me.data?.profile;
+            if (guru) {
+                const sn = document.getElementById('sidebarUserName');
+                const sr = document.getElementById('sidebarUserRole');
+                if (sn) sn.textContent = guru.nama;
+                if (sr && guru) {
+                    const mapelName = (guru.mapels && guru.mapels.length > 0) ? guru.mapels[0].nama_mapel : '';
+                    sr.textContent = mapelName ? `Guru ${mapelName}` : 'Guru';
                 }
+            }
+
+            // Load logbooks
+            const res = await fetch('/api/guru/logbook', {
+                headers: { Authorization: `Bearer ${token}`, Accept: 'application/json' }
+            });
+            const result = await res.json();
+
+            document.getElementById('loadingIndicator').style.display = 'none';
+
+            if (!result.success) throw new Error(result.message);
+
+            allLogbooks = result.data || [];
+            const stats  = result.stats || {};
+
+            document.getElementById('statEntriBulanIni').textContent    = stats.entri_bulan_ini ?? 0;
+            document.getElementById('statPerluDiserahkan').textContent  = stats.perlu_diserahkan ?? 0;
+
+            renderLogbookList(allLogbooks);
+
+        } catch (err) {
+            console.error(err);
+            document.getElementById('loadingIndicator').innerHTML = '<span style="color:#ef4444;">Gagal memuat data</span>';
+        }
+    }
+
+    function renderLogbookList(list) {
+        const container = document.getElementById('logbookList');
+        if (!list.length) {
+            container.innerHTML = `<div class="empty-logbook">
+                <i class="fas fa-book-open"></i>
+                <p>Belum ada entri logbook. Buat absensi terlebih dahulu untuk memulai.</p>
+            </div>`;
+            return;
+        }
+
+        container.innerHTML = list.map(lb => {
+            const absen = lb.absen || {};
+            const mapelNama = absen.mapel?.nama_mapel || '-';
+            const tanggal = absen.tanggal ? new Date(absen.tanggal) : null;
+            const day   = tanggal ? tanggal.getDate() : '-';
+            const month = tanggal ? BULAN[tanggal.getMonth()] : '';
+            const year  = tanggal ? tanggal.getFullYear() : '';
+
+            const isLengkap = lb.materi_pembelajaran && lb.metode_pembelajaran && lb.tugas_evaluasi;
+            let statusClass, badgeClass, badgeText;
+
+            if (lb.status === 'diserahkan') {
+                statusClass = 'diserahkan'; badgeClass = 'badge-diserahkan'; badgeText = 'DISERAHKAN';
+            } else if (isLengkap) {
+                statusClass = 'draft-lengkap'; badgeClass = 'badge-draft-lengkap'; badgeText = 'SIAP DISERAHKAN';
             } else {
-                if (validateEntryForm()) {
-                    alert('Entri logbook berhasil diserahkan!');
-                    closeEntryModal();
-                }
+                statusClass = 'draft-kosong'; badgeClass = 'badge-draft-kosong'; badgeText = 'PERLU DILENGKAPI';
             }
-        }
 
-        function closeEntryModal() {
-            document.getElementById('entryModal').style.display = 'none';
-        }
+            const hadir = lb.total_hadir ?? 0;
+            const total = lb.total_siswa ?? 0;
 
-        function filterLogbook() {
-            const month = document.getElementById('filterMonth').value;
-            const year = document.getElementById('filterYear').value;
-            const classFilter = document.getElementById('filterClass').value;
-            const statusFilter = document.getElementById('filterStatus').value;
-            
-            // Implement filtering logic
-            console.log(`Filtering: ${month}/${year}, Class: ${classFilter}, Status: ${statusFilter}`);
-        }
+            return `<div class="logbook-entry ${statusClass}" onclick="openModal(${lb.id})">
+                <div class="entry-date">
+                    <span class="day">${day}</span>
+                    <span class="month">${month}</span>
+                    <span class="year">${year}</span>
+                </div>
+                <div class="entry-info">
+                    <h4>${mapelNama} — Kelas ${absen.tingkat || '-'}</h4>
+                    <div class="meta">
+                        <span><i class="fas fa-clock"></i> ${(absen.jam_mulai||'').substring(0,5)} – ${(absen.jam_selesai||'').substring(0,5)}</span>
+                        <span><i class="fas fa-users"></i> ${hadir}/${total} hadir</span>
+                        <span><i class="fas fa-layer-group"></i> ${absen.pertemuan || '-'}</span>
+                    </div>
+                    ${lb.materi_pembelajaran ? `<div class="entry-preview"><strong>Materi:</strong> ${lb.materi_pembelajaran.substring(0,120)}${lb.materi_pembelajaran.length>120?'...':''}</div>` : ''}
+                </div>
+                <div class="entry-actions">
+                    <span class="badge-status ${badgeClass}">${badgeText}</span>
+                    <span style="font-size:12px; color:#94a3b8;">
+                        <i class="fas fa-eye"></i> Detail
+                    </span>
+                </div>
+            </div>`;
+        }).join('');
+    }
 
-        function saveAsDraft() {
-            if (validateEntryForm()) {
-                alert('Entri logbook berhasil disimpan sebagai draft!');
-                closeEntryModal();
-            }
-        }
+    async function openModal(id) {
+        activeLogbookId = id;
+        document.getElementById('logbookModal').style.display = 'block';
+        document.getElementById('modalBody').innerHTML = '<p style="text-align:center; padding:32px;"><i class="fas fa-spinner fa-spin"></i> Memuat...</p>';
+        document.getElementById('modalFooter').style.display = 'none';
 
-        function validateEntryForm() {
-            const form = document.getElementById('entryForm');
-            if (!form.checkValidity()) {
-                alert('Harap lengkapi semua field yang wajib diisi!');
-                return false;
-            }
-            return true;
-        }
-
-        function exportLogbook() {
-            alert('Logbook berhasil diexport ke format PDF!');
-            // Implement export functionality
-        }
-
-        function printLogbook() {
-            window.print();
-        }
-
-        function printEntry(entryId) {
-            alert(`Mencetak entri logbook #${entryId}`);
-            // Print specific entry
-        }
-
-        function showStatistics() {
-            alert('Membuka statistik logbook...');
-            // Show detailed statistics
-        }
-
-        // File upload handler
-        document.getElementById('entryAttachment').addEventListener('change', function(e) {
-            const fileName = e.target.files[0] ? e.target.files[0].name : 'Belum ada file dipilih';
-            document.querySelector('.file-name').textContent = fileName;
+        const token = getToken(); if (!token) return;
+        const res = await fetch(`/api/guru/logbook/${id}`, {
+            headers: { Authorization: `Bearer ${token}`, Accept: 'application/json' }
         });
+        const result = await res.json();
+        if (!result.success) { alert('Gagal memuat detail'); return; }
 
-        // Close modal when clicking outside
-        window.onclick = function(event) {
-            if (event.target === document.getElementById('entryModal')) {
-                closeEntryModal();
-            }
+        renderModal(result.data);
+    }
+
+    function renderModal(lb) {
+        const absen = lb.absen || {};
+        const mapelNama = absen.mapel?.nama_mapel || '-';
+        const isDiserahkan = lb.status === 'diserahkan';
+        const disabled = isDiserahkan ? 'disabled' : '';
+
+        document.getElementById('modalTitle').textContent = `${mapelNama} — ${absen.tingkat || ''}`;
+
+        const tanggal = absen.tanggal ? new Date(absen.tanggal).toLocaleDateString('id-ID', { day:'2-digit', month:'long', year:'numeric' }) : '-';
+
+        document.getElementById('modalBody').innerHTML = `
+            ${isDiserahkan ? `<div class="alert-info"><i class="fas fa-lock"></i> Logbook ini sudah diserahkan ke admin dan tidak dapat diubah.</div>` : ''}
+
+            <div class="detail-grid" style="margin-bottom:20px;">
+                <div class="detail-info-box">
+                    <h5><i class="fas fa-info-circle"></i> Info Sesi</h5>
+                    <div class="info-row"><span class="label">Tanggal</span><span class="val">${tanggal}</span></div>
+                    <div class="info-row"><span class="label">Jam</span><span class="val">${(absen.jam_mulai||'').substring(0,5)} – ${(absen.jam_selesai||'').substring(0,5)}</span></div>
+                    <div class="info-row"><span class="label">Pertemuan</span><span class="val">${absen.pertemuan || '-'}</span></div>
+                    <div class="info-row"><span class="label">Tingkat</span><span class="val">Kelas ${absen.tingkat || '-'}</span></div>
+                </div>
+                <div class="detail-info-box">
+                    <h5><i class="fas fa-users"></i> Kehadiran</h5>
+                    <div class="info-row"><span class="label">Hadir</span><span class="val" style="color:#22c55e;">${lb.total_hadir ?? 0}</span></div>
+                    <div class="info-row"><span class="label">Total Siswa</span><span class="val">${lb.total_siswa ?? 0}</span></div>
+                    <div class="info-row"><span class="label">Mapel</span><span class="val">${mapelNama}</span></div>
+                    <div class="info-row"><span class="label">Status</span><span class="val">${isDiserahkan ? '✅ Diserahkan' : '📝 Draft'}</span></div>
+                </div>
+            </div>
+
+            <div class="form-group-lb">
+                <label><i class="fas fa-book"></i> Materi Pembelajaran *</label>
+                <textarea id="inputMateri" ${disabled} placeholder="Isi materi yang diajarkan...">${lb.materi_pembelajaran || ''}</textarea>
+            </div>
+            <div class="form-group-lb">
+                <label><i class="fas fa-chalkboard"></i> Metode Pembelajaran *</label>
+                <textarea id="inputMetode" ${disabled} placeholder="Contoh: Ceramah interaktif, diskusi kelompok, tanya jawab...">${lb.metode_pembelajaran || ''}</textarea>
+            </div>
+            <div class="form-group-lb">
+                <label><i class="fas fa-tasks"></i> Tugas & Evaluasi *</label>
+                <textarea id="inputTugas" ${disabled} placeholder="Contoh: Latihan soal hal. 45-47, dikumpulkan minggu depan...">${lb.tugas_evaluasi || ''}</textarea>
+            </div>
+
+            ${isDiserahkan && lb.diserahkan_at ? `<p style="font-size:12px; color:#64748b; margin-top:8px;"><i class="fas fa-check-circle" style="color:#22c55e;"></i> Diserahkan pada ${new Date(lb.diserahkan_at).toLocaleString('id-ID')}</p>` : ''}
+        `;
+
+        document.getElementById('modalFooter').style.display = 'flex';
+        document.getElementById('btnSimpanLogbook').style.display = isDiserahkan ? 'none' : '';
+        document.getElementById('btnSerahkan').style.display = isDiserahkan ? 'none' : '';
+    }
+
+    async function simpanLogbook() {
+        const token = getToken(); if (!token) return;
+        const btn = document.getElementById('btnSimpanLogbook');
+        btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Menyimpan...';
+
+        const payload = {
+            materi_pembelajaran: document.getElementById('inputMateri').value.trim(),
+            metode_pembelajaran:  document.getElementById('inputMetode').value.trim(),
+            tugas_evaluasi:       document.getElementById('inputTugas').value.trim(),
         };
-    </script>
-    <script>
-    // Mobile menu toggle
-    document.addEventListener('DOMContentLoaded', function() {
-        const mobileMenuToggle = document.getElementById('mobileMenuToggle');
-        const sidebar = document.getElementById('sidebar');
-        const mainContent = document.getElementById('mainContent');
-        
-        if (mobileMenuToggle && sidebar) {
-            mobileMenuToggle.addEventListener('click', function() {
-                sidebar.classList.toggle('active');
-                mobileMenuToggle.innerHTML = sidebar.classList.contains('active') 
-                    ? '<i class="fas fa-times"></i>' 
-                    : '<i class="fas fa-bars"></i>';
+
+        try {
+            const res = await fetch(`/api/guru/logbook/${activeLogbookId}`, {
+                method: 'PUT',
+                headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json', Accept: 'application/json' },
+                body: JSON.stringify(payload)
             });
-            
-            // Close sidebar when clicking outside on mobile
-            document.addEventListener('click', function(event) {
-                if (window.innerWidth <= 1024) {
-                    if (!sidebar.contains(event.target) && 
-                        !mobileMenuToggle.contains(event.target) && 
-                        sidebar.classList.contains('active')) {
-                        sidebar.classList.remove('active');
-                        mobileMenuToggle.innerHTML = '<i class="fas fa-bars"></i>';
-                    }
-                }
-            });
-        }
-        
-        // Update active link in sidebar
-        const currentPage = window.location.pathname.split('/').pop();
-        const navLinks = document.querySelectorAll('.sidebar-nav a');
-        navLinks.forEach(link => {
-            const href = link.getAttribute('href');
-            if (href === currentPage || 
-                (href === 'dashboard.html' && currentPage === '') ||
-                (href.includes(currentPage) && currentPage !== '')) {
-                link.classList.add('active');
+            const result = await res.json();
+            if (result.success) {
+                closeModal();
+                await initLogbook();
+            } else {
+                alert('Gagal menyimpan: ' + result.message);
             }
+        } catch (e) { alert('Terjadi kesalahan'); }
+        finally { btn.disabled = false; btn.innerHTML = '<i class="fas fa-save"></i> Simpan'; }
+    }
+
+    async function serahkanLogbook() {
+        const token = getToken(); if (!token) return;
+
+        const materi = document.getElementById('inputMateri')?.value.trim();
+        const metode = document.getElementById('inputMetode')?.value.trim();
+        const tugas  = document.getElementById('inputTugas')?.value.trim();
+
+        if (!materi || !metode || !tugas) {
+            alert('Harap lengkapi semua field (Materi, Metode Pembelajaran, Tugas & Evaluasi) sebelum menyerahkan.');
+            return;
+        }
+
+        if (!confirm('Yakin ingin menyerahkan logbook ini ke admin? Setelah diserahkan tidak dapat diubah lagi.')) return;
+
+        // Simpan dulu sebelum serahkan
+        const savePay = { materi_pembelajaran: materi, metode_pembelajaran: metode, tugas_evaluasi: tugas };
+        await fetch(`/api/guru/logbook/${activeLogbookId}`, {
+            method: 'PUT',
+            headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json', Accept: 'application/json' },
+            body: JSON.stringify(savePay)
         });
-    });
+
+        const btn = document.getElementById('btnSerahkan');
+        btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Menyerahkan...';
+
+        try {
+            const res = await fetch(`/api/guru/logbook/${activeLogbookId}/serahkan`, {
+                method: 'POST',
+                headers: { Authorization: `Bearer ${token}`, Accept: 'application/json' }
+            });
+            const result = await res.json();
+            if (result.success) {
+                closeModal();
+                await initLogbook();
+                alert('✅ Logbook berhasil diserahkan ke admin!');
+            } else {
+                alert('Gagal: ' + result.message);
+            }
+        } catch (e) { alert('Terjadi kesalahan'); }
+        finally { btn.disabled = false; btn.innerHTML = '<i class="fas fa-paper-plane"></i> Serahkan ke Admin'; }
+    }
+
+    function closeModal() {
+        document.getElementById('logbookModal').style.display = 'none';
+        activeLogbookId = null;
+    }
+
+    window.onclick = e => {
+        if (e.target === document.getElementById('logbookModal')) closeModal();
+    };
 </script>
 @endpush

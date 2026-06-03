@@ -6,7 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class Guru extends Model
 {
-    protected $fillable = ['nama', 'nip', 'alamat', 'no_telp', 'user_id'];
+    protected $fillable = ['nama', 'nip', 'alamat', 'no_telp', 'jenis_kelamin', 'jabatan', 'user_id'];
+
+    protected $casts = [
+        'jabatan' => 'array'
+    ];
 
     public function user()
     {

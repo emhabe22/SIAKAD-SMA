@@ -5,12 +5,12 @@ namespace Database\Seeders;
 use App\Models\User;
 use App\Models\Role;
 use App\Models\Admin;
-use App\Models\Kelas;
 use App\Models\Mapel;
 use App\Models\Guru;
 use App\Models\Siswa;
 use App\Models\BK;
 use App\Models\Point;
+use App\Models\JadwalSlot;
 use App\Models\JadwalPelajaran;
 use App\Models\PelanggaranSiswa;
 use Illuminate\Database\Seeder;
@@ -55,41 +55,202 @@ class DatabaseSeeder extends Seeder
             'no_telp' => '08123456790',
         ]);
 
-        // ============ KELAS ============
-        $kelas10IPA1 = Kelas::create([
-            'nama_kelas' => 'X IPA 1',
-            'tingkat' => '10',
-            'jurusan' => 'IPA'
+        // ============ MAPEL (Mata Pelajaran SMA) ============
+        $mapelMatematika = Mapel::create([
+            'nama_mapel' => 'Matematika',
+            'kode_mapel' => 'X-MAT',
+            'tingkat' => 'X',
         ]);
-        
-        $kelas10IPA2 = Kelas::create([
-            'nama_kelas' => 'X IPA 2',
-            'tingkat' => '10',
-            'jurusan' => 'IPA'
+        $mapelFisika = Mapel::create([
+            'nama_mapel' => 'Fisika',
+            'kode_mapel' => 'X-FIS',
+            'tingkat' => 'X',
         ]);
-        
-        $kelas11IPA1 = Kelas::create([
-            'nama_kelas' => 'XI IPA 1',
-            'tingkat' => '11',
-            'jurusan' => 'IPA'
+        $mapelKimia = Mapel::create([
+            'nama_mapel' => 'Kimia',
+            'kode_mapel' => 'X-KIM',
+            'tingkat' => 'X',
         ]);
-        
-        $kelas12IPA1 = Kelas::create([
-            'nama_kelas' => 'XII IPA 1',
-            'tingkat' => '12',
-            'jurusan' => 'IPA'
+        $mapelBiologi = Mapel::create([
+            'nama_mapel' => 'Biologi',
+            'kode_mapel' => 'X-BIO',
+            'tingkat' => 'X',
+        ]);
+        $mapelBIndo = Mapel::create([
+            'nama_mapel' => 'Bahasa Indonesia',
+            'kode_mapel' => 'X-BIN',
+            'tingkat' => 'X',
+        ]);
+        $mapelBInggris = Mapel::create([
+            'nama_mapel' => 'Bahasa Inggris',
+            'kode_mapel' => 'X-BING',
+            'tingkat' => 'X',
+        ]);
+        $mapelSejarah = Mapel::create([
+            'nama_mapel' => 'Sejarah',
+            'kode_mapel' => 'X-SEJ',
+            'tingkat' => 'X',
+        ]);
+        $mapelEkonomi = Mapel::create([
+            'nama_mapel' => 'Ekonomi',
+            'kode_mapel' => 'X-EKO',
+            'tingkat' => 'X',
+        ]);
+        $mapelPJOK = Mapel::create([
+            'nama_mapel' => 'PJOK',
+            'kode_mapel' => 'X-PJOK',
+            'tingkat' => 'X',
         ]);
 
-        // ============ MAPEL (Mata Pelajaran SMA) ============
-        $mapelMatematika = Mapel::create(['nama_mapel' => 'Matematika']);
-        $mapelFisika = Mapel::create(['nama_mapel' => 'Fisika']);
-        $mapelKimia = Mapel::create(['nama_mapel' => 'Kimia']);
-        $mapelBiologi = Mapel::create(['nama_mapel' => 'Biologi']);
-        $mapelBIndo = Mapel::create(['nama_mapel' => 'Bahasa Indonesia']);
-        $mapelBInggris = Mapel::create(['nama_mapel' => 'Bahasa Inggris']);
-        $mapelSejarah = Mapel::create(['nama_mapel' => 'Sejarah']);
-        $mapelEkonomi = Mapel::create(['nama_mapel' => 'Ekonomi']);
-        $mapelPJOK = Mapel::create(['nama_mapel' => 'PJOK']);
+        // ============ JADWAL SLOTS =========
+        if (JadwalSlot::count() === 0) {
+            $slots = [
+                [
+                    'jam_ke' => null,
+                    'jam_mulai' => '06:50',
+                    'jam_selesai' => '07:00',
+                    'label' => 'Apel Pagi',
+                    'tipe' => 'kegiatan',
+                    'hari' => null,
+                ],
+                [
+                    'jam_ke' => 1,
+                    'jam_mulai' => '07:00',
+                    'jam_selesai' => '07:45',
+                    'label' => 'Jam 1',
+                    'tipe' => 'mapel',
+                    'hari' => null,
+                ],
+                [
+                    'jam_ke' => 2,
+                    'jam_mulai' => '07:45',
+                    'jam_selesai' => '08:30',
+                    'label' => 'Jam 2',
+                    'tipe' => 'mapel',
+                    'hari' => null,
+                ],
+                [
+                    'jam_ke' => 3,
+                    'jam_mulai' => '08:30',
+                    'jam_selesai' => '09:15',
+                    'label' => 'Jam 3',
+                    'tipe' => 'mapel',
+                    'hari' => null,
+                ],
+                [
+                    'jam_ke' => 4,
+                    'jam_mulai' => '09:15',
+                    'jam_selesai' => '10:00',
+                    'label' => 'Jam 4',
+                    'tipe' => 'mapel',
+                    'hari' => null,
+                ],
+                [
+                    'jam_ke' => null,
+                    'jam_mulai' => '10:00',
+                    'jam_selesai' => '10:30',
+                    'label' => 'Istirahat',
+                    'tipe' => 'kegiatan',
+                    'hari' => null,
+                ],
+                [
+                    'jam_ke' => 5,
+                    'jam_mulai' => '10:30',
+                    'jam_selesai' => '11:15',
+                    'label' => 'Jam 5',
+                    'tipe' => 'mapel',
+                    'hari' => null,
+                ],
+                [
+                    'jam_ke' => 6,
+                    'jam_mulai' => '11:15',
+                    'jam_selesai' => '12:00',
+                    'label' => 'Jam 6',
+                    'tipe' => 'mapel',
+                    'hari' => null,
+                ],
+                [
+                    'jam_ke' => null,
+                    'jam_mulai' => '12:00',
+                    'jam_selesai' => '12:45',
+                    'label' => 'Shalat Dzuhur & Istirahat',
+                    'tipe' => 'kegiatan',
+                    'hari' => null,
+                ],
+                [
+                    'jam_ke' => 7,
+                    'jam_mulai' => '12:45',
+                    'jam_selesai' => '13:30',
+                    'label' => 'Jam 7',
+                    'tipe' => 'mapel',
+                    'hari' => null,
+                ],
+                [
+                    'jam_ke' => 8,
+                    'jam_mulai' => '13:30',
+                    'jam_selesai' => '14:15',
+                    'label' => 'Jam 8',
+                    'tipe' => 'mapel',
+                    'hari' => null,
+                ],
+                [
+                    'jam_ke' => null,
+                    'jam_mulai' => '14:15',
+                    'jam_selesai' => '15:15',
+                    'label' => 'Ekstrakurikuler',
+                    'tipe' => 'kegiatan',
+                    'hari' => null,
+                ],
+                [
+                    'jam_ke' => 1,
+                    'jam_mulai' => '07:00',
+                    'jam_selesai' => '07:30',
+                    'label' => 'Rotibul Haddad',
+                    'tipe' => 'kegiatan',
+                    'hari' => 'Jumat',
+                ],
+                [
+                    'jam_ke' => 2,
+                    'jam_mulai' => '07:30',
+                    'jam_selesai' => '08:15',
+                    'label' => 'Jam 2',
+                    'tipe' => 'mapel',
+                    'hari' => 'Jumat',
+                ],
+                [
+                    'jam_ke' => 3,
+                    'jam_mulai' => '08:15',
+                    'jam_selesai' => '09:00',
+                    'label' => 'Jam 3',
+                    'tipe' => 'mapel',
+                    'hari' => 'Jumat',
+                ],
+                [
+                    'jam_ke' => 4,
+                    'jam_mulai' => '09:00',
+                    'jam_selesai' => '09:45',
+                    'label' => 'Jam 4',
+                    'tipe' => 'mapel',
+                    'hari' => 'Jumat',
+                ],
+                [
+                    'jam_ke' => 5,
+                    'jam_mulai' => '09:45',
+                    'jam_selesai' => '10:30',
+                    'label' => 'Jam 5',
+                    'tipe' => 'mapel',
+                    'hari' => 'Jumat',
+                ],
+            ];
+
+            foreach ($slots as &$slot) {
+                $slot['created_at'] = now();
+                $slot['updated_at'] = now();
+            }
+            unset($slot);
+
+            JadwalSlot::insert($slots);
+        }
 
         // ============ GURU ============
         $userGuru1 = User::create([
@@ -157,7 +318,7 @@ class DatabaseSeeder extends Seeder
             'alamat' => 'Jl. Gatot Subroto No. 15, Jakarta',
             'no_telp' => '081234567894',
             'user_id' => $userSiswa1->id,
-            'kelas_id' => $kelas10IPA1->id,
+            'tingkat' => 'X',
             'nama_wali' => 'Bapak Pratama',
         ]);
 
@@ -173,7 +334,7 @@ class DatabaseSeeder extends Seeder
             'alamat' => 'Jl. Sudirman No. 20, Jakarta',
             'no_telp' => '081234567895',
             'user_id' => $userSiswa2->id,
-            'kelas_id' => $kelas10IPA1->id,
+            'tingkat' => 'X',
             'nama_wali' => 'Ibu Lestari',
         ]);
 
@@ -189,17 +350,17 @@ class DatabaseSeeder extends Seeder
             'alamat' => 'Jl. Thamrin No. 30, Jakarta',
             'no_telp' => '081234567896',
             'user_id' => $userSiswa3->id,
-            'kelas_id' => $kelas10IPA2->id,
+            'tingkat' => 'X',
             'nama_wali' => 'Bapak Wijaya',
         ]);
 
         // ============ JADWAL PELAJARAN ============
-        // Jadwal untuk Kelas X IPA 1
+        // Jadwal untuk Tingkat X
         JadwalPelajaran::create([
             'hari' => 'Senin',
             'jam_mulai' => '07:00',
             'jam_selesai' => '08:30',
-            'kelas_id' => $kelas10IPA1->id,
+            'tingkat' => 'X',
             'mapel_id' => $mapelMatematika->id,
             'guru_id' => $guru1->id,
             'ruangan' => 'R.301',
@@ -209,7 +370,7 @@ class DatabaseSeeder extends Seeder
             'hari' => 'Senin',
             'jam_mulai' => '08:30',
             'jam_selesai' => '10:00',
-            'kelas_id' => $kelas10IPA1->id,
+            'tingkat' => 'X',
             'mapel_id' => $mapelFisika->id,
             'guru_id' => $guru1->id,
             'ruangan' => 'Lab Fisika',
@@ -219,7 +380,7 @@ class DatabaseSeeder extends Seeder
             'hari' => 'Senin',
             'jam_mulai' => '10:15',
             'jam_selesai' => '11:45',
-            'kelas_id' => $kelas10IPA1->id,
+            'tingkat' => 'X',
             'mapel_id' => $mapelBIndo->id,
             'guru_id' => $guru3->id,
             'ruangan' => 'R.301',
@@ -229,7 +390,7 @@ class DatabaseSeeder extends Seeder
             'hari' => 'Selasa',
             'jam_mulai' => '07:00',
             'jam_selesai' => '08:30',
-            'kelas_id' => $kelas10IPA1->id,
+            'tingkat' => 'X',
             'mapel_id' => $mapelKimia->id,
             'guru_id' => $guru2->id,
             'ruangan' => 'Lab Kimia',
@@ -239,7 +400,7 @@ class DatabaseSeeder extends Seeder
             'hari' => 'Selasa',
             'jam_mulai' => '08:30',
             'jam_selesai' => '10:00',
-            'kelas_id' => $kelas10IPA1->id,
+            'tingkat' => 'X',
             'mapel_id' => $mapelBiologi->id,
             'guru_id' => $guru2->id,
             'ruangan' => 'R.302',
@@ -295,13 +456,13 @@ class DatabaseSeeder extends Seeder
         echo "Guru 1  - Username: guru1   | Password: guru123 (Matematika & Fisika)\n";
         echo "Guru 2  - Username: guru2   | Password: guru123 (Kimia & Biologi)\n";
         echo "Guru 3  - Username: guru3   | Password: guru123 (B. Indonesia & B. Inggris)\n";
-        echo "Siswa 1 - Username: siswa1  | Password: siswa123 (X IPA 1)\n";
-        echo "Siswa 2 - Username: siswa2  | Password: siswa123 (X IPA 1)\n";
-        echo "Siswa 3 - Username: siswa3  | Password: siswa123 (X IPA 2)\n";
+        echo "Siswa 1 - Username: siswa1  | Password: siswa123 (Tingkat X)\n";
+        echo "Siswa 2 - Username: siswa2  | Password: siswa123 (Tingkat X)\n";
+        echo "Siswa 3 - Username: siswa3  | Password: siswa123 (Tingkat X)\n";
         echo "\n=== Info Tambahan ===\n";
-        echo "- Total Kelas: 4 (X IPA 1, X IPA 2, XI IPA 1, XII IPA 1)\n";
+        echo "- Tingkat tersedia: X, XI, XII\n";
         echo "- Total Mapel: 9\n";
-        echo "- Jadwal Pelajaran: 5 jadwal untuk X IPA 1\n";
+        echo "- Jadwal Pelajaran: 5 jadwal untuk Tingkat X\n";
         echo "- Point Pelanggaran: 5 jenis\n";
     }
 }

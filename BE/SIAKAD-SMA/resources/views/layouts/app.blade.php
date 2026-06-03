@@ -78,7 +78,11 @@
         function handleLogout(event) {
             event.preventDefault();
             if (confirm('Apakah Anda yakin ingin keluar?')) {
+                // Hapus semua data dari localStorage
                 localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                localStorage.removeItem('userRole');
+                
                 window.location.href = '/login';
             }
         }

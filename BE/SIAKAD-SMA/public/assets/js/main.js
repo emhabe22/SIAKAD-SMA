@@ -76,7 +76,72 @@ document.addEventListener('DOMContentLoaded', function() {
             setTimeout(() => alert.remove(), 300);
         }, 5000);
     });
+
+    loadUserProfile();
 });
+
+async function loadUserProfile() {
+    const token = localStorage.getItem('token');
+    if (!token) {
+        return;
+    }
+
+    try {
+        const response = await fetch('/api/me', {
+            headers: {
+                'Accept': 'application/json',
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        if (!response.ok) {
+            return;
+        }
+
+        const result = await response.json();
+        if (!result?.data?.user) {
+            return;
+        }
+
+        const user = result.data.user;
+        const profile = result.data.profile || {};
+        const displayName = profile.nama || user.username || 'User';
+        const roleName = user.role?.name || '';
+
+        let roleLabel = roleName || 'User';
+        if (roleName === 'Guru') {
+            const mapelNames = Array.isArray(profile.mapels)
+                ? profile.mapels.map(mapel => mapel.nama_mapel).filter(Boolean)
+                : [];
+            roleLabel = mapelNames.length ? `Guru ${mapelNames.join(', ')}` : 'Guru';
+        } else if (roleName === 'Siswa') {
+            const tingkat = profile.tingkat;
+            roleLabel = tingkat ? `Siswa Tingkat ${tingkat}` : 'Siswa';
+        } else if (roleName === 'Admin') {
+            roleLabel = 'Admin Sistem';
+        } else if (roleName === 'BK') {
+            roleLabel = 'Guru BK';
+        }
+
+        setTextById('sidebarUserName', displayName);
+        setTextById('sidebarUserRole', roleLabel);
+        setTextById('greetingName', displayName);
+
+        const honorificEl = document.getElementById('greetingHonorific');
+        if (honorificEl && profile.jenis_kelamin) {
+            honorificEl.textContent = profile.jenis_kelamin === 'P' ? 'Ibu' : 'Bapak';
+        }
+    } catch (error) {
+        console.error('Error loading user profile:', error);
+    }
+}
+
+function setTextById(id, value) {
+    const element = document.getElementById(id);
+    if (element && value) {
+        element.textContent = value;
+    }
+}
 
 // Utility function for form validation
 function validateForm(formId) {

@@ -6,8 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Admin;
 use App\Models\Guru;
-use App\Models\Kelas;
 use App\Models\Mapel;
+use App\Models\Role;
 use App\Models\Siswa;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
@@ -18,7 +18,6 @@ class AdminController extends Controller
         $admins = Admin::with('user')->get();
         $gurus = Guru::all();
         $siswas = Siswa::all();
-        $kelas = Kelas::all();
         $mapel = Mapel::all();
         return response()->json([
             'success' => true,
@@ -26,7 +25,6 @@ class AdminController extends Controller
                 'admins' => $admins,
                 'gurus' => $gurus,
                 'siswas' => $siswas,
-                'kelas' => $kelas,
                 'mapel' => $mapel
             ]
         ]);
@@ -42,11 +40,19 @@ class AdminController extends Controller
             'password' => 'required|min:6',
         ]);
 
+        $roleId = Role::where('name', 'Admin')->value('id');
+        if (!$roleId) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Role Admin belum tersedia. Jalankan seeder atau buat role terlebih dahulu.'
+            ], 422);
+        }
+
         // Buat user dulu
         $user = User::create([
             'username' => $request->username,
             'password' => Hash::make($request->password),
-            'role_id' => 3, // role admin
+            'role_id' => $roleId,
         ]);
 
         // Buat admin

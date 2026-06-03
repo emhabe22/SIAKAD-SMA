@@ -11,7 +11,7 @@ class MapelController extends Controller
     // Tampilkan semua mapel
     public function index()
     {
-        $mapels = Mapel::with('kelas')->get();
+        $mapels = Mapel::with('gurus')->get();
         return response()->json([
             'success' => true,
             'data' => $mapels
@@ -23,7 +23,8 @@ class MapelController extends Controller
     {
         $request->validate([
             'nama_mapel' => 'required|string',
-            'kelas_id' => 'required|exists:kelas,id'
+            'kode_mapel' => 'required|string|unique:mapels',
+            'tingkat' => 'required|in:X,XI,XII'
         ]);
 
         $mapel = Mapel::create($request->all());
@@ -31,14 +32,14 @@ class MapelController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Mapel berhasil ditambahkan',
-            'data' => $mapel->load('kelas')
+            'data' => $mapel->load('gurus')
         ], 201);
     }
 
     // Tampilkan satu mapel
     public function show($id)
     {
-        $mapel = Mapel::with('kelas')->find($id);
+        $mapel = Mapel::with('gurus')->find($id);
 
         if (!$mapel) {
             return response()->json([
@@ -66,8 +67,9 @@ class MapelController extends Controller
         }
 
         $request->validate([
-            'nama_mapel' => 'required|string',
-            'kelas_id' => 'required|exists:kelas,id'
+            'nama_mapel' => 'sometimes|required|string',
+            'kode_mapel' => 'sometimes|required|string|unique:mapels,kode_mapel,' . $id,
+            'tingkat' => 'sometimes|required|in:X,XI,XII'
         ]);
 
         $mapel->update($request->all());
@@ -75,7 +77,7 @@ class MapelController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Mapel berhasil diupdate',
-            'data' => $mapel->load('kelas')
+            'data' => $mapel->load('gurus')
         ]);
     }
 
