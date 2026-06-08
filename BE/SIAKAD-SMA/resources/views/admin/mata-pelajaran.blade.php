@@ -10,6 +10,17 @@
     $userRole = 'Admin Sistem';
 @endphp
 
+@push('styles')
+<style>
+    /* Search Box Styles */
+    .search-box-container { position: relative; }
+    .search-input { padding: 8px 12px 8px 36px; border-radius: 30px; border: 1px solid #e2e8f0; outline: none; font-size: 14px; width: 240px; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); background-color: #f8fafc; }
+    .search-input:focus { border-color: #2196F3; background-color: #ffffff; box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.15); width: 300px; }
+    .search-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #94a3b8; font-size: 14px; pointer-events: none; transition: color 0.3s ease; }
+    .search-input:focus + .search-icon { color: #2196F3; }
+</style>
+@endpush
+
 @section('content')
 
         <!-- Main Content Container -->
@@ -30,8 +41,14 @@
 
             <!-- Subjects Table -->
             <div class="card">
-                <div class="card-header">
-                    <h3><i class="fas fa-list"></i> Daftar Mata Pelajaran</h3>
+                <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
+                    <div style="display: flex; align-items: center; gap: 20px; flex-wrap: wrap;">
+                        <h3 style="margin: 0;"><i class="fas fa-list"></i> Daftar Mata Pelajaran</h3>
+                        <div class="search-box-container">
+                            <input type="text" id="mapelSearchInput" class="search-input" placeholder="Cari kode atau nama mapel..." oninput="handleMapelSearch()">
+                            <i class="fas fa-search search-icon"></i>
+                        </div>
+                    </div>
                     <div class="card-actions">
                         <button class="btn btn-primary" onclick="openAddModal()" style="margin-right: 10px">
                             <i class="fas fa-plus"></i> Tambah Mata Pelajaran
@@ -135,6 +152,64 @@
 <script>
         let currentMapelId = null;
         let isEditMode = false;
+        let allMapelsData = [];
+        let searchQuery = '';
+        let currentPage = 1;
+        const itemsPerPage = 10;
+
+        function handleMapelSearch() {
+            searchQuery = document.getElementById('mapelSearchInput').value.toLowerCase().trim();
+            currentPage = 1;
+            applySearchAndPaginate();
+        }
+
+        function changePage(page) {
+            currentPage = page;
+            applySearchAndPaginate();
+        }
+
+        function applySearchAndPaginate() {
+            let filtered = allMapelsData;
+            if (searchQuery) {
+                filtered = filtered.filter(m => 
+                    (m.nama_mapel && m.nama_mapel.toLowerCase().includes(searchQuery)) ||
+                    (m.kode_mapel && m.kode_mapel.toLowerCase().includes(searchQuery))
+                );
+            }
+            
+            const totalItems = filtered.length;
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const paginatedData = filtered.slice(startIndex, startIndex + itemsPerPage);
+            
+            renderTable(paginatedData, startIndex);
+            renderPagination(totalItems);
+        }
+
+        function renderPagination(totalItems) {
+            const totalPages = Math.ceil(totalItems / itemsPerPage) || 1;
+            const paginationContainer = document.querySelector('.pagination');
+            if (!paginationContainer) return;
+            
+            if (currentPage > totalPages) currentPage = totalPages;
+            
+            let html = `
+                <button class="page-btn" ${currentPage === 1 ? 'disabled' : ''} onclick="changePage(${currentPage - 1})">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+            `;
+            
+            for (let i = 1; i <= totalPages; i++) {
+                html += `<button class="page-btn ${currentPage === i ? 'active' : ''}" onclick="changePage(${i})">${i}</button>`;
+            }
+            
+            html += `
+                <button class="page-btn" ${currentPage === totalPages ? 'disabled' : ''} onclick="changePage(${currentPage + 1})">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            `;
+            
+            paginationContainer.innerHTML = html;
+        }
 
         document.addEventListener('DOMContentLoaded', function() {
             fetchMapels();
@@ -174,7 +249,10 @@
                 const result = await response.json();
 
                 if (result.success && result.data) {
-                    renderTable(result.data);
+                    allMapelsData = result.data;
+                    document.getElementById('mapelSearchInput').value = '';
+                    searchQuery = '';
+                    applySearchAndPaginate();
                     updateStats(result.data);
                 } else {
                     document.getElementById('mapelTableBody').innerHTML = `
@@ -190,7 +268,7 @@
         }
 
         // Render table
-        function renderTable(data) {
+        function renderTable(data, startIndex = 0) {
             const tbody = document.getElementById('mapelTableBody');
             
             if (data.length === 0) {
@@ -221,7 +299,7 @@
                 
                 return `
                     <tr>
-                        <td>${index + 1}</td>
+                        <td>${startIndex + index + 1}</td>
                         <td><strong>${mapel.kode_mapel}</strong></td>
                         <td>${mapel.nama_mapel}</td>
                         <td>${tingkatBadge}</td>

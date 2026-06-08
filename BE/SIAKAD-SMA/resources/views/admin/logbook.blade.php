@@ -75,14 +75,25 @@
 
     .empty-state-lb { text-align: center; padding: 48px; color: #94a3b8; }
     .empty-state-lb i { font-size: 48px; display: block; margin-bottom: 12px; }
+
+    /* Search Box Styles */
+    .search-box-container { position: relative; }
+    .search-input { padding: 8px 12px 8px 36px; border-radius: 30px; border: 1px solid #e2e8f0; outline: none; font-size: 14px; width: 240px; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); background-color: #f8fafc; }
+    .search-input:focus { border-color: #2196F3; background-color: #ffffff; box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.15); width: 300px; }
+    .search-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #94a3b8; font-size: 14px; pointer-events: none; transition: color 0.3s ease; }
+    .search-input:focus + .search-icon { color: #2196F3; }
 </style>
 @endpush
 
 @section('content')
 <div class="content-container">
     <div id="listView">
-        <div class="card-header" style="margin-bottom:20px; background:none; padding:0;">
-            <h3 style="font-size:16px; color:#1e293b;"><i class="fas fa-chalkboard-teacher" style="color:#3b82f6;"></i> Daftar Guru</h3>
+        <div class="card-header" style="margin-bottom:20px; background:none; padding:0; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
+            <h3 style="font-size:16px; color:#1e293b; margin: 0;"><i class="fas fa-chalkboard-teacher" style="color:#3b82f6;"></i> Daftar Guru</h3>
+            <div class="search-box-container">
+                <input type="text" id="logbookSearchInput" class="search-input" placeholder="Cari nama guru..." oninput="handleLogbookSearch()">
+                <i class="fas fa-search search-icon"></i>
+            </div>
         </div>
         <div class="guru-grid" id="guruGrid">
             <div style="text-align:center; padding:48px; color:#94a3b8; grid-column:1/-1;">
@@ -122,7 +133,9 @@
 <script>
     const BULAN_ID = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
     let allDetailLogbooks = [];
+    let allGurusData = [];
     let activeFilter = 'semua';
+    let searchQuery = '';
 
     document.addEventListener('DOMContentLoaded', initAdminLogbook);
 
@@ -132,6 +145,14 @@
         return t;
     }
 
+    function handleLogbookSearch() {
+        searchQuery = document.getElementById('logbookSearchInput').value.toLowerCase().trim();
+        const filtered = allGurusData.filter(g => 
+            g.nama && g.nama.toLowerCase().includes(searchQuery)
+        );
+        renderGuruGrid(filtered);
+    }
+
     async function initAdminLogbook() {
         const token = getToken(); if (!token) return;
         const res = await fetch('/api/admin/logbook-guru', {
@@ -139,7 +160,8 @@
         });
         const result = await res.json();
         if (!result.success) { document.getElementById('guruGrid').innerHTML = '<p style="color:red;">Gagal memuat data</p>'; return; }
-        renderGuruGrid(result.data || []);
+        allGurusData = result.data || [];
+        renderGuruGrid(allGurusData);
     }
 
     function renderGuruGrid(gurus) {
