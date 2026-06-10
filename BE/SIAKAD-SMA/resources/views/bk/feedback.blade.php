@@ -1,8 +1,8 @@
 @extends('layouts.app')
 
-@section('title', 'Feedback - SIAKAD SMA Mishbahul Ulum')
-@section('page-title', 'Feedback')
-@section('breadcrumb', 'BK / Feedback')
+@section('title', 'Feedback Konseling - SIAKAD SMA Mishbahul Ulum')
+@section('page-title', 'Feedback Konseling')
+@section('breadcrumb', 'BK / Feedback Konseling')
 
 @php
     $role = 'bk';
@@ -13,290 +13,589 @@
 @section('content')
 <div class="card">
     <div class="card-header">
-        <h3><i class="fas fa-comments"></i> Daftar Feedback</h3>
-        <button class="btn btn-primary" onclick="showFeedbackForm()">
-            <i class="fas fa-plus"></i> Beri Feedback Baru
-        </button>
+        <h3><i class="fas fa-comments"></i> Feedback Konseling</h3>
     </div>
     <div class="card-body">
-        <div class="feedback-list">
-            <div class="feedback-item">
-                <div class="feedback-header">
-                    <div class="student-info">
-                        <img src="https://via.placeholder.com/50" alt="Avatar" class="avatar">
-                        <div>
-                            <h4>Andi Pratama</h4>
-                            <small>XII IPA 1</small>
-                        </div>
-                    </div>
-                    <span class="badge badge-success">Sudah Dibaca</span>
-                </div>
-                <div class="feedback-content">
-                    <h5>Terima kasih atas bimbingannya</h5>
-                    <p>Terima kasih atas bimbingan bapak/ibu. Saya sudah bisa mengatasi masalah belajar saya dan nilai semakin membaik.</p>
-                </div>
-                <div class="feedback-meta">
-                    <span><i class="fas fa-clock"></i> 15 Jan 2024, 09:30</span>
-                    <div class="feedback-actions">
-                        <button class="btn btn-sm btn-primary" onclick="replyFeedback(1)">
-                            <i class="fas fa-reply"></i> Balas
-                        </button>
-                        <button class="btn btn-sm btn-secondary" onclick="viewFeedback(1)">
-                            <i class="fas fa-eye"></i> Lihat
-                        </button>
-                    </div>
-                </div>
+        <div class="filter-section">
+            <div class="filter-group">
+                <label>Cari Siswa</label>
+                <input type="text" id="searchSiswa" class="form-control" placeholder="Ketik nama siswa...">
             </div>
-
-            <div class="feedback-item">
-                <div class="feedback-header">
-                    <div class="student-info">
-                        <img src="https://via.placeholder.com/50" alt="Avatar" class="avatar">
-                        <div>
-                            <h4>Siti Nurhaliza</h4>
-                            <small>XI IPS 2 - Orang Tua</small>
-                        </div>
-                    </div>
-                    <span class="badge badge-warning">Belum Dibaca</span>
-                </div>
-                <div class="feedback-content">
-                    <h5>Feedback konseling karir</h5>
-                    <p>Anak saya sangat terbantu dengan sesi konseling karir kemarin. Sekarang dia lebih fokus pada tujuan masa depannya.</p>
-                </div>
-                <div class="feedback-meta">
-                    <span><i class="fas fa-clock"></i> 14 Jan 2024, 14:15</span>
-                    <div class="feedback-actions">
-                        <button class="btn btn-sm btn-primary" onclick="replyFeedback(2)">
-                            <i class="fas fa-reply"></i> Balas
-                        </button>
-                        <button class="btn btn-sm btn-secondary" onclick="viewFeedback(2)">
-                            <i class="fas fa-eye"></i> Lihat
-                        </button>
-                    </div>
-                </div>
+            <div class="filter-group">
+                <label>Status Feedback</label>
+                <select id="filterStatus" class="form-control">
+                    <option value="">Semua</option>
+                    <option value="has-feedback">Sudah Diberi Feedback</option>
+                    <option value="no-feedback">Belum Ada Feedback</option>
+                </select>
             </div>
+            <div class="filter-group">
+                <button class="btn btn-primary" onclick="applyFilters()">
+                    <i class="fas fa-search"></i> Filter
+                </button>
+            </div>
+        </div>
 
-            <div class="feedback-item">
-                <div class="feedback-header">
-                    <div class="student-info">
-                        <img src="https://via.placeholder.com/50" alt="Avatar" class="avatar">
-                        <div>
-                            <h4>Rizki Ramadhan</h4>
-                            <small>X MIPA</small>
-                        </div>
-                    </div>
-                    <span class="badge badge-danger">Urgent</span>
-                </div>
-                <div class="feedback-content">
-                    <h5>Permintaan follow up</h5>
-                    <p>Saya ingin melanjutkan konseling untuk masalah sosial yang belum tuntas. Kapan kita bisa bertemu lagi?</p>
-                </div>
-                <div class="feedback-meta">
-                    <span><i class="fas fa-clock"></i> 13 Jan 2024, 10:45</span>
-                    <div class="feedback-actions">
-                        <button class="btn btn-sm btn-primary" onclick="replyFeedback(3)">
-                            <i class="fas fa-reply"></i> Balas
-                        </button>
-                        <button class="btn btn-sm btn-secondary" onclick="viewFeedback(3)">
-                            <i class="fas fa-eye"></i> Lihat
-                        </button>
-                    </div>
-                </div>
+        <div id="konseling-list" class="konseling-list">
+            <div style="text-align: center; padding: 40px;">
+                <p>Memuat data konseling yang selesai...</p>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Stats -->
-<div class="stats-grid" style="margin-top: 24px;">
-    <div class="stat-card">
-        <div class="stat-icon" style="background: #FF9800;">
-            <i class="fas fa-inbox"></i>
-        </div>
-        <div class="stat-info">
-            <h3>12</h3>
-            <p>Feedback Masuk</p>
-        </div>
-    </div>
-    <div class="stat-card">
-        <div class="stat-icon" style="background: #4CAF50;">
-            <i class="fas fa-check"></i>
-        </div>
-        <div class="stat-info">
-            <h3>8</h3>
-            <p>Sudah Dibalas</p>
-        </div>
-    </div>
-    <div class="stat-card">
-        <div class="stat-icon" style="background: #2196F3;">
-            <i class="fas fa-clock"></i>
-        </div>
-        <div class="stat-info">
-            <h3>4</h3>
-            <p>Menunggu</p>
-        </div>
-    </div>
-    <div class="stat-card">
-        <div class="stat-icon" style="background: #F44336;">
-            <i class="fas fa-exclamation"></i>
-        </div>
-        <div class="stat-info">
-            <h3>2</h3>
-            <p>Urgent</p>
-        </div>
-    </div>
-</div>
-
-<!-- Modal Form -->
-<div id="feedbackModal" class="modal" style="display: none;">
-    <div class="modal-content">
+<!-- Modal Feedback Form -->
+<div id="feedbackModal" class="modal">
+    <div class="modal-content" style="max-width: 600px;">
         <div class="modal-header">
-            <h3>Beri Feedback Baru</h3>
-            <span class="close" onclick="closeFeedbackForm()">&times;</span>
+            <h3>Berikan Feedback Konseling</h3>
+            <span class="close" onclick="closeFeedbackModal()">&times;</span>
         </div>
         <div class="modal-body">
+            <div id="siswa-info" style="background: #f8f9fa; padding: 12px; border-radius: 6px; margin-bottom: 20px;">
+                <strong>Siswa:</strong> <span id="info-siswa-nama">-</span><br>
+                <strong>Tanggal Konseling:</strong> <span id="info-tanggal">-</span><br>
+                <strong>Status:</strong> <span id="info-status">-</span>
+            </div>
             <form id="feedbackForm">
                 <div class="form-group">
-                    <label>Kepada</label>
-                    <select class="form-control" required>
-                        <option value="">Pilih penerima</option>
-                        <option>Siswa - Andi Pratama (XII IPA 1)</option>
-                        <option>Guru - Bu Ani (Matematika)</option>
-                        <option>Orang Tua - Bapak Budi</option>
-                    </select>
+                    <label>Judul Feedback</label>
+                    <input type="text" id="feedbackJudul" class="form-control" placeholder="Masukkan judul feedback" required>
                 </div>
                 <div class="form-group">
-                    <label>Subjek</label>
-                    <input type="text" class="form-control" placeholder="Masukkan subjek" required>
-                </div>
-                <div class="form-group">
-                    <label>Pesan</label>
-                    <textarea class="form-control" rows="4" placeholder="Tulis pesan feedback..." required></textarea>
+                    <label>Isi Feedback</label>
+                    <textarea id="feedbackIsi" class="form-control" rows="5" placeholder="Tulis feedback konseling..." required></textarea>
                 </div>
             </form>
         </div>
         <div class="modal-footer">
-            <button class="btn btn-secondary" onclick="closeFeedbackForm()">Batal</button>
+            <button class="btn btn-secondary" onclick="closeFeedbackModal()">Batal</button>
             <button class="btn btn-primary" onclick="submitFeedback()">
-                <i class="fas fa-paper-plane"></i> Kirim
+                <i class="fas fa-check"></i> Simpan Feedback
             </button>
         </div>
     </div>
 </div>
+
+<!-- Modal View Feedback -->
+<div id="viewFeedbackModal" class="modal">
+    <div class="modal-content" style="max-width: 600px;">
+        <div class="modal-header">
+            <h3>Detail Feedback</h3>
+            <span class="close" onclick="closeViewFeedbackModal()">&times;</span>
+        </div>
+        <div class="modal-body">
+            <div id="view-siswa-info" style="background: #f8f9fa; padding: 12px; border-radius: 6px; margin-bottom: 20px;">
+                <strong>Siswa:</strong> <span id="view-siswa-nama">-</span><br>
+                <strong>Tanggal Konseling:</strong> <span id="view-tanggal">-</span>
+            </div>
+            <h5 id="view-feedback-judul"></h5>
+            <p id="view-feedback-isi" style="line-height: 1.6;"></p>
+            <small style="color: #999;" id="view-feedback-date"></small>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary" onclick="editCurrentFeedback()">
+                <i class="fas fa-edit"></i> Edit
+            </button>
+            <button class="btn btn-danger" onclick="deleteCurrentFeedback()">
+                <i class="fas fa-trash"></i> Hapus
+            </button>
+            <button class="btn btn-secondary" onclick="closeViewFeedbackModal()">Tutup</button>
+        </div>
+    </div>
+</div>
+
 @endsection
 
 @push('scripts')
 <script>
-    function showFeedbackForm() {
-        document.getElementById('feedbackModal').style.display = 'block';
+    let allKonseling = [];
+    let currentPenjadwalanId = null;
+    let currentFeedbackId = null;
+    let currentSiswaId = null;
+
+    function getToken() {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            alert('Token autentikasi tidak ditemukan. Silakan login ulang.');
+            return null;
+        }
+        return token;
     }
 
-    function closeFeedbackForm() {
-        document.getElementById('feedbackModal').style.display = 'none';
+    function formatDate(dateString) {
+        const date = new Date(dateString);
+        if (Number.isNaN(date.getTime())) return dateString;
+        return date.toLocaleDateString('id-ID', {
+            day: '2-digit',
+            month: 'short',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
     }
 
-    function replyFeedback(id) {
-        alert('Membalas feedback #' + id);
-    }
+    async function fetchKonselingData() {
+        const token = getToken();
+        if (!token) return;
 
-    function viewFeedback(id) {
-        alert('Melihat detail feedback #' + id);
-    }
+        try {
+            const response = await fetch('/api/bk/penjadwalan', {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Accept': 'application/json'
+                }
+            });
 
-    function submitFeedback() {
-        alert('Feedback berhasil dikirim!');
-        closeFeedbackForm();
-    }
+            if (!response.ok) {
+                throw new Error('Gagal mengambil data konseling');
+            }
 
-    window.onclick = function(event) {
-        const modal = document.getElementById('feedbackModal');
-        if (event.target === modal) {
-            closeFeedbackForm();
+            const result = await response.json();
+            let penjadwalans = result.data || [];
+
+            // Filter hanya yang sudah selesai (status = 1)
+            allKonseling = penjadwalans
+                .filter(p => p.status === 1 || p.status === '1')
+                .map(p => {
+                    const siswa = p.siswa || {};
+                    return {
+                        id: p.id,
+                        siswa_id: p.siswa_id,
+                        siswa_nama: siswa.nama || 'Siswa',
+                        siswa_tingkat: siswa.tingkat || '-',
+                        tanggal: p.tanggal || '-',
+                        waktu: p.waktu || '-',
+                        keterangan: p.keterangan || '-',
+                        feedback: p.feedback || null,
+                        bk_nama: (p.bk || {}).nama || '-'
+                    };
+                })
+                .sort((a, b) => new Date(b.tanggal) - new Date(a.tanggal));
+
+            renderKonselingList(allKonseling);
+        } catch (error) {
+            console.error('Error fetching konseling data:', error);
+            document.getElementById('konseling-list').innerHTML = 
+                '<div style="text-align: center; padding: 40px; color: red;">Gagal memuat data konseling</div>';
         }
     }
+
+    function renderKonselingList(konselingList) {
+        const listDiv = document.getElementById('konseling-list');
+        
+        if (!konselingList || konselingList.length === 0) {
+            listDiv.innerHTML = '<div style="text-align: center; padding: 40px;">Tidak ada konseling yang selesai</div>';
+            return;
+        }
+
+        listDiv.innerHTML = konselingList.map(k => `
+            <div class="konseling-card">
+                <div class="konseling-header">
+                    <div class="konseling-info">
+                        <h4>${k.siswa_nama}</h4>
+                        <small>${k.siswa_tingkat}</small>
+                    </div>
+                    ${k.feedback ? 
+                        '<span class="badge badge-success">Sudah Diberi Feedback</span>' :
+                        '<span class="badge badge-warning">Belum Ada Feedback</span>'
+                    }
+                </div>
+                <div class="konseling-detail">
+                    <div class="detail-row">
+                        <strong>Tanggal:</strong> ${formatDate(k.tanggal)}
+                    </div>
+                    <div class="detail-row">
+                        <strong>Catatan:</strong> ${k.keterangan}
+                    </div>
+                </div>
+                <div class="konseling-actions">
+                    ${k.feedback ?
+                        `<button class="btn btn-sm btn-info" onclick="viewFeedback(${k.id}, ${k.siswa_id})">
+                            <i class="fas fa-eye"></i> Lihat Feedback
+                        </button>` :
+                        `<button class="btn btn-sm btn-primary" onclick="openFeedbackForm(${k.id}, '${k.siswa_nama}', '${k.tanggal}', ${k.siswa_id})">
+                            <i class="fas fa-comments"></i> Beri Feedback
+                        </button>`
+                    }
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function applyFilters() {
+        const searchTerm = document.getElementById('searchSiswa').value.toLowerCase();
+        const statusFilter = document.getElementById('filterStatus').value;
+
+        const filtered = allKonseling.filter(k => {
+            const nameMatch = k.siswa_nama.toLowerCase().includes(searchTerm);
+            const statusMatch = statusFilter === '' ||
+                (statusFilter === 'has-feedback' && k.feedback) ||
+                (statusFilter === 'no-feedback' && !k.feedback);
+            return nameMatch && statusMatch;
+        });
+
+        renderKonselingList(filtered);
+    }
+
+    function openFeedbackForm(penjadwalanId, siswa_nama, tanggal, siswa_id) {
+        currentPenjadwalanId = penjadwalanId;
+        currentSiswaId = siswa_id;
+        document.getElementById('info-siswa-nama').textContent = siswa_nama;
+        document.getElementById('info-tanggal').textContent = formatDate(tanggal);
+        document.getElementById('info-status').textContent = 'Selesai';
+        document.getElementById('feedbackJudul').value = '';
+        document.getElementById('feedbackIsi').value = '';
+        document.getElementById('feedbackModal').classList.add('show');
+    }
+
+    function closeFeedbackModal() {
+        document.getElementById('feedbackModal').classList.remove('show');
+    }
+
+    async function submitFeedback() {
+        const token = getToken();
+        if (!token || !currentPenjadwalanId) return;
+
+        const judul = document.getElementById('feedbackJudul').value;
+        const isi = document.getElementById('feedbackIsi').value;
+
+        if (!judul.trim() || !isi.trim()) {
+            alert('Judul dan isi feedback tidak boleh kosong');
+            return;
+        }
+
+        try {
+            const response = await fetch(`/api/bk/penjadwalan/${currentPenjadwalanId}/feedback`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({ judul, isi })
+            });
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                alert(result.message || 'Gagal menyimpan feedback');
+                return;
+            }
+
+            alert('Feedback berhasil diberikan!');
+            closeFeedbackModal();
+            fetchKonselingData();
+        } catch (error) {
+            console.error('Error submitting feedback:', error);
+            alert('Terjadi kesalahan saat menyimpan feedback');
+        }
+    }
+
+    async function viewFeedback(penjadwalanId, siswaId) {
+        const token = getToken();
+        if (!token) return;
+
+        try {
+            const response = await fetch(`/api/bk/penjadwalan/${penjadwalanId}/feedback`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Accept': 'application/json'
+                }
+            });
+
+            const result = await response.json();
+            const feedback = result.data;
+
+            if (!feedback) {
+                alert('Feedback tidak ditemukan');
+                return;
+            }
+
+            currentFeedbackId = feedback.id;
+            currentPenjadwalanId = penjadwalanId;
+            currentSiswaId = siswaId;
+
+            // Find konseling data
+            const konseling = allKonseling.find(k => k.id === penjadwalanId);
+            
+            document.getElementById('view-siswa-nama').textContent = konseling.siswa_nama;
+            document.getElementById('view-tanggal').textContent = formatDate(konseling.tanggal);
+            document.getElementById('view-feedback-judul').textContent = feedback.judul;
+            document.getElementById('view-feedback-isi').textContent = feedback.isi;
+            document.getElementById('view-feedback-date').textContent = 
+                'Dibuat: ' + formatDate(feedback.created_at);
+
+            document.getElementById('viewFeedbackModal').classList.add('show');
+        } catch (error) {
+            console.error('Error viewing feedback:', error);
+            alert('Gagal memuat feedback');
+        }
+    }
+
+    function closeViewFeedbackModal() {
+        document.getElementById('viewFeedbackModal').classList.remove('show');
+    }
+
+    async function editCurrentFeedback() {
+        closeViewFeedbackModal();
+        const judul = document.getElementById('view-feedback-judul').textContent;
+        const isi = document.getElementById('view-feedback-isi').textContent;
+        const siswa_nama = document.getElementById('view-siswa-nama').textContent;
+        const tanggal = document.getElementById('view-tanggal').textContent;
+
+        document.getElementById('info-siswa-nama').textContent = siswa_nama;
+        document.getElementById('info-tanggal').textContent = tanggal;
+        document.getElementById('info-status').textContent = 'Selesai';
+        document.getElementById('feedbackJudul').value = judul;
+        document.getElementById('feedbackIsi').value = isi;
+
+        // Change submit to update
+        const submitBtn = document.querySelector('#feedbackModal .modal-footer .btn-primary');
+        submitBtn.textContent = '📝 Update Feedback';
+        submitBtn.onclick = updateFeedback;
+
+        document.getElementById('feedbackModal').classList.add('show');
+    }
+
+    async function updateFeedback() {
+        const token = getToken();
+        if (!token || !currentFeedbackId) return;
+
+        const judul = document.getElementById('feedbackJudul').value;
+        const isi = document.getElementById('feedbackIsi').value;
+
+        try {
+            const response = await fetch(`/api/bk/feedback/${currentFeedbackId}`, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({ judul, isi })
+            });
+
+            const result = await response.json();
+            if (!response.ok) {
+                alert(result.message || 'Gagal mengubah feedback');
+                return;
+            }
+
+            alert('Feedback berhasil diubah!');
+            closeFeedbackModal();
+            fetchKonselingData();
+
+            // Reset button
+            const submitBtn = document.querySelector('#feedbackModal .modal-footer .btn-primary');
+            submitBtn.textContent = '✓ Simpan Feedback';
+            submitBtn.onclick = submitFeedback;
+        } catch (error) {
+            console.error('Error updating feedback:', error);
+            alert('Terjadi kesalahan saat mengubah feedback');
+        }
+    }
+
+    async function deleteCurrentFeedback() {
+        if (!confirm('Yakin ingin menghapus feedback ini?')) return;
+
+        const token = getToken();
+        if (!token || !currentFeedbackId) return;
+
+        try {
+            const response = await fetch(`/api/bk/feedback/${currentFeedbackId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Accept': 'application/json'
+                }
+            });
+
+            const result = await response.json();
+            if (!response.ok) {
+                alert(result.message || 'Gagal menghapus feedback');
+                return;
+            }
+
+            alert('Feedback berhasil dihapus!');
+            closeViewFeedbackModal();
+            fetchKonselingData();
+        } catch (error) {
+            console.error('Error deleting feedback:', error);
+            alert('Terjadi kesalahan saat menghapus feedback');
+        }
+    }
+
+    // Modal click outside to close
+    window.onclick = function(event) {
+        const feedbackModal = document.getElementById('feedbackModal');
+        const viewModal = document.getElementById('viewFeedbackModal');
+        
+        if (event.target === feedbackModal) {
+            closeFeedbackModal();
+        }
+        if (event.target === viewModal) {
+            closeViewFeedbackModal();
+        }
+    }
+
+    // Load data on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        fetchKonselingData();
+    });
 </script>
 
 <style>
-    .feedback-list {
+    .filter-section {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 16px;
+        margin-bottom: 24px;
+        padding-bottom: 16px;
+        border-bottom: 1px solid #eee;
+    }
+
+    .filter-group {
         display: flex;
         flex-direction: column;
-        gap: 20px;
+        gap: 6px;
     }
 
-    .feedback-item {
-        border: 1px solid #eee;
-        border-radius: 10px;
-        padding: 20px;
+    .filter-group label {
+        font-weight: 500;
+        color: #555;
+        font-size: 13px;
+    }
+
+    .filter-group input,
+    .filter-group select {
+        padding: 8px 12px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        font-size: 13px;
+    }
+
+    .konseling-list {
+        display: grid;
+        gap: 16px;
+    }
+
+    .konseling-card {
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 16px;
         background: #f8f9fa;
+        transition: all 0.2s;
     }
 
-    .feedback-header {
+    .konseling-card:hover {
+        border-color: #667eea;
+        box-shadow: 0 2px 8px rgba(102, 126, 234, 0.1);
+    }
+
+    .konseling-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 15px;
+        margin-bottom: 12px;
     }
 
-    .student-info {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-    }
-
-    .student-info .avatar {
-        width: 50px;
-        height: 50px;
-        border-radius: 50%;
-    }
-
-    .student-info h4 {
-        margin: 0;
+    .konseling-info h4 {
+        margin: 0 0 4px 0;
         font-size: 16px;
-    }
-
-    .student-info small {
-        color: #666;
-    }
-
-    .feedback-content {
-        margin-bottom: 15px;
-    }
-
-    .feedback-content h5 {
-        margin: 0 0 8px 0;
         color: #333;
     }
 
-    .feedback-content p {
-        margin: 0;
-        color: #666;
+    .konseling-info small {
+        color: #999;
     }
 
-    .feedback-meta {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding-top: 15px;
-        border-top: 1px solid #ddd;
-        font-size: 14px;
-        color: #777;
+    .badge {
+        padding: 4px 12px;
+        border-radius: 12px;
+        font-size: 12px;
+        font-weight: 500;
     }
 
-    .feedback-actions {
+    .badge-success {
+        background: #d4edda;
+        color: #155724;
+    }
+
+    .badge-warning {
+        background: #fff3cd;
+        color: #856404;
+    }
+
+    .konseling-detail {
+        margin-bottom: 12px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .detail-row {
+        font-size: 13px;
+        color: #555;
+        margin-bottom: 6px;
+    }
+
+    .konseling-actions {
         display: flex;
         gap: 8px;
     }
 
-    .badge {
-        padding: 6px 12px;
-        border-radius: 20px;
-        font-size: 12px;
-        font-weight: 600;
+    .btn {
+        padding: 8px 16px;
+        border: none;
+        border-radius: 6px;
+        font-size: 13px;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        transition: all 0.2s;
     }
 
-    .badge-success { background: #4CAF50; color: white; }
-    .badge-warning { background: #FF9800; color: white; }
-    .badge-danger { background: #F44336; color: white; }
+    .btn-primary {
+        background: #667eea;
+        color: white;
+    }
+
+    .btn-primary:hover {
+        background: #5568d3;
+    }
+
+    .btn-info {
+        background: #2196F3;
+        color: white;
+    }
+
+    .btn-info:hover {
+        background: #0b7dda;
+    }
+
+    .btn-sm {
+        padding: 6px 12px;
+        font-size: 12px;
+    }
+
+    .btn-secondary {
+        background: #6c757d;
+        color: white;
+    }
+
+    .btn-secondary:hover {
+        background: #5a6268;
+    }
+
+    .btn-danger {
+        background: #dc3545;
+        color: white;
+    }
+
+    .btn-danger:hover {
+        background: #c82333;
+    }
 
     .modal {
         display: none;
@@ -307,15 +606,20 @@
         width: 100%;
         height: 100%;
         background: rgba(0, 0, 0, 0.5);
+        align-items: center;
+        justify-content: center;
+    }
+
+    .modal.show {
+        display: flex;
     }
 
     .modal-content {
         background: white;
-        margin: 5% auto;
-        padding: 0;
-        border-radius: 12px;
+        border-radius: 8px;
         width: 90%;
-        max-width: 600px;
+        max-height: 90vh;
+        overflow-y: auto;
     }
 
     .modal-header {
@@ -343,8 +647,7 @@
     }
 
     .close {
-        font-size: 28px;
-        font-weight: bold;
+        font-size: 24px;
         cursor: pointer;
         color: #999;
     }
@@ -354,28 +657,31 @@
     }
 
     .form-group {
-        margin-bottom: 20px;
+        margin-bottom: 16px;
     }
 
     .form-group label {
         display: block;
-        margin-bottom: 8px;
+        margin-bottom: 6px;
         font-weight: 500;
         color: #555;
+        font-size: 13px;
     }
 
     .form-control {
         width: 100%;
-        padding: 10px 12px;
+        padding: 10px;
         border: 1px solid #ddd;
-        border-radius: 8px;
-        font-size: 14px;
+        border-radius: 6px;
+        font-size: 13px;
+        font-family: inherit;
     }
 
     .form-control:focus {
         outline: none;
-        border-color: #2196F3;
-        box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
     }
 </style>
 @endpush
+

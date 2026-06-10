@@ -19,7 +19,7 @@
                 <i class="fas fa-clock"></i>
             </div>
             <div class="stat-info">
-                <h3>8</h3>
+                <h3 id="pendingCount">0</h3>
                 <p>Menunggu Validasi</p>
             </div>
         </div>
@@ -28,8 +28,8 @@
                 <i class="fas fa-check-circle"></i>
             </div>
             <div class="stat-info">
-                <h3>24</h3>
-                <p>Disetujui (Bulan Ini)</p>
+                <h3 id="approvedCount">0</h3>
+                <p>Disetujui</p>
             </div>
         </div>
         <div class="stat-card">
@@ -37,8 +37,8 @@
                 <i class="fas fa-times-circle"></i>
             </div>
             <div class="stat-info">
-                <h3>5</h3>
-                <p>Ditolak (Bulan Ini)</p>
+                <h3 id="rejectedCount">0</h3>
+                <p>Ditolak</p>
             </div>
         </div>
 
@@ -98,45 +98,17 @@
                         <th>No</th>
                         <th>Nama Siswa</th>
                         <th>Tingkat</th>
-                        <th>Jenis Validasi</th>
                         <th>Tanggal</th>
+                        <th>Waktu</th>
                         <th>Keterangan</th>
                         <th>Status</th>
                         <th>Aksi</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr data-status="pending" data-class="X">
-                        <td>1</td>
-                        <td>
-                            <div class="student-cell">
-                                <img src="https://via.placeholder.com/35" alt="Student" class="student-thumb">
-                                <div>
-                                    <strong>Ahmad Hidayat</strong>
-                                    <small>NIS: 2024001</small>
-                                </div>
-                            </div>
-                        </td>
-                        <td>X</td>
-                        <td>Izin Sakit</td>
-                        <td>15 Jan 2024</td>
-                        <td>Membutuhkan surat dokter</td>
-                        <td>
-                            <span class="status-badge pending">Menunggu</span>
-                        </td>
-                        <td>
-                            <button class="btn-icon btn-success" onclick="approveValidation(1)">
-                                <i class="fas fa-check"></i>
-                            </button>
-                            <button class="btn-icon btn-danger" onclick="rejectValidation(1)">
-                                <i class="fas fa-times"></i>
-                            </button>
-                            <button class="btn-icon" onclick="viewDetails(1)">
-                                <i class="fas fa-eye"></i>
-                            </button>
-                        </td>
+                <tbody id="validationTableBody">
+                    <tr>
+                        <td colspan="8" style="text-align: center;">Loading...</td>
                     </tr>
-
                 </tbody>
             </table>
         </div>
@@ -429,6 +401,28 @@
         fetchSiswaList();
     });
 
+    async function getCurrentBKId() {
+        const token = getToken();
+        if (!token) return null;
+
+        try {
+            const response = await fetch('/api/me', {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Accept': 'application/json'
+                }
+            });
+            const result = await response.json();
+            if (result.success && result.data && result.data.user && result.data.user.role && result.data.user.role.name === 'BK' && result.data.profile) {
+                return result.data.profile.id;
+            }
+        } catch (error) {
+            console.error('Error fetching current BK profile:', error);
+        }
+
+        return null;
+    }
+
     // Fetch all siswa for dropdown
     async function fetchSiswaList() {
         const token = getToken();
@@ -480,15 +474,22 @@
 
             if (result.success && result.data) {
                 renderScheduleTable(result.data);
+                renderValidationList(result.data.filter(item => item.status == '0'));
             } else {
                 document.getElementById('scheduleTableBody').innerHTML = `
                     <tr><td colspan="7" style="text-align: center;">Gagal memuat data</td></tr>
+                `;
+                document.getElementById('validationTableBody').innerHTML = `
+                    <tr><td colspan="8" style="text-align: center;">Gagal memuat data</td></tr>
                 `;
             }
         } catch (error) {
             console.error('Error:', error);
             document.getElementById('scheduleTableBody').innerHTML = `
                 <tr><td colspan="7" style="text-align: center;">Terjadi kesalahan saat memuat data</td></tr>
+            `;
+            document.getElementById('validationTableBody').innerHTML = `
+                <tr><td colspan="8" style="text-align: center;">Terjadi kesalahan saat memuat data</td></tr>
             `;
         }
     }
@@ -497,6 +498,14 @@
     function renderScheduleTable(data) {
         const tbody = document.getElementById('scheduleTableBody');
         
+        const pendingCount = data.filter(item => item.status == '0').length;
+        const approvedCount = data.filter(item => item.status == '1').length;
+        const rejectedCount = 0; // Rejected schedules are deleted once rejected
+
+        document.getElementById('pendingCount').textContent = pendingCount;
+        document.getElementById('approvedCount').textContent = approvedCount;
+        document.getElementById('rejectedCount').textContent = rejectedCount;
+
         if (data.length === 0) {
             tbody.innerHTML = `
                 <tr><td colspan="7" style="text-align: center;">Tidak ada jadwal konseling</td></tr>
@@ -543,6 +552,47 @@
         }).join('');
     }
 
+    function renderValidationList(data) {
+        const tbody = document.getElementById('validationTableBody');
+        if (!tbody) return;
+
+        if (data.length === 0) {
+            tbody.innerHTML = `
+                <tr><td colspan="8" style="text-align: center;">Tidak ada permintaan validasi</td></tr>
+            `;
+            return;
+        }
+
+        tbody.innerHTML = data.map((schedule, index) => {
+            const statusBadge = schedule.status == '1' 
+                ? '<span class="status-badge confirmed">Dikonfirmasi</span>' 
+                : '<span class="status-badge pending">Menunggu</span>';
+
+            return `
+                <tr>
+                    <td>${index + 1}</td>
+                    <td>${schedule.siswa ? schedule.siswa.nama : 'N/A'}</td>
+                    <td>${schedule.siswa && schedule.siswa.tingkat ? schedule.siswa.tingkat : 'N/A'}</td>
+                    <td>${schedule.tanggal}</td>
+                    <td>${schedule.waktu}</td>
+                    <td>${schedule.keterangan || '-'}</td>
+                    <td>${statusBadge}</td>
+                    <td>
+                        <button class="btn-icon btn-success" onclick="approveSchedule(${schedule.id})" title="Konfirmasi">
+                            <i class="fas fa-check"></i>
+                        </button>
+                        <button class="btn-icon btn-danger" onclick="rejectSchedule(${schedule.id})" title="Tolak">
+                            <i class="fas fa-times"></i>
+                        </button>
+                        <button class="btn-icon" onclick="viewScheduleDetail(${schedule.id})" title="Detail">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </td>
+                </tr>
+            `;
+        }).join('');
+    }
+
     // Show add schedule modal
     function showAddScheduleModal() {
         document.getElementById('addScheduleModal').style.display = 'block';
@@ -570,9 +620,11 @@
             return;
         }
 
-        // Get BK ID from localStorage or from user data
-        // For now, we'll need to get it from the logged in user
-        const bkId = 1; // This should be fetched from logged in user's bk_id
+        const bkId = await getCurrentBKId();
+        if (!bkId) {
+            alert('Gagal mendapatkan data BK. Silakan refresh halaman dan coba lagi.');
+            return;
+        }
 
         try {
             const response = await fetch('/api/bk/penjadwalan', {
@@ -587,7 +639,7 @@
                     bk_id: bkId,
                     tanggal: tanggal,
                     waktu: waktu,
-                    status: status,
+                    status: status || '1',
                     keterangan: keterangan
                 })
             });
@@ -773,6 +825,47 @@
                 modal.style.display = 'none';
             }
         });
+    }
+
+    function renderValidationList(data) {
+        const tbody = document.getElementById('validationTableBody');
+        if (!tbody) return;
+
+        if (data.length === 0) {
+            tbody.innerHTML = `
+                <tr><td colspan="8" style="text-align: center;">Tidak ada permintaan validasi</td></tr>
+            `;
+            return;
+        }
+
+        tbody.innerHTML = data.map((schedule, index) => {
+            const statusBadge = schedule.status == '1' 
+                ? '<span class="status-badge confirmed">Dikonfirmasi</span>' 
+                : '<span class="status-badge pending">Menunggu</span>';
+
+            return `
+                <tr>
+                    <td>${index + 1}</td>
+                    <td>${schedule.siswa ? schedule.siswa.nama : 'N/A'}</td>
+                    <td>${schedule.siswa && schedule.siswa.tingkat ? schedule.siswa.tingkat : 'N/A'}</td>
+                    <td>${schedule.tanggal}</td>
+                    <td>${schedule.waktu}</td>
+                    <td>${schedule.keterangan || '-'}</td>
+                    <td>${statusBadge}</td>
+                    <td>
+                        <button class="btn-icon btn-success" onclick="approveSchedule(${schedule.id})" title="Konfirmasi">
+                            <i class="fas fa-check"></i>
+                        </button>
+                        <button class="btn-icon btn-danger" onclick="rejectSchedule(${schedule.id})" title="Tolak">
+                            <i class="fas fa-times"></i>
+                        </button>
+                        <button class="btn-icon" onclick="viewScheduleDetail(${schedule.id})" title="Detail">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </td>
+                </tr>
+            `;
+        }).join('');
     }
 </script>
 @endpush

@@ -22,4 +22,9 @@ class Penjadwalan extends Model
     {
         return $this->hasMany(Bimbingan::class);
     }
+
+    public function feedback()
+    {
+        return $this->hasOne(Feedback::class, 'penjadwalan_id');
+    }
 }

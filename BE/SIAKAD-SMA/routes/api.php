@@ -10,12 +10,14 @@ use App\Http\Controllers\API\GuruController;
 use App\Http\Controllers\API\AbsenController;
 use App\Http\Controllers\API\AbsensiController;
 use App\Http\Controllers\API\PenjadwalanController;
+use App\Http\Controllers\API\SuratPemanggilanController;
 use App\Http\Controllers\API\PointController;
 use App\Http\Controllers\API\BimbinganController;
 use App\Http\Controllers\API\JadwalPelajaranController;
 use App\Http\Controllers\API\JadwalSlotController;
 use App\Http\Controllers\API\PelanggaranSiswaController;
 use App\Http\Controllers\API\LogbookMengajarController;
+use App\Http\Controllers\API\FeedbackController;
 
 // ========================================
 // AUTH ROUTES (Public - No Authentication)
@@ -123,6 +125,16 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::apiResource('penjadwalan', PenjadwalanController::class);
         Route::post('/penjadwalan/{id}/approve', [PenjadwalanController::class, 'approve'])->name('penjadwalan.approve');
         Route::post('/penjadwalan/{id}/reject', [PenjadwalanController::class, 'reject'])->name('penjadwalan.reject');
+
+        // Kelola Surat Pemanggilan
+        Route::apiResource('surat-pemanggilan', SuratPemanggilanController::class);
+        Route::post('/surat-pemanggilan/{id}/send', [SuratPemanggilanController::class, 'send'])->name('surat-pemanggilan.send');
+        
+        // Kelola Feedback Konseling
+        Route::post('/penjadwalan/{penjadwalan_id}/feedback', [FeedbackController::class, 'store'])->name('feedback.store');
+        Route::put('/feedback/{feedback_id}', [FeedbackController::class, 'update'])->name('feedback.update');
+        Route::delete('/feedback/{feedback_id}', [FeedbackController::class, 'destroy'])->name('feedback.destroy');
+        Route::get('/penjadwalan/{penjadwalan_id}/feedback', [FeedbackController::class, 'getByPenjadwalan'])->name('feedback.show');
         
         // Kelola Bimbingan
         Route::apiResource('bimbingan', BimbinganController::class);
@@ -154,6 +166,13 @@ Route::middleware('auth:sanctum')->group(function () {
 
         // Lihat Data BK (Read Only)
         Route::get('/bk', [BKController::class, 'index'])->name('bk.index');
+
+        // Surat Pemanggilan Saya
+        Route::get('/surat-pemanggilan-saya/{siswa_id}', [SuratPemanggilanController::class, 'getSuratSiswa'])->name('surat-pemanggilan.saya');
+        Route::post('/surat-pemanggilan/{id}/read', [SuratPemanggilanController::class, 'markAsRead'])->name('surat-pemanggilan.read');
+
+        // Feedback Konseling Saya
+        Route::get('/feedback-saya/{siswa_id}', [FeedbackController::class, 'getSiswaFeedback'])->name('feedback.saya');
 
         // Jadwal Konseling Saya
         Route::get('/penjadwalan-saya/{siswa_id}', [PenjadwalanController::class, 'getPenjadwalanSiswa'])->name('penjadwalan.saya');

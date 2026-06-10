@@ -29,7 +29,7 @@
             <i class="fas fa-calendar-check"></i>
         </div>
         <div class="stat-info">
-            <h3>3</h3>
+            <h3 id="confirmedSessions">0</h3>
             <p>Sesi Aktif</p>
         </div>
     </div>
@@ -38,7 +38,7 @@
             <i class="fas fa-clock"></i>
         </div>
         <div class="stat-info">
-            <h3>2</h3>
+            <h3 id="pendingSessions">0</h3>
             <p>Menunggu Konfirmasi</p>
         </div>
     </div>
@@ -47,7 +47,7 @@
             <i class="fas fa-check-circle"></i>
         </div>
         <div class="stat-info">
-            <h3>8</h3>
+            <h3 id="finishedSessions">0</h3>
             <p>Sesi Selesai</p>
         </div>
     </div>
@@ -56,7 +56,7 @@
             <i class="fas fa-envelope"></i>
         </div>
         <div class="stat-info">
-            <h3>1</h3>
+            <h3 id="letterCount">0</h3>
             <p>Surat Pemanggilan</p>
         </div>
     </div>
@@ -226,7 +226,7 @@
         const siswaId = await getSiswaId();
         if (!siswaId) {
             document.getElementById('scheduleTableBody').innerHTML = `
-                <tr><td colspan="5" style="text-align: center;">Gagal mendapatkan data siswa</td></tr>
+                <tr><td colspan="6" style="text-align: center;">Gagal mendapatkan data siswa</td></tr>
             `;
             return;
         }
@@ -254,40 +254,67 @@
                 document.getElementById('scheduleTableBody').innerHTML = `
                     <tr><td colspan="6" style="text-align: center;">Gagal memuat data</td></tr>
                 `;
+                document.getElementById('confirmedSessions').textContent = 0;
+                document.getElementById('pendingSessions').textContent = 0;
+                document.getElementById('finishedSessions').textContent = 0;
+                document.getElementById('letterCount').textContent = 0;
             }
         } catch (error) {
             console.error('Error:', error);
             document.getElementById('scheduleTableBody').innerHTML = `
                 <tr><td colspan="6" style="text-align: center;">Terjadi kesalahan saat memuat data</td></tr>
             `;
+            document.getElementById('confirmedSessions').textContent = 0;
+            document.getElementById('pendingSessions').textContent = 0;
+            document.getElementById('finishedSessions').textContent = 0;
+            document.getElementById('letterCount').textContent = 0;
         }
+    }
+
+    function parseISODate(dateString) {
+        const date = new Date(`${dateString}T00:00:00`);
+        return Number.isNaN(date.getTime()) ? null : date;
     }
 
     // Render schedule table
     function renderScheduleTable(data) {
         const tbody = document.getElementById('scheduleTableBody');
+        const today = new Date();
+        today.setHours(0,0,0,0);
         
         if (data.length === 0) {
             tbody.innerHTML = `
                 <tr><td colspan="6" style="text-align: center;">Belum ada jadwal konseling</td></tr>
             `;
+            document.getElementById('confirmedSessions').textContent = 0;
+            document.getElementById('pendingSessions').textContent = 0;
+            document.getElementById('finishedSessions').textContent = 0;
+            document.getElementById('letterCount').textContent = 0;
             return;
         }
 
-        // Update stats
-        const menunggu = data.filter(s => s.status == '0').length;
-        const dikonfirmasi = data.filter(s => s.status == '1').length;
-        
-        // Update stat cards
-        document.querySelectorAll('.stat-card')[0].querySelector('h3').textContent = dikonfirmasi;
-        document.querySelectorAll('.stat-card')[1].querySelector('h3').textContent = menunggu;
+        const pending = data.filter(s => s.status == '0').length;
+        const confirmed = data.filter(s => s.status == '1').length;
+        const finished = data.filter(s => {
+            const date = parseISODate(s.tanggal);
+            return s.status == '1' && date && date < today;
+        }).length;
+        const letters = data.filter(s => {
+            const date = parseISODate(s.tanggal);
+            return s.status == '0' && date && date <= today;
+        }).length;
+
+        document.getElementById('confirmedSessions').textContent = confirmed;
+        document.getElementById('pendingSessions').textContent = pending;
+        document.getElementById('finishedSessions').textContent = finished;
+        document.getElementById('letterCount').textContent = letters;
 
         tbody.innerHTML = data.map(schedule => {
-            const statusBadge = schedule.status == '1' 
-                ? '<span class="badge badge-success">Dikonfirmasi</span>' 
+            const statusBadge = schedule.status == '1'
+                ? '<span class="badge badge-success">Dikonfirmasi</span>'
                 : '<span class="badge badge-warning">Menunggu</span>';
             
-            const keteranganPreview = schedule.keterangan 
+            const keteranganPreview = schedule.keterangan
                 ? (schedule.keterangan.length > 50 ? schedule.keterangan.substring(0, 50) + '...' : schedule.keterangan)
                 : '-';
             
@@ -353,12 +380,10 @@
                     'Accept': 'application/json'
                 },
                 body: JSON.stringify({
-                    siswa_id: siswaId,
                     bk_id: bkId,
                     tanggal: tanggal,
                     waktu: waktu,
-                    keterangan: keterangan,
-                    status: '0' // Menunggu konfirmasi
+                    keterangan: keterangan
                 })
             });
 

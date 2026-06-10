@@ -305,7 +305,7 @@
             <i class="fas fa-users"></i>
         </div>
         <div class="stat-info">
-            <h3>125</h3>
+            <h3 id="activeStudentsCount">0</h3>
             <p>Siswa Aktif</p>
         </div>
     </div>
@@ -314,7 +314,7 @@
             <i class="fas fa-clock"></i>
         </div>
         <div class="stat-info">
-            <h3>8</h3>
+            <h3 id="todayCounselCount">0</h3>
             <p>Konseling Hari Ini</p>
         </div>
     </div>
@@ -323,11 +323,14 @@
             <i class="fas fa-exclamation-triangle"></i>
         </div>
         <div class="stat-info">
-            <h3>15</h3>
+            <h3 id="pendingValidationCount">0</h3>
             <p>Perlu Validasi</p>
         </div>
     </div>
 
+</div>
+<div class="dashboard-meta" style="margin-bottom: 24px; color: #555; font-size: 15px;">
+    <span id="current-date"></span>
 </div>
 
 <!-- Main Content Grid -->
@@ -341,16 +344,13 @@
                 <a href="#" class="btn-link">Lihat Semua</a>
             </div>
             <div class="card-body">
-                <div class="schedule-list">
+                <div class="schedule-list" id="todayScheduleList">
                     <div class="schedule-item">
                         <div class="schedule-time">
-                            <span class="time">08:00 - 09:00</span>
-                            <span class="status active">Sedang Berjalan</span>
+                            <span class="time">Loading...</span>
                         </div>
                         <div class="schedule-details">
-                            <h4>Andi Pratama</h4>
-                            <p>Kelas XII IPA 1 - Masalah Belajar</p>
-                            <span class="tag urgent">Urgent</span>
+                            <h4>Memuat data jadwal...</h4>
                         </div>
                     </div>
                 </div>
@@ -367,19 +367,19 @@
             </div>
             <div class="card-body">
                 <div class="quick-actions">
-                    <button class="action-btn" onclick="location.href='surat-pemanggilan.html'">
+                    <button class="action-btn" onclick="location.href='/bk/surat-pemanggilan'">
                         <i class="fas fa-envelope"></i>
                         <span>Buat Surat Pemanggilan</span>
                     </button>
-                    <button class="action-btn" onclick="location.href='validasi.html'">
+                    <button class="action-btn" onclick="location.href='/bk/validasi'">
                         <i class="fas fa-check-circle"></i>
                         <span>Validasi Siswa</span>
                     </button>
-                    <button class="action-btn" onclick="location.href='feedback.html'">
+                    <button class="action-btn" onclick="location.href='/bk/feedback'">
                         <i class="fas fa-comment-medical"></i>
                         <span>Beri Feedback</span>
                     </button>
-                    <button class="action-btn" onclick="location.href='laporan.html'">
+                    <button class="action-btn" onclick="location.href='/bk/laporan'">
                         <i class="fas fa-file-alt"></i>
                         <span>Buat Laporan</span>
                     </button>
@@ -405,36 +405,9 @@
                     <th>Aksi</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody id="recentActivitiesBody">
                 <tr>
-                    <td>15 Jan 2024, 08:30</td>
-                    <td>Konseling Akademik</td>
-                    <td>Andi Pratama (XII IPA 1)</td>
-                    <td><span class="status-badge completed">Selesai</span></td>
-                    <td>
-                        <button class="btn-icon" title="Lihat Detail"><i class="fas fa-eye"></i></button>
-                        <button class="btn-icon" title="Edit"><i class="fas fa-edit"></i></button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>14 Jan 2024, 14:15</td>
-                    <td>Validasi Kehadiran</td>
-                    <td>Siti Nurhaliza (XI IPS 2)</td>
-                    <td><span class="status-badge pending">Pending</span></td>
-                    <td>
-                        <button class="btn-icon" title="Lihat Detail"><i class="fas fa-eye"></i></button>
-                        <button class="btn-icon" title="Setujui"><i class="fas fa-check"></i></button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>13 Jan 2024, 10:45</td>
-                    <td>Surat Pemanggilan</td>
-                    <td>Rizki Ramadhan (X MIPA)</td>
-                    <td><span class="status-badge in-progress">Diproses</span></td>
-                    <td>
-                        <button class="btn-icon" title="Lihat Detail"><i class="fas fa-eye"></i></button>
-                        <button class="btn-icon" title="Cetak"><i class="fas fa-print"></i></button>
-                    </td>
+                    <td colspan="5" style="text-align: center;">Memuat aktivitas terbaru...</td>
                 </tr>
             </tbody>
         </table>
@@ -444,7 +417,36 @@
 
 @push('scripts')
 <script>
-    // Update current date
+    function formatDate(dateString) {
+        const date = new Date(dateString);
+        if (Number.isNaN(date.getTime())) return '-';
+
+        const options = {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric'
+        };
+
+        return date.toLocaleDateString('id-ID', options);
+    }
+
+    function formatTime(timeString) {
+        return timeString || '-';
+    }
+
+    function statusBadge(status) {
+        switch (status) {
+            case '1':
+            case 1:
+                return '<span class="status-badge completed">Disetujui</span>';
+            case '0':
+            case 0:
+                return '<span class="status-badge pending">Menunggu</span>';
+            default:
+                return '<span class="status-badge in-progress">Proses</span>';
+        }
+    }
+
     function updateDate() {
         const now = new Date();
         const options = {
@@ -457,18 +459,108 @@
             now.toLocaleDateString('id-ID', options);
     }
 
-    // Initialize
+    function renderTodaySchedule(schedules) {
+        const container = document.getElementById('todayScheduleList');
+        const today = new Date().toISOString().split('T')[0];
+        const todaySchedules = schedules.filter(item => item.tanggal === today);
+
+        if (!todaySchedules.length) {
+            container.innerHTML = '<div class="schedule-item"><div class="schedule-details"><h4>Tidak ada jadwal konseling hari ini</h4><p>Semua jadwal sudah bersih atau belum ada permintaan.</p></div></div>';
+            return;
+        }
+
+        container.innerHTML = todaySchedules.map(item => {
+            const namaSiswa = item.siswa ? item.siswa.nama : 'Siswa tidak ditemukan';
+            const tingkat = item.siswa && item.siswa.tingkat ? item.siswa.tingkat : 'N/A';
+            const siswa = `${namaSiswa} (${tingkat})`;
+            return `
+                <div class="schedule-item">
+                    <div class="schedule-time">
+                        <span class="time">${formatTime(item.waktu)}</span>
+                        <span class="status ${item.status === '1' || item.status === 1 ? 'active' : 'upcoming'}">${item.status === '1' || item.status === 1 ? 'Disetujui' : 'Menunggu'}</span>
+                    </div>
+                    <div class="schedule-details">
+                        <h4>${siswa}</h4>
+                        <p>${item.keterangan || 'Tidak ada keterangan tambahan.'}</p>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    function renderRecentActivities(schedules) {
+        const body = document.getElementById('recentActivitiesBody');
+        const sorted = schedules.sort((a, b) => new Date(b.tanggal + ' ' + b.waktu) - new Date(a.tanggal + ' ' + a.waktu));
+        const recent = sorted.slice(0, 5);
+
+        if (!recent.length) {
+            body.innerHTML = '<tr><td colspan="5" style="text-align: center;">Tidak ada aktivitas terbaru.</td></tr>';
+            return;
+        }
+
+        body.innerHTML = recent.map(item => {
+            const waktu = `${formatDate(item.tanggal)}, ${formatTime(item.waktu)}`;
+            const namaSiswa = item.siswa ? item.siswa.nama : 'Siswa tidak ditemukan';
+            const tingkat = item.siswa && item.siswa.tingkat ? item.siswa.tingkat : 'N/A';
+            const siswa = `${namaSiswa} (${tingkat})`;
+            const aktivitas = item.keterangan ? `Konseling: ${item.keterangan}` : 'Jadwal Konseling';
+            return `
+                <tr>
+                    <td>${waktu}</td>
+                    <td>${aktivitas}</td>
+                    <td>${siswa}</td>
+                    <td>${statusBadge(item.status)}</td>
+                    <td>
+                        <button class="btn-icon" title="Lihat Detail"><i class="fas fa-eye"></i></button>
+                    </td>
+                </tr>
+            `;
+        }).join('');
+    }
+
+    function updateStats(schedules) {
+        const activeStudents = new Set(schedules.filter(item => item.status === '1' || item.status === 1).map(item => item.siswa_id)).size;
+        const today = new Date().toISOString().split('T')[0];
+        const todayCount = schedules.filter(item => item.tanggal === today).length;
+        const pendingCount = schedules.filter(item => item.status === '0' || item.status === 0).length;
+
+        document.getElementById('activeStudentsCount').textContent = activeStudents;
+        document.getElementById('todayCounselCount').textContent = todayCount;
+        document.getElementById('pendingValidationCount').textContent = pendingCount;
+    }
+
+    function fetchDashboardData() {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            console.error('Token tidak ditemukan');
+            return;
+        }
+        fetch('/api/bk/penjadwalan', {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Accept': 'application/json'
+            }
+        })
+            .then(response => response.json())
+            .then(result => {
+                if (!result.success) {
+                    throw new Error(result.message || 'Gagal memuat data.');
+                }
+                const schedules = result.data || [];
+                updateStats(schedules);
+                renderTodaySchedule(schedules);
+                renderRecentActivities(schedules);
+            })
+            .catch(error => {
+                console.error('Dashboard error:', error);
+                document.getElementById('todayScheduleList').innerHTML = '<div class="schedule-item"><div class="schedule-details"><h4>Gagal memuat jadwal.</h4><p>Periksa koneksi atau login kembali.</p></div></div>';
+                document.getElementById('recentActivitiesBody').innerHTML = '<tr><td colspan="5" style="text-align: center;">Terjadi kesalahan saat memuat aktivitas.</td></tr>';
+            });
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
         updateDate();
-
-        // Add event listeners to buttons
-        document.querySelectorAll('.data-table .btn-icon').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const activity = this.closest('tr').querySelector('td:nth-child(2)').textContent;
-                const student = this.closest('tr').querySelector('td:nth-child(3)').textContent;
-                alert(`Aksi untuk: ${activity}\nSiswa: ${student}`);
-            });
-        });
+        fetchDashboardData();
     });
 </script>
 @endpush
