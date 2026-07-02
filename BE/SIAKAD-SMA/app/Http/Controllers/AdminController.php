@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\Admin;
 use App\Models\Guru;
 use App\Models\Mapel;
+use App\Models\Penjadwalan;
 use App\Models\Siswa;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
@@ -44,7 +46,14 @@ class AdminController extends Controller
      * Display jadwal BK page
      */
     public function jadwalBk() {
-        return view('admin.jadwal-bk');
+        $today = Carbon::now()->toDateString();
+        $penjadwalans = Penjadwalan::with(['siswa', 'bk'])
+            ->whereDate('tanggal', '>=', $today)
+            ->orderBy('tanggal')
+            ->orderBy('waktu')
+            ->get();
+
+        return view('admin.jadwal-bk', compact('penjadwalans'));
     }
 
     /**

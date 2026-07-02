@@ -387,11 +387,6 @@
                             <div class="stat-value" id="stat-konseling">-</div>
                             <p><small>Jadwal aktif</small></p>
                         </div>
-                        <div class="stat-card">
-                            <h4>Point Pelanggaran</h4>
-                            <div class="stat-value" id="stat-point">-</div>
-                            <p><small>Total point</small></p>
-                        </div>
                     </div>
 
                     <!-- Menunggu Konfirmasi -->

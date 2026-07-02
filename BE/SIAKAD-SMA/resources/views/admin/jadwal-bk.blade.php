@@ -11,7 +11,6 @@
 @endphp
 
 @section('styles')
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css">
 @endsection
 
 @section('content')
@@ -53,6 +52,7 @@
 
 
 
+
             <!-- Upcoming Schedules -->
             <div class="card">
                 <div class="card-header">
@@ -61,75 +61,44 @@
                 </div>
                 <div class="card-body">
                     <div class="upcoming-schedules">
-                        <div class="schedule-card today">
-                            <div class="schedule-time">
-                                <span class="time">08:00 - 09:00</span>
-                                <span class="status-badge ongoing">Sedang Berlangsung</span>
+                        @forelse($penjadwalans as $penjadwalan)
+                            @php
+                                $statusClass = $penjadwalan->status === '1' ? 'confirmed' : 'pending';
+                                $statusLabel = $penjadwalan->status === '1' ? 'Dikonfirmasi' : 'Menunggu';
+                            @endphp
+                            <div class="schedule-card {{ $loop->first ? 'today' : '' }}">
+                                <div class="schedule-time">
+                                    <span class="time">{{ \Carbon\Carbon::parse($penjadwalan->tanggal)->format('d M Y') }} {{ \Carbon\Carbon::parse($penjadwalan->waktu)->format('H:i') }}</span>
+                                    <span class="status-badge {{ $statusClass }}">{{ $statusLabel }}</span>
+                                </div>
+                                <div class="schedule-details">
+                                    <h4>Konseling BK - {{ $penjadwalan->siswa->nama ?? 'Siswa' }}</h4>
+                                    <p><i class="fas fa-user-md"></i> Konselor: {{ $penjadwalan->bk->nama ?? '-' }}</p>
+                                    <p><i class="fas fa-user-graduate"></i> Siswa: {{ $penjadwalan->siswa->nama ?? '-' }}</p>
+                                    @if($penjadwalan->keterangan)
+                                        <p><i class="fas fa-comment"></i> {{ $penjadwalan->keterangan }}</p>
+                                    @endif
+                                </div>
+                                <div class="schedule-actions">
+                                    <button class="btn-icon" onclick="viewSchedule({{ $penjadwalan->id }})" title="Lihat Detail">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button class="btn-icon" onclick="editSchedule({{ $penjadwalan->id }})" title="Edit">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="btn-icon btn-danger" onclick="cancelSchedule({{ $penjadwalan->id }})" title="Batalkan">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
                             </div>
-                            <div class="schedule-details">
-                                <h4>Konseling Akademik - Andi Pratama</h4>
-                                <p><i class="fas fa-user-md"></i> Konselor: Budi Santoso, S.Pd</p>
-                                <p><i class="fas fa-user-graduate"></i> Siswa: Andi Pratama (XII IPA 1)</p>
-                                <p><i class="fas fa-map-marker-alt"></i> Ruang BK 1</p>
+                        @empty
+                            <div class="schedule-card empty">
+                                <div class="schedule-details">
+                                    <h4>Tidak ada jadwal mendatang</h4>
+                                    <p>Semua penjadwalan BK sudah selesai atau belum ada data jadwal untuk tanggal mendatang.</p>
+                                </div>
                             </div>
-                            <div class="schedule-actions">
-                                <button class="btn-icon" onclick="viewSchedule(1)" title="Lihat Detail">
-                                    <i class="fas fa-eye"></i>
-                                </button>
-                                <button class="btn-icon" onclick="editSchedule(1)" title="Edit">
-                                    <i class="fas fa-edit"></i>
-                                </button>
-                                <button class="btn-icon btn-danger" onclick="cancelSchedule(1)" title="Batalkan">
-                                    <i class="fas fa-times"></i>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="schedule-card">
-                            <div class="schedule-time">
-                                <span class="time">10:00 - 11:00</span>
-                                <span class="status-badge scheduled">Terjadwal</span>
-                            </div>
-                            <div class="schedule-details">
-                                <h4>Konseling Karir - Siti Nurhaliza</h4>
-                                <p><i class="fas fa-user-md"></i> Konselor: Siti Nurhaliza, M.Pd</p>
-                                <p><i class="fas fa-user-graduate"></i> Siswa: Siti Nurhaliza (XI IPS 2)</p>
-                                <p><i class="fas fa-map-marker-alt"></i> Ruang BK 2</p>
-                            </div>
-                            <div class="schedule-actions">
-                                <button class="btn-icon" onclick="viewSchedule(2)" title="Lihat Detail">
-                                    <i class="fas fa-eye"></i>
-                                </button>
-                                <button class="btn-icon" onclick="editSchedule(2)" title="Edit">
-                                    <i class="fas fa-edit"></i>
-                                </button>
-                                <button class="btn-icon btn-danger" onclick="cancelSchedule(2)" title="Batalkan">
-                                    <i class="fas fa-times"></i>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="schedule-card">
-                            <div class="schedule-time">
-                                <span class="time">13:00 - 14:00</span>
-                                <span class="status-badge scheduled">Terjadwal</span>
-                            </div>
-                            <div class="schedule-details">
-                                <h4>Konseling Sosial - Rizki Ramadhan</h4>
-                                <p><i class="fas fa-user-md"></i> Konselor: Ahmad Hidayat, M.Si</p>
-                                <p><i class="fas fa-user-graduate"></i> Siswa: Rizki Ramadhan (X MIPA)</p>
-                                <p><i class="fas fa-map-marker-alt"></i> Ruang BK 1</p>
-                            </div>
-                            <div class="schedule-actions">
-                                <button class="btn-icon" onclick="viewSchedule(3)" title="Lihat Detail">
-                                    <i class="fas fa-eye"></i>
-                                </button>
-                                <button class="btn-icon" onclick="editSchedule(3)" title="Edit">
-                                    <i class="fas fa-edit"></i>
-                                </button>
-                                <button class="btn-icon btn-danger" onclick="cancelSchedule(3)" title="Batalkan">
-                                    <i class="fas fa-times"></i>
-                                </button>
-                            </div>
-                        </div>
+                        @endforelse
                     </div>
                 </div>
             </div>
@@ -290,10 +259,10 @@
 
                     <div class="detail-tabs">
                         <div class="tab-buttons">
-                            <button class="tab-btn active" onclick="showTab('info')">Informasi</button>
-                            <button class="tab-btn" onclick="showTab('participants')">Peserta</button>
-                            <button class="tab-btn" onclick="showTab('history')">Riwayat</button>
-                            <button class="tab-btn" onclick="showTab('documents')">Dokumen</button>
+                            <button class="tab-btn active" onclick="showTab('info', event)">Informasi</button>
+                            <button class="tab-btn" onclick="showTab('participants', event)">Peserta</button>
+                            <button class="tab-btn" onclick="showTab('history', event)">Riwayat</button>
+                            <button class="tab-btn" onclick="showTab('documents', event)">Dokumen</button>
                         </div>
 
                         <div class="tab-content active" id="infoTab">
@@ -462,22 +431,14 @@
 <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="../assets/js/main.js"></script>
 <script src="../assets/js/admin-bk-schedule.js"></script>
 <script>
         let currentScheduleId = null;
         let isEditMode = false;
-        let calendar;
 
         document.addEventListener('DOMContentLoaded', function() {
-            // Initialize calendar
-            initCalendar();
-
-            // Initialize charts
-            initCharts();
-
             // Mobile menu
             const mobileMenuToggle = document.getElementById('mobileMenuToggle');
             const sidebar = document.getElementById('sidebar');
@@ -494,168 +455,7 @@
             // Set default date to today
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('scheduleDate').value = today;
-            document.getElementById('filterDate').value = today;
         });
-
-        function initCalendar() {
-            const calendarEl = document.getElementById('calendar');
-            calendar = new FullCalendar.Calendar(calendarEl, {
-                initialView: 'dayGridMonth',
-                headerToolbar: {
-                    left: 'prev,next today',
-                    center: 'title',
-                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
-                },
-                events: [
-                    {
-                        title: 'Konseling Akademik - Andi',
-                        start: '2024-01-15T08:00:00',
-                        end: '2024-01-15T09:00:00',
-                        color: '#4CAF50',
-                        extendedProps: {
-                            counselor: 'Budi Santoso',
-                            type: 'academic'
-                        }
-                    },
-                    {
-                        title: 'Konseling Karir - Siti',
-                        start: '2024-01-15T10:00:00',
-                        end: '2024-01-15T11:00:00',
-                        color: '#2196F3',
-                        extendedProps: {
-                            counselor: 'Siti Nurhaliza',
-                            type: 'career'
-                        }
-                    },
-                    {
-                        title: 'Konseling Sosial - Rizki',
-                        start: '2024-01-15T13:00:00',
-                        end: '2024-01-15T14:00:00',
-                        color: '#FF9800',
-                        extendedProps: {
-                            counselor: 'Ahmad Hidayat',
-                            type: 'social'
-                        }
-                    }
-                ],
-                eventClick: function(info) {
-                    viewScheduleFromCalendar(info.event);
-                },
-                eventContent: function(info) {
-                    const typeIcon = info.event.extendedProps.type === 'academic' ? '📚' :
-                                   info.event.extendedProps.type === 'career' ? '🎯' : '🤝';
-
-                    return {
-                        html: `
-                            <div class="fc-event-content">
-                                <div class="fc-event-title">${typeIcon} ${info.event.title}</div>
-                                <div class="fc-event-counselor">${info.event.extendedProps.counselor}</div>
-                            </div>
-                        `
-                    };
-                },
-                locale: 'id',
-                buttonText: {
-                    today: 'Hari Ini',
-                    month: 'Bulan',
-                    week: 'Minggu',
-                    day: 'Hari'
-                }
-            });
-            calendar.render();
-
-            // Calendar controls
-            document.getElementById('prevWeek').addEventListener('click', function() {
-                calendar.prev();
-                updateWeekDisplay();
-            });
-
-            document.getElementById('nextWeek').addEventListener('click', function() {
-                calendar.next();
-                updateWeekDisplay();
-            });
-        }
-
-        function updateWeekDisplay() {
-            const currentDate = calendar.getDate();
-            const options = { month: 'long', year: 'numeric' };
-            document.getElementById('currentWeek').textContent =
-                currentDate.toLocaleDateString('id-ID', options);
-        }
-
-        function changeViewMode() {
-            const viewMode = document.getElementById('viewMode').value;
-            calendar.changeView(viewMode);
-        }
-
-        function initCharts() {
-            // Counseling Type Chart
-            const typeCtx = document.getElementById('counselingTypeChart').getContext('2d');
-            new Chart(typeCtx, {
-                type: 'doughnut',
-                data: {
-                    labels: ['Akademik', 'Karir', 'Sosial', 'Pribadi', 'Lainnya'],
-                    datasets: [{
-                        data: [45, 25, 15, 10, 5],
-                        backgroundColor: [
-                            '#4CAF50',
-                            '#2196F3',
-                            '#FF9800',
-                            '#9C27B0',
-                            '#607D8B'
-                        ],
-                        borderWidth: 0
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: {
-                            position: 'bottom'
-                        }
-                    }
-                }
-            });
-
-            // Demand Trend Chart
-            const trendCtx = document.getElementById('demandTrendChart').getContext('2d');
-            new Chart(trendCtx, {
-                type: 'line',
-                data: {
-                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun'],
-                    datasets: [{
-                        label: 'Jumlah Konseling',
-                        data: [120, 135, 142, 155, 148, 160],
-                        borderColor: '#4CAF50',
-                        backgroundColor: 'rgba(76, 175, 80, 0.1)',
-                        borderWidth: 2,
-                        fill: true,
-                        tension: 0.4
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: {
-                            display: false
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: false,
-                            grid: {
-                                color: 'rgba(0,0,0,0.05)'
-                            }
-                        },
-                        x: {
-                            grid: {
-                                display: false
-                            }
-                        }
-                    }
-                }
-            });
-        }
 
         function showAddModal() {
             isEditMode = false;
@@ -686,11 +486,6 @@
             currentScheduleId = id;
             loadViewData(id);
             document.getElementById('viewModal').style.display = 'block';
-        }
-
-        function viewScheduleFromCalendar(event) {
-            const scheduleId = event.id || 1; // Get from event data
-            viewSchedule(scheduleId);
         }
 
         function viewCounselorSchedule(counselorId) {

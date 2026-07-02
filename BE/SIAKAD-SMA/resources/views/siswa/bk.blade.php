@@ -145,6 +145,37 @@
         </div>
     </div>
 </div>
+
+<!-- Modal Feedback Viewer -->
+<div id="feedbackViewerModal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Feedback Konseling</h3>
+            <span class="close" onclick="closeFeedbackViewerModal()">&times;</span>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+                <label>Judul Feedback</label>
+                <div id="feedbackViewerJudul" style="padding: 10px 12px; background: #f4f4f4; border-radius: 6px;"></div>
+            </div>
+            <div class="form-group">
+                <label>Isi Feedback</label>
+                <div id="feedbackViewerIsi" style="padding: 10px 12px; background: #f4f4f4; border-radius: 6px; white-space: pre-line;"></div>
+            </div>
+            <div class="form-group">
+                <label>Guru BK</label>
+                <div id="feedbackViewerBK" style="padding: 10px 12px; background: #f4f4f4; border-radius: 6px;"></div>
+            </div>
+            <div class="form-group">
+                <label>Tanggal Dibuat</label>
+                <div id="feedbackViewerDate" style="padding: 10px 12px; background: #f4f4f4; border-radius: 6px;"></div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="closeFeedbackViewerModal()">Tutup</button>
+        </div>
+    </div>
+</div>
 @endsection
 
 @push('scripts')
@@ -309,6 +340,8 @@
         document.getElementById('finishedSessions').textContent = finished;
         document.getElementById('letterCount').textContent = letters;
 
+        window.__scheduleFeedbackMap = {};
+
         tbody.innerHTML = data.map(schedule => {
             const statusBadge = schedule.status == '1'
                 ? '<span class="badge badge-success">Dikonfirmasi</span>'
@@ -318,6 +351,17 @@
                 ? (schedule.keterangan.length > 50 ? schedule.keterangan.substring(0, 50) + '...' : schedule.keterangan)
                 : '-';
             
+            const hasFeedback = schedule.feedback && schedule.feedback.id;
+            if (hasFeedback) {
+                window.__scheduleFeedbackMap[schedule.id] = schedule.feedback;
+            }
+
+            const feedbackButton = hasFeedback ? `
+                <button class="btn btn-sm btn-info" onclick="openFeedbackModalFromSchedule(${schedule.id})">
+                    <i class="fas fa-eye"></i> Lihat Feedback
+                </button>
+            ` : '<span class="text-muted">-</span>';
+
             return `
                 <tr>
                     <td>${schedule.tanggal}</td>
@@ -330,9 +374,7 @@
                             <button class="btn btn-sm btn-danger" onclick="cancelSchedule(${schedule.id})">
                                 <i class="fas fa-times"></i> Batalkan
                             </button>
-                        ` : `
-                            <span class="text-muted">-</span>
-                        `}
+                        ` : feedbackButton}
                     </td>
                 </tr>
             `;
@@ -348,6 +390,40 @@
     function closeRequestBKModal() {
         document.getElementById('requestBKModal').style.display = 'none';
         document.getElementById('requestBKForm').reset();
+    }
+
+    // Open feedback viewer modal
+    function openFeedbackModal(feedback) {
+        if (!feedback) {
+            alert('Feedback tidak tersedia.');
+            return;
+        }
+
+        document.getElementById('feedbackViewerJudul').textContent = feedback.judul || '-';
+        document.getElementById('feedbackViewerIsi').textContent = feedback.isi || '-';
+        document.getElementById('feedbackViewerBK').textContent = feedback.bk ? feedback.bk.nama : '-';
+        document.getElementById('feedbackViewerDate').textContent = feedback.created_at ? new Date(feedback.created_at).toLocaleString('id-ID', {
+            day: '2-digit',
+            month: 'short',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        }) : '-';
+
+        document.getElementById('feedbackViewerModal').style.display = 'block';
+    }
+
+    function closeFeedbackViewerModal() {
+        document.getElementById('feedbackViewerModal').style.display = 'none';
+    }
+
+    function openFeedbackModalFromSchedule(scheduleId) {
+        const feedback = window.__scheduleFeedbackMap ? window.__scheduleFeedbackMap[scheduleId] : null;
+        if (!feedback) {
+            alert('Feedback tidak tersedia.');
+            return;
+        }
+        openFeedbackModal(feedback);
     }
 
     // Submit request BK

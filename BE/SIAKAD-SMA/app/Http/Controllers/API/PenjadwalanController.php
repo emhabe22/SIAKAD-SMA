@@ -260,7 +260,7 @@ class PenjadwalanController extends Controller
             }
         }
 
-        $penjadwalans = Penjadwalan::with(['siswa', 'bk'])
+        $penjadwalans = Penjadwalan::with(['siswa', 'bk', 'feedback.bk'])
             ->where('siswa_id', $siswa_id)
             ->orderBy('tanggal', 'desc')
             ->orderBy('waktu', 'desc')
